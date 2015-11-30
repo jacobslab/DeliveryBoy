@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class AudioController : MonoBehaviour {
@@ -9,7 +9,7 @@ public class AudioController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if (Config_CoinTask.isSoundtrack) {
+		if (Config.isSoundtrack) {
 			InitSoundtrack ();
 		}
 	}
@@ -22,7 +22,7 @@ public class AudioController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Config_CoinTask.isSoundtrack) {
+		if (Config.isSoundtrack) {
 			CheckIfSongOver ();
 		}
 	}
@@ -48,7 +48,7 @@ public class AudioController : MonoBehaviour {
 
 	//TODO: move to juice controller?
 	public static void PlayAudio(AudioSource audio){
-		if (Config_CoinTask.isJuice) {
+		if (Config.isJuice) {
 			audio.Stop ();
 			audio.Play (); 
 		}

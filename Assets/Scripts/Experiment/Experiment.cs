@@ -192,7 +192,7 @@ public class Experiment : MonoBehaviour {
 		}
 
 		if (addRandomPostJitter) {
-			yield return StartCoroutine(WaitForJitter ( Config_CoinTask.randomJitterMin, Config_CoinTask.randomJitterMax ) );
+			yield return StartCoroutine(WaitForJitter ( Config.randomJitterMin, Config.randomJitterMax ) );
 		}
 
 		instructionsController.TurnOffInstructions ();

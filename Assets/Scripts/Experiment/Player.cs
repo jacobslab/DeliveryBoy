@@ -6,7 +6,6 @@ public class Player : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
 	public PlayerControls controls;
-	public EnvironmentPositionSelector positionSelector;
 	public GameObject visuals;
 
 

@@ -16,16 +16,16 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	//gets called from trial controller instead of in update!
-	public void Log(int trialNumber, int numTreasureChests, int numSpecialObjects){
+	public void Log(int trialNumber, int numTreasureChests){
 		if (ExperimentSettings.isLogging) {
-			LogTrial (trialNumber, numTreasureChests, numSpecialObjects);
+			LogTrial (trialNumber, numTreasureChests);
 		}
 	}
 
 	//LOGGED ON THE START OF THE TRIAL.
-	void LogTrial(int trialNumber, int numTreasureChests, int numSpecialObjects){
+	void LogTrial(int trialNumber, int numTreasureChests){
 		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "Trial Info" + separator + "NUM_TRIALS" + separator + trialNumber + separator
-		                + "NUM_TREASURE" + separator + numTreasureChests + separator + "NUM_SPECIAL_OBJECTS" + separator + numSpecialObjects);
+		                + "NUM_TREASURE" + separator + numTreasureChests);
 	}
 
 

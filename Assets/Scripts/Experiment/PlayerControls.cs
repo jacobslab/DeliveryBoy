@@ -8,21 +8,14 @@ public class PlayerControls : MonoBehaviour{
 
 	public bool ShouldLockControls = false;
 
-	bool isSmoothMoving = false;
-
 	public Transform TiltableTransform;
-	public Transform towerPositionTransform1;
-	public Transform towerPositionTransform2;
 	public Transform startPositionTransform1;
 	public Transform startPositionTransform2;
 
 	float RotationSpeed = 50.0f;
 	
-	float maxTimeToMove = 3.75f; //seconds to move across the furthest field distance
-	float minTimeToMove = 1.5f; //seconds to move across the closest field distance
-	float furthestTravelDist; //distance between far start pos and close start tower; set in start
-	float closestTravelDist; //distance between close start pos and close start tower; set in start
-
+	//float maxTimeToMove = 3.75f; //seconds to move across the furthest field distance
+	//float minTimeToMove = 1.5f; //seconds to move across the closest field distance
 
 	// Use this for initialization
 	void Start () {
@@ -33,10 +26,6 @@ public class PlayerControls : MonoBehaviour{
 		else{
 			GetComponent<Collider>().enabled = true;
 		}
-
-		furthestTravelDist = (startPositionTransform1.position - towerPositionTransform2.position).magnitude; //close start, far tower
-		closestTravelDist = (startPositionTransform1.position - towerPositionTransform1.position).magnitude; //close start, close tower
-
 	}
 	
 	// Update is called once per frame
@@ -63,7 +52,7 @@ public class PlayerControls : MonoBehaviour{
 		float verticalAxisInput = Input.GetAxis ("Vertical");
 		if ( Mathf.Abs(verticalAxisInput) > 0.0f) { //EPSILON should be accounted for in Input Settings "dead zone" parameter
 
-			GetComponent<Rigidbody>().velocity = transform.forward*verticalAxisInput*Config_CoinTask.driveSpeed; //since we are setting velocity based on input, no need for time.delta time component
+			GetComponent<Rigidbody>().velocity = transform.forward*verticalAxisInput*Config.driveSpeed; //since we are setting velocity based on input, no need for time.delta time component
 
 		}
 		else{
@@ -90,9 +79,6 @@ public class PlayerControls : MonoBehaviour{
 					currentZRot = -1.0f*(360.0f - currentZRot);
 				}
 
-				if(currentZRot == 0){
-					int a = 0;
-				}
 				if(currentZRot > zTiltEpsilon){
 					TiltableTransform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, currentZRot - zTiltBack);
 				}
@@ -119,13 +105,13 @@ public class PlayerControls : MonoBehaviour{
 	//based on amount difference of y rotation, tilt in z axis
 	void SetTilt(float amountTurned, float turnTime){
 		if (!TrialController.isPaused) {
-			if (Config_CoinTask.isAvatarTilting) {
+			if (Config.isAvatarTilting) {
 				float turnRate = 0.0f;
 				if (turnTime != 0.0f) {
 					turnRate = amountTurned / turnTime;
 				}
 			
-				float tiltAngle = turnRate * Config_CoinTask.turnAngleMult;
+				float tiltAngle = turnRate * Config.turnAngleMult;
 			
 				tiltAngle *= -1; //tilt in opposite direction of the difference
 				TiltableTransform.rotation = Quaternion.Euler (transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, tiltAngle);	
@@ -134,12 +120,9 @@ public class PlayerControls : MonoBehaviour{
 	}
 
 
-	public IEnumerator SmoothMoveTo(Vector3 targetPosition, Quaternion targetRotation){
+	public IEnumerator SmoothMoveTo(Vector3 targetPosition, Quaternion targetRotation, float timeToTravel){
 
 		SetTilt (0.0f, 1.0f);
-
-		//notify tilting that we're smoothly moving, and thus should not tilt
-		isSmoothMoving = true;
 
 		//stop collisions
 		GetComponent<Collider> ().enabled = false;
@@ -148,22 +131,13 @@ public class PlayerControls : MonoBehaviour{
 		Quaternion origRotation = transform.rotation;
 		Vector3 origPosition = transform.position;
 
-		float travelDistance = (origPosition - targetPosition).magnitude;
-
-
-		float timeToTravel = GetTimeToTravel (travelDistance);//travelDistance / smoothMoveSpeed;
-
+		//float travelDistance = (origPosition - targetPosition).magnitude;
 
 		float tElapsed = 0.0f;
-		float epsilon = 0.01f;
 
 		//DEBUG
 		float totalTimeElapsed = 0.0f;
 
-		float angleDiffY = Mathf.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y);
-		float angleDiffX = Mathf.Abs(transform.rotation.eulerAngles.x - targetRotation.eulerAngles.x);
-		bool arePositionsCloseEnough = UsefulFunctions.CheckVectorsCloseEnough(transform.position, targetPosition, epsilon);
-		//while ( ( angleDiffY >= epsilon ) || ( angleDiffX >= epsilon ) || (!arePositionsCloseEnough) ){
 		while(tElapsed < timeToTravel){
 			totalTimeElapsed += Time.deltaTime;
 
@@ -177,10 +151,6 @@ public class PlayerControls : MonoBehaviour{
 			transform.rotation = Quaternion.Slerp(origRotation, targetRotation, percentageTime); //SLERP ALWAYS TAKES THE SHORTEST PATH.
 			transform.position = Vector3.Lerp(origPosition, targetPosition, percentageTime);
 
-			//calculate new differences
-			angleDiffY = Mathf.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y);
-			angleDiffX = Mathf.Abs(transform.rotation.eulerAngles.x - targetRotation.eulerAngles.x);
-			arePositionsCloseEnough = UsefulFunctions.CheckVectorsCloseEnough(transform.position, targetPosition, epsilon);
 
 			yield return 0;
 		}
@@ -194,27 +164,6 @@ public class PlayerControls : MonoBehaviour{
 		GetComponent<Collider> ().enabled = true;
 
 		yield return 0;
-	}
-
-	float GetTimeToTravel(float distanceFromTarget){
-		//on the very first trial, you may not have explored very far!
-		//Then you get sent back to a home base, and not a tower -- which is much closer.
-		if (distanceFromTarget < closestTravelDist) {
-
-			float percentDistanceDifference = distanceFromTarget / closestTravelDist;
-			float timeToTravel = percentDistanceDifference * minTimeToMove; //do a linear relationship here
-
-			return timeToTravel;
-		}
-		else {
-			float minMaxDistanceDifference = furthestTravelDist - closestTravelDist;
-			float percentDistanceDifference = (distanceFromTarget - closestTravelDist) / minMaxDistanceDifference;
-		
-			float minMaxTimeDifference = maxTimeToMove - minTimeToMove;
-			float timeToTravel = minTimeToMove + percentDistanceDifference * minMaxTimeDifference;
-		
-			return timeToTravel;
-		}
 	}
 
 	public IEnumerator RotateTowardSpecialObject(GameObject target){

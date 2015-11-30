@@ -70,7 +70,7 @@ public class SubjectSelectionController : MonoBehaviour {
 					//now get rid of input text
 					SubjectInputField.text = "";
 
-					GameObject newSubjectButton = AddSubjectButton(newSubject.name);
+					/*GameObject newSubjectButton =*/ AddSubjectButton(newSubject.name);
 				}
 
 				ChooseSubject(newSubject.name);
@@ -88,7 +88,7 @@ public class SubjectSelectionController : MonoBehaviour {
 			//TODO: sort alphabetically or arrange alphabetically
 			int buttonCount = 0;
 			foreach (KeyValuePair<string, Subject> entry in SubjectReaderWriter.subjectDict) {
-				GameObject newButton = AddSubjectButton (entry.Key);
+				/*GameObject newButton =*/ AddSubjectButton (entry.Key);
 				//newButton.transform.position += Vector3.right*distanceBetweenButtons*buttonCount;
 
 				buttonCount++;

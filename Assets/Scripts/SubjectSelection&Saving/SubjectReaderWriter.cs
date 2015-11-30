@@ -64,7 +64,7 @@ public class SubjectReaderWriter : MonoBehaviour {
 				newSubject.score = int.Parse(splitScore[1]);
 
 				//session
-				string[] splitSession = splitLine[2].Split(' ');
+				//string[] splitSession = splitLine[2].Split(' ');
 				//newSubject.blocks = int.Parse(splitSession[1]);
 				newSubject.trials = 0; //JUST START IT OVER?! TODO: new save system?
 

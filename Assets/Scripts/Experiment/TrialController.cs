@@ -21,10 +21,7 @@ public class TrialController : MonoBehaviour {
 	bool isPracticeTrial = false;
 	int numRealTrials = 0; //used for logging trial ID's
 
-	int numDefaultObjectsCollected = 0;
-
-	int timeBonus = 0;
-	int memoryScore = 0;
+	int numStoresVisited = 0;
 
 	Trial currentTrial;
 	Trial practiceTrial;
@@ -41,9 +38,9 @@ public class TrialController : MonoBehaviour {
 	void InitTrials(){
 		ListOfTrialBlocks = new List<List<Trial>> ();
 
-		int numTestTrials = Config_CoinTask.numTestTrials;
+		int numTestTrials = Config.numTestTrials;
 
-		int numTrialsPerBlock = (int)(Config_CoinTask.trialBlockDistribution [0] + Config_CoinTask.trialBlockDistribution [1]);
+		int numTrialsPerBlock = (int)(Config.trialBlockDistribution [0] + Config.trialBlockDistribution [1]);
 
 		if (numTestTrials % numTrialsPerBlock != 0) {
 			Debug.Log("CANNOT EXECUTE THIS TRIAL DISTRIBUTION");
@@ -54,27 +51,18 @@ public class TrialController : MonoBehaviour {
 			ListOfTrialBlocks.Add(GenerateTrialBlock());
 		}
 
-		if(Config_CoinTask.doPracticeTrial){
-			practiceTrial = new Trial(Config_CoinTask.numSpecialObjectsPract);	//2 special objects for practice trial
+		if(Config.doPracticeTrial){
+			practiceTrial = new Trial();	//2 special objects for practice trial
 		}
 
 	}
 
 	List<Trial> GenerateTrialBlock(){
 		List<Trial> trialBlock = new List<Trial> ();
-		int numTrials = (int)(Config_CoinTask.trialBlockDistribution [0] + Config_CoinTask.trialBlockDistribution [1]);
 
-		int numSpecial = 1;
-		for (int i = 0; i < numTrials / 2; i++) { //divide by two because we're adding a regular and a counterbalanced trial
+		for (int i = 0; i < Config.numTestTrials / 2; i++) { //divide by two because we're adding a regular and a counterbalanced trial
 
-			if(i < Config_CoinTask.trialBlockDistribution[0] / 2){ //divide by two because we're adding a regular and a counterbalanced trial
-				numSpecial = 2;
-			}
-			else{
-				numSpecial = 3;
-			}
-
-			Trial trial = new Trial(numSpecial);
+			Trial trial = new Trial();
 			Trial counterTrial = trial.GetCounterSelf();
 			
 			trialBlock.Add(trial);
@@ -155,8 +143,8 @@ public class TrialController : MonoBehaviour {
 
 			//show instructions for exploring, wait for the action button
 			trialLogger.LogInstructionEvent();
-			yield return StartCoroutine (exp.ShowSingleInstruction (Config_CoinTask.initialInstructions1, true, true, false, Config_CoinTask.minInitialInstructionsTime));
-			yield return StartCoroutine (exp.ShowSingleInstruction (Config_CoinTask.initialInstructions2, true, true, false, Config_CoinTask.minInitialInstructionsTime));
+			yield return StartCoroutine (exp.ShowSingleInstruction (Config.initialInstructions1, true, true, false, Config.minInitialInstructionsTime));
+			yield return StartCoroutine (exp.ShowSingleInstruction (Config.initialInstructions2, true, true, false, Config.minInitialInstructionsTime));
 
 			//let player explore until the button is pressed again
 			//trialLogger.LogBeginningExplorationEvent();
@@ -165,7 +153,7 @@ public class TrialController : MonoBehaviour {
 			//get the number of blocks so far -- floor half the number of trials recorded
 			int totalTrialCount = ExperimentSettings.currentSubject.trials;
 			numRealTrials = totalTrialCount;
-			if (Config_CoinTask.doPracticeTrial) {
+			if (Config.doPracticeTrial) {
 				if (numRealTrials >= 2) { //otherwise, leave numRealTrials at zero.
 					numRealTrials -= 1; //-1 for practice trial
 				}
@@ -173,7 +161,7 @@ public class TrialController : MonoBehaviour {
 
 			
 			//run practice trials
-			if(Config_CoinTask.doPracticeTrial){
+			if(Config.doPracticeTrial){
 				isPracticeTrial = true;
 			}
 			
@@ -240,11 +228,11 @@ public class TrialController : MonoBehaviour {
 		currentTrial = trial;
 
 		if (isPracticeTrial) {
-			trialLogger.Log (-1, currentTrial.DefaultObjectLocationsXZ.Count, currentTrial.SpecialObjectLocationsXZ.Count);
+			trialLogger.Log (-1, currentTrial.DefaultObjectLocationsXZ.Count);
 			Debug.Log("Logged practice trial.");
 		} 
 		else {
-			trialLogger.Log (numRealTrials, currentTrial.DefaultObjectLocationsXZ.Count, currentTrial.SpecialObjectLocationsXZ.Count);
+			trialLogger.Log (numRealTrials, currentTrial.DefaultObjectLocationsXZ.Count);
 			numRealTrials++;
 			Debug.Log("Logged trial #: " + numRealTrials);
 		}
@@ -258,26 +246,20 @@ public class TrialController : MonoBehaviour {
 
 		//wait for player to collect all default objects
 		int numDefaultObjectsToCollect = currentTrial.DefaultObjectLocationsXZ.Count;
-		while (numDefaultObjectsCollected < numDefaultObjectsToCollect) {
+		while (numStoresVisited < numDefaultObjectsToCollect) {
 			yield return 0;
 		}
 
 		//reset num default objects collected
-		numDefaultObjectsCollected = 0;
+		numStoresVisited = 0;
 
 		//lock player movement
 		exp.player.controls.ShouldLockControls = true;
 
-		//bring player to tower
-		//exp.player.TurnOnVisuals (false);
-		trialLogger.LogTransportationToTowerEvent ();
-		currentDefaultObject = null; //set to null so that arrows stop showing up...
-		yield return StartCoroutine (exp.player.controls.SmoothMoveTo (currentTrial.avatarTowerPos, currentTrial.avatarTowerRot));//PlayerControls.toTowerTime) );
-
 
 
 		//jitter before the first object is shown
-		yield return StartCoroutine(exp.WaitForJitter(Config_CoinTask.randomJitterMin, Config_CoinTask.randomJitterMax));
+		yield return StartCoroutine(exp.WaitForJitter(Config.randomJitterMin, Config.randomJitterMax));
 
 		//show instructions for location selection 
 		trialLogger.LogRecallPhaseStarted();

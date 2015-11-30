@@ -96,16 +96,7 @@ public class LoggerWriter : ThreadedJob
 	}
 	
 	
-	public virtual void log(string msg) { //took out  ( ... , int level)
-
-		long tick = DateTime.Now.Ticks;
-		//long seconds = tick / TimeSpan.TicksPerSecond;
-		long milliseconds = tick / TimeSpan.TicksPerMillisecond;
-		microseconds = tick / 10;
-		//Debug.Log(milliseconds);
-		//Debug.Log(Time.frameCount + ": " + Event.current);
-		
-		//logfile.WriteLine( milliseconds + "\t0\t" + msg ); //not sure what the "\t0\t" was for.
+	public virtual void log(string msg) {
 
 		logfile.WriteLine (msg);
 	}

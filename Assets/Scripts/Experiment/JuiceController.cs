@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class JuiceController : MonoBehaviour {
@@ -31,7 +31,7 @@ public class JuiceController : MonoBehaviour {
 	//CALLED IN EXPERIMENT --> AWAKE()
 	public void Init(){
 		ToggleJuice += Toggle;
-		ToggleJuice (Config_CoinTask.isJuice);
+		ToggleJuice (Config.isJuice);
 	}
 
 	public void Toggle (bool isJuice){
@@ -54,7 +54,7 @@ public class JuiceController : MonoBehaviour {
 	}
 
 	public static void PlayParticles(ParticleSystem particles){
-		if (Config_CoinTask.isJuice) {
+		if (Config.isJuice) {
 			particles.Stop();
 			particles.Play();
 		}

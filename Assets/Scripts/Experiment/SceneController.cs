@@ -68,7 +68,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 	}
 
 	void LoadExperimentLevel(){
-		if (ExperimentSettings.currentSubject.trials < Config_CoinTask.GetTotalNumTrials ()) {
+		if (ExperimentSettings.currentSubject.trials < Config.GetTotalNumTrials ()) {
 			Debug.Log ("loading experiment!");
 			Application.LoadLevel (1);
 		} else {

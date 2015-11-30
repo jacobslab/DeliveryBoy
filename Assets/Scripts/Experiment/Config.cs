@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Config_CoinTask : MonoBehaviour {
+public class Config : MonoBehaviour {
 
 	//JUICE
 	public static bool isJuice = true;
@@ -101,7 +101,6 @@ public class Config_CoinTask : MonoBehaviour {
 
 		if (Experiment.Instance != null) {
 
-			float playerMaxSpeed = driveSpeed;
 			buffer = driveSpeed * minDriveTimeBetweenObjects; //d = vt
 
 			buffer += Experiment.Instance.objectController.GetMaxDefaultObjectColliderBoundXZ ();

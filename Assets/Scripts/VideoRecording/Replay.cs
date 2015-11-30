@@ -85,7 +85,7 @@ public class Replay : MonoBehaviour {
 		}
 		catch (Exception e) 
 		{
-			Debug.Log("Invalid log file path. Cannot replay.");
+			Debug.Log("Invalid log file path. Cannot replay." + e.StackTrace);
 		}
 		
 

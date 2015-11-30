@@ -6,6 +6,8 @@ public class ColorChanger : MonoBehaviour {
 
 	public Renderer[] renderers;
 
+	bool shouldBeLerping = false;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -17,6 +19,8 @@ public class ColorChanger : MonoBehaviour {
 	}
 
 	public IEnumerator LerpChangeColor(Color newColor, float time){
+		shouldBeLerping = true;
+
 		float currentTime = 0.0f;
 
 		float timeMult = 1.0f / time;
@@ -30,7 +34,7 @@ public class ColorChanger : MonoBehaviour {
 			origColor = renderers [0].material.color;
 		}
 
-		while(currentTime < 1.0f){
+		while(currentTime < 1.0f && shouldBeLerping){
 			currentTime += Time.deltaTime*timeMult;
 			for (int i = 0; i < renderers.Length; i++) {
 				renderers[i].material.color = Color.Lerp(origColor, newColor, currentTime);
@@ -40,6 +44,10 @@ public class ColorChanger : MonoBehaviour {
 			}
 			yield return 0;
 		}
+	}
+
+	public void StopLerping(){
+		shouldBeLerping = false;
 	}
 
 	//instant color change

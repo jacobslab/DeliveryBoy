@@ -8,58 +8,9 @@ public class Trial {
 
 	public Vector3 avatarStartPos;
 	public Quaternion avatarStartRot;
-	public Vector3 avatarTowerPos;
-	public Quaternion avatarTowerRot;
-	public int numSpecialObjects;
 	public List<Vector2> DefaultObjectLocationsXZ;
-	public List<Vector2> SpecialObjectLocationsXZ;
-
-	public DifficultySetting trialDifficulty;
-
-
-	public static DifficultySetting practiceDifficulty = DifficultySetting.easy;
-	public enum DifficultySetting {
-		easy,
-		medium,
-		hard
-	}
-
 
 	public Trial(){
-		DefaultObjectLocationsXZ = new List<Vector2> ();
-		SpecialObjectLocationsXZ = new List<Vector2> ();
-	}
-
-	public Trial(int numSpecial){
-
-		numSpecialObjects = numSpecial;
-
-
-		/*
-		switch (ObjectController.objectMode) {
-		case ObjectController.ObjectMode.ai:		//2-4 filled, 1&5 empty
-			numSpecialObjects = 3;
-			break;
-		case ObjectController.ObjectMode.aii:	//2-4 filled with 2 or 3 objects, 1&5 empty
-			numSpecialObjects = Random.Range(2,4); //[inclusive, exclusive]
-			break;
-		case ObjectController.ObjectMode.bi:		//first four filled w/ 3 objects, 5 empty
-			numSpecialObjects = 3;
-			break;
-		case ObjectController.ObjectMode.bii:	//first four filled w/ 2 or 3 objects, 5 empty
-			numSpecialObjects = Random.Range(2,4); //[inclusive, exclusive]
-			break;
-		case ObjectController.ObjectMode.ci:	//first four filled w/ 2 or 3 objects, 5 empty
-			numSpecialObjects = 3; //[inclusive, exclusive]
-			break;
-
-		}
-		*/
-
-
-		Debug.Log("NUM SPECIAL: " + numSpecialObjects);
-
-
 
 		int fiftyFiftyChance = Random.Range (0, 2); //will pick 1 or 0
 		if (fiftyFiftyChance == 0) {
@@ -71,42 +22,10 @@ public class Trial {
 			avatarStartRot = exp.player.controls.startPositionTransform2.rotation;
 		}
 
-
-
-		fiftyFiftyChance = Random.Range (0, 2); //will pick 1 or 0
-		if (fiftyFiftyChance == 0) {
-			avatarTowerPos = exp.player.controls.towerPositionTransform1.position;
-			avatarTowerRot = exp.player.controls.towerPositionTransform1.rotation;
-		}
-		else {
-			avatarTowerPos = exp.player.controls.towerPositionTransform2.position;
-			avatarTowerRot = exp.player.controls.towerPositionTransform2.rotation;
-		}
-
-
-		int numDefaultObjects = 0;
-		numDefaultObjects = Config_CoinTask.numDefaultObjects;
-
-		//TODO: pick 4 or 5 chests.
-		switch (ObjectController.objectMode) {
-		case ObjectController.ObjectMode.ai:		//2-4 filled, 1&5 empty
-			numDefaultObjects = 5;
-			break;
-		case ObjectController.ObjectMode.aii:	//2-4 filled with 2 or 3 objects, 1&5 empty
-			numDefaultObjects = 4;
-			break;
-		case ObjectController.ObjectMode.bi:		//first four filled w/ 3 objects, 5 empty
-			numDefaultObjects = 5;
-			break;
-		case ObjectController.ObjectMode.bii:	//first four filled w/ 2 or 3 objects, 5 empty
-			numDefaultObjects = 4;
-			break;
-			
-		}
+		int numDefaultObjects = Config.numDefaultObjects;
 
 		//init default and special locations
 		DefaultObjectLocationsXZ = exp.objectController.GenerateOrderedDefaultObjectPositions (numDefaultObjects, avatarStartPos);
-		SpecialObjectLocationsXZ = exp.objectController.GenerateSpecialObjectPositions (DefaultObjectLocationsXZ, numSpecialObjects);
 
 	}
 
@@ -136,8 +55,6 @@ public class Trial {
 	public Trial GetCounterSelf(){
 		Trial counterTrial = new Trial ();
 
-		counterTrial.numSpecialObjects = numSpecialObjects;
-
 		//counter the avatar
 		if (avatarStartPos == exp.player.controls.startPositionTransform1.position) {
 			counterTrial.avatarStartPos = exp.player.controls.startPositionTransform2.position;
@@ -148,19 +65,7 @@ public class Trial {
 			counterTrial.avatarStartRot = exp.player.controls.startPositionTransform1.rotation;
 		}
 
-		//flip the tower positions
-		if (avatarTowerPos == exp.player.controls.towerPositionTransform1.position) {
-			counterTrial.avatarTowerPos = exp.player.controls.towerPositionTransform2.position;
-			counterTrial.avatarTowerRot = exp.player.controls.towerPositionTransform2.rotation;
-		}
-		else {
-			counterTrial.avatarTowerPos = exp.player.controls.towerPositionTransform1.position;
-			counterTrial.avatarTowerRot = exp.player.controls.towerPositionTransform1.rotation;
-		}
-
-
 		counterTrial.DefaultObjectLocationsXZ = new List<Vector2> ();
-		counterTrial.SpecialObjectLocationsXZ = new List<Vector2> ();
 		//counter the object positions
 		for (int i = 0; i < DefaultObjectLocationsXZ.Count; i++) {
 			Vector3 currPosition = new Vector3( DefaultObjectLocationsXZ[i].x, 0, DefaultObjectLocationsXZ[i].y );
@@ -169,14 +74,7 @@ public class Trial {
 			Vector2 counteredPositionXZ = new Vector2(counteredPosition.x, counteredPosition.z);
 			counterTrial.DefaultObjectLocationsXZ.Add(counteredPositionXZ);
 		}
-		
-		for (int i = 0; i < SpecialObjectLocationsXZ.Count; i++) {
-			Vector3 currPosition = new Vector3( SpecialObjectLocationsXZ[i].x, 0, SpecialObjectLocationsXZ[i].y );
-			Vector3 counteredPosition = GetReflectedPositionXZ( currPosition );
-			
-			Vector2 counteredPositionXZ = new Vector2(counteredPosition.x, counteredPosition.z);
-			counterTrial.SpecialObjectLocationsXZ.Add(counteredPositionXZ);
-		}
+
 		
 		return counterTrial;
 	}

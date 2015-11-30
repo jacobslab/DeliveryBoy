@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class ScaleAnimator : MonoBehaviour {
@@ -14,7 +14,7 @@ public class ScaleAnimator : MonoBehaviour {
 	}
 
 	public IEnumerator AnimateScaleUp(float time, float endScaleMult, float startScaleMult){
-		if (Config_CoinTask.isJuice) {
+		if (Config.isJuice) {
 			Vector3 fullScale = transform.localScale * endScaleMult;
 			Vector3 smallScale = fullScale * startScaleMult;
 

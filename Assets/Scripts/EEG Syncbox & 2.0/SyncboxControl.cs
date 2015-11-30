@@ -194,7 +194,9 @@ public class SyncboxControl : MonoBehaviour {
 	}
 
 	void OnApplicationQuit(){
-		Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
+		if(isUSBOpen){
+			Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
+		}
 	}
 
 }

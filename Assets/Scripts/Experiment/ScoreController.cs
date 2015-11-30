@@ -30,30 +30,6 @@ public class ScoreController : MonoBehaviour {
 	static int memoryScoreWrong = -50;
 	public static int MemoryScoreWrong { get { return memoryScoreWrong; } }
 
-	static int memoryScoreRightNotRemembered = 50;
-	public static int MemoryScoreRightNotRemembered { get { return memoryScoreRightNotRemembered; } }
-	
-	static int memoryScoreWrongNotRemembered = 0;
-	public static int MemoryScoreWrongNotRemembered { get { return memoryScoreWrongNotRemembered; } }
-
-	static int memoryScoreRightVerySure = 200;
-	public static int MemoryScoreRightVerySure { get { return memoryScoreRightVerySure; } }
-
-	static int memoryScoreWrongVerySure = -350;
-	public static int MemoryScoreWrongVerySure { get { return memoryScoreWrongVerySure; } }
-
-	static int specialObjectPoints = 0;
-	public static int SpecialObjectPoints { get { return specialObjectPoints; } }
-
-	static int boxSwapperPoints = 50;
-	public static int BoxSwapperPoints { get { return boxSwapperPoints; } }
-
-
-
-	public TextMesh verySureScoreExplanation;
-	public TextMesh notVerySureScoreExplanation;
-
-
 
 	//Time bonus time variables!
 	static int timeBonusTimeMin = 22;
@@ -69,8 +45,6 @@ public class ScoreController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		verySureScoreExplanation.text = "win " + memoryScoreRightVerySure + "/" + "lose " + memoryScoreWrongVerySure;
-		notVerySureScoreExplanation.text = "win " + memoryScoreRight + "/" + "lose " + memoryScoreWrong;
 		StartCoroutine (UpdateScoreText());
 	}
 	
@@ -123,43 +97,18 @@ public class ScoreController : MonoBehaviour {
 		}
 	}
 
-	public void AddBoxSwapperPoints(){
-		AddToScore(boxSwapperPoints);
-		scoreLogger.LogBoxSwapperPoints(boxSwapperPoints);
+	bool isCorrect(){
+		//TODO: fill in however you'd like.
+		return true;
 	}
 
-	public void AddSpecialPoints(){
-		AddToScore(specialObjectPoints);
-		scoreLogger.LogTreasureOpenScoreAdded (specialObjectPoints);
-	}
-
-	public int CalculateMemoryPoints (Vector3 correctPosition, bool didRemember, bool doubledDown){
+	public int CalculateMemoryPoints (){
 		int memoryPoints = 0;
-		if (exp.environmentController.myPositionSelector.GetRadiusOverlap (correctPosition)) {
-			if(!didRemember){
-				memoryPoints = memoryScoreRightNotRemembered;
-			}
-			else{
-				if(!doubledDown){
-					memoryPoints = memoryScoreRight;
-				}
-				else{
-					memoryPoints = memoryScoreRightVerySure;
-				}
-			}
+		if (isCorrect()) {
+			memoryPoints = memoryScoreRight;
 		}
 		else{ //wrong
-			if(!didRemember){
-				memoryPoints = memoryScoreWrongNotRemembered;
-			}
-			else{
-				if(!doubledDown){
-					memoryPoints = memoryScoreWrong;
-				}
-				else{
-					memoryPoints = memoryScoreWrongVerySure;
-				}
-			}
+			memoryPoints = memoryScoreWrong;
 		}
 
 		AddToScore(memoryPoints);

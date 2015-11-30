@@ -4,18 +4,6 @@ using System.Collections.Generic;
 
 public class ObjectController : MonoBehaviour {
 
-	public enum ObjectMode{
-		ai,		//2-3 filled, 5th empty (5 chests total)
-		aii,	//2-3 filled, 4th empty (4 chests total)
-		bi,		//2-3 filled, 5 chests total
-		bii,	//2-3 filled, 4 chests total
-	}
-
-	public static ObjectMode objectMode = ObjectMode.ai;
-
-
-
-
 
 	//instantiated somewhere (hidden) in the scene at all times. for calculating default object bounds --> requires an active object, and we don't want to instantiate one every time we ask for the bounds.
 	//this object does *not* need to be logged.
@@ -23,7 +11,6 @@ public class ObjectController : MonoBehaviour {
 	public GameObject InGameDefaultObject;
 
 	public GameObject DefaultObject; //the prefab used to instantiate the other default objects.
-	public GameObject ExplosiveObject;
 	public List<GameObject> CurrentTrialSpecialObjects;
 
 
@@ -181,7 +168,7 @@ public class ObjectController : MonoBehaviour {
 
 			while( !objectsAreFarEnough && numTries < maxNumTries){
 				// generate a random position
-				randomEnvPosition = exp.environmentController.GetRandomPositionWithinWallsXZ( Config_CoinTask.objectToWallBuffer );
+				randomEnvPosition = exp.environmentController.GetRandomPositionWithinWallsXZ( Config.objectToWallBuffer );
 				randomEnvPositionVec2 = new Vector2(randomEnvPosition.x, randomEnvPosition.z);
 
 				//increment numTries
@@ -216,17 +203,6 @@ public class ObjectController : MonoBehaviour {
 	}
 
 	List<Vector2> SortByNextClosest(List<Vector2> positions, Vector2 distancePos){
-
-		//INSERTION SORT
-		/*for (int i = 1; i < positions.Count; i++) {
-			int j = i;
-			while(j > 0 && UsefulFunctions.GetDistance(positions[j - 1], distancePos) > UsefulFunctions.GetDistance(positions[j], distancePos)){
-				//swap
-				Vector3 tempPos = positions[j - 1];
-				positions[j - 1] = positions[j];
-				positions[j] = tempPos;
-			}
-		}*/
 
 		List<Vector2> sortedPositions = new List<Vector2>();
 		int numPositions = positions.Count;
@@ -272,7 +248,7 @@ public class ObjectController : MonoBehaviour {
 				//set smallest distance for the first time
 				smallestDistance = positionDistance;
 			}
-			if( positionDistance < Config_CoinTask.objectToObjectBuffer ){
+			if( positionDistance < Config.objectToObjectBuffer ){
 				if(smallestDistance > positionDistance) {
 					smallestDistance = positionDistance;
 				}
@@ -281,99 +257,6 @@ public class ObjectController : MonoBehaviour {
 		}
 		
 		return isFarEnough;
-	}
-
-	public List<Vector2> GenerateSpecialObjectPositions (List<Vector2> orderedDefaultObjectLocationsXZ, int numSpecialObjects){
-		List<Vector2> specialPositions = new List<Vector2> ();
-
-
-		int specialIndex;
-
-		int startIndex = 0;
-		int numDefaultToChooseFrom = 3;	
-
-
-		switch (objectMode) {
-		case ObjectMode.ai:		//2-3 filled, 5th empty (5 chests total)
-			startIndex = 0;
-			numDefaultToChooseFrom = 4; //there are three positions to fill
-			break;
-		case ObjectMode.aii:	//2-3 filled, 4th empty (4 chests total)
-			startIndex = 0;
-			numDefaultToChooseFrom = 3; //there are three potential positions to fill
-			break;
-		case ObjectMode.bi:		//2-3 filled, 5 chests total
-			startIndex = 0;
-			numDefaultToChooseFrom = 5; //there are five potential positions to fill
-			break;
-		case ObjectMode.bii:	//2-3 filled, 4 chests total
-			startIndex = 0;
-			numDefaultToChooseFrom = 4; //there are four potential positions to fill
-			break;
-		}
-
-
-		List<Vector2> orderedDefaultPositionsCopy = new List<Vector2> ();
-		
-		//copy the list (ONLY THE POSITIONS WE WANT TO FILL) so we can delete from it...
-		for (int i = startIndex; i < numDefaultToChooseFrom + startIndex; i++) {
-			Vector2 currPosition = orderedDefaultObjectLocationsXZ[i];
-			Vector2 positionCopy = new Vector2(currPosition.x, currPosition.y);
-			orderedDefaultPositionsCopy.Add(positionCopy);
-		}
-
-
-
-
-		for (int i = 0; i < numSpecialObjects; i++) {
-
-			//if number of special objects exceeds the number of free spots, we'll get stuck.
-			//...so exit the loop instead.
-			if(i >= numDefaultToChooseFrom){
-				break;
-			}
-
-			List<int> randomIndices = UsefulFunctions.GetRandomIndexOrder( orderedDefaultPositionsCopy.Count );
-			int randomIndex = randomIndices[0];
-			Vector2 currPosition = orderedDefaultPositionsCopy[randomIndex];
-
-			if(i != 0){
-				for(int j = 1; j < randomIndices.Count; j++){
-					randomIndex = randomIndices[j];
-					currPosition = orderedDefaultPositionsCopy[randomIndex];
-					
-					//check against all other special item locations...
-					bool isDistanceBigEnough = true;
-					for(int k = 0; k < specialPositions.Count; k++){
-						//if distance is not big enough...
-						float currDistance = (currPosition - specialPositions[k]).magnitude;
-						if( currDistance < Config_CoinTask.specialObjectBufferMult*Config_CoinTask.objectToObjectBuffer ) {
-
-							isDistanceBigEnough = false;
-							continue;
-							
-							
-						}
-					}
-
-					if(isDistanceBigEnough){
-						break;
-					}
-				}
-
-			}
-
-
-
-			specialPositions.Add (currPosition);
-			
-			//remove it from the parameter list so that no two special objects are in the same spot.
-			//this will not change the original list, as the list was passed by copy.
-			orderedDefaultPositionsCopy.RemoveAt(randomIndex);
-
-		}
-		
-		return specialPositions;
 	}
 
 	public float GetMaxDefaultObjectColliderBoundXZ(){
