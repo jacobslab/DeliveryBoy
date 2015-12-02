@@ -110,8 +110,7 @@ public class Experiment : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//Config_CoinTask.Init();
-		//inGameInstructionsController.DisplayText("");
+
 	}
 
 	// Update is called once per frame
@@ -134,10 +133,6 @@ public class Experiment : MonoBehaviour {
 	}
 
 	public IEnumerator RunOutOfTrials(){
-		/*while(environmentMap.IsActive){
-			yield return 0; //thus, should wait for the button press before ending the experiment
-		}*/
-		
 		yield return StartCoroutine(ShowSingleInstruction("You have finished your trials! \nPress the button to proceed.", true, true, false, 0.0f));
 		instructionsController.SetInstructionsColorful(); //want to keep a dark screen before transitioning to the end!
 		instructionsController.DisplayText("...loading end screen...");

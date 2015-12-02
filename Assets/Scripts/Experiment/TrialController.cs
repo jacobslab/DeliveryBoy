@@ -15,6 +15,7 @@ public class TrialController : MonoBehaviour {
 	//UI
 	public CanvasGroup PauseUI;
 	public CanvasGroup ConnectionUI;
+	public UIScreen DeliveryUI; 
 
 	TrialLogTrack trialLogger;
 
@@ -40,7 +41,7 @@ public class TrialController : MonoBehaviour {
 
 		int numTestTrials = Config.numTestTrials;
 
-		int numTrialsPerBlock = (int)(Config.trialBlockDistribution [0] + Config.trialBlockDistribution [1]);
+		int numTrialsPerBlock = 8;
 
 		if (numTestTrials % numTrialsPerBlock != 0) {
 			Debug.Log("CANNOT EXECUTE THIS TRIAL DISTRIBUTION");
@@ -145,12 +146,22 @@ public class TrialController : MonoBehaviour {
 			trialLogger.LogInstructionEvent();
 			yield return StartCoroutine (exp.ShowSingleInstruction (Config.initialInstructions1, true, true, false, Config.minInitialInstructionsTime));
 
+
 			//LEARNING PHASE
-			yield return StartCoroutine(LearnStoreLocations());
+			yield return StartCoroutine(DoStoreLearningPhase());
+
+			for(int i = 0; i < Config.numTestTrials; i++){
+
+				//DELIVERY PHASE
+				yield return StartCoroutine(DoStoreDeliveryPhase());
 
 
+				//RECALL PHASE
+				yield return StartCoroutine(DoRecallPhase());
 
-			
+			}
+
+			/*
 			//get the number of blocks so far -- floor half the number of trials recorded
 			int totalTrialCount = ExperimentSettings.currentSubject.trials;
 			numRealTrials = totalTrialCount;
@@ -195,7 +206,7 @@ public class TrialController : MonoBehaviour {
 
 				Debug.Log ("TRIAL Block: " + i);
 			}
-
+*/
 			yield return 0;
 		}
 		
@@ -221,27 +232,55 @@ public class TrialController : MonoBehaviour {
 		isConnectingToHardware = false;
 	}
 
-	IEnumerator LearnStoreLocations(){
+	IEnumerator DoStoreLearningPhase(){
+		for (int numIterations = 0; numIterations < Config.numLearningIterations; numIterations++) {
 
-		Building[] buildingsToVisit = exp.buildingController.GetBuildings ();
+			Building[] buildingsToVisit = exp.buildingController.GetBuildings ();
 
-		for (int i = 0; i < buildingsToVisit.Length; i++) {
-			exp.player.controls.ShouldLockControls = true;
+			for (int i = 0; i < buildingsToVisit.Length; i++) {
+				yield return StartCoroutine(DoVisitStoreCommand(buildingsToVisit[i]));
+			}
 
-			trialLogger.LogInstructionEvent();
-			yield return StartCoroutine (exp.ShowSingleInstruction ("Go to the " + buildingsToVisit[i].name, true, true, false, Config.minInitialInstructionsTime));
-
-			//show instruction at top of screen, don't wait for button, wait for collision
-			trialLogger.LogInstructionEvent();
-			exp.instructionsController.SetSingleInstruction ("Go to the " + buildingsToVisit[i].name, false);
-			exp.player.controls.ShouldLockControls = false;
-			yield return StartCoroutine (exp.player.WaitForCollision(buildingsToVisit[i].name));
-			exp.instructionsController.SetInstructionsBlank();
+			yield return 0;
 		}
+	}
 
+	IEnumerator DoVisitStoreCommand(Building buildingToVisit){
+		exp.player.controls.ShouldLockControls = false;
+
+		//show instruction at top of screen, don't wait for button, wait for collision
+		trialLogger.LogInstructionEvent ();
+		exp.instructionsController.SetSingleInstruction ("Go to the " + buildingToVisit.name, false);
+		yield return StartCoroutine (exp.player.WaitForCollision (buildingToVisit.name));
+		exp.instructionsController.SetInstructionsBlank ();
+	}
+
+	IEnumerator DoStoreDeliveryPhase(){
+		List<Building> deliveryBuildings = exp.buildingController.GetRandomDeliveryBuildings();
+
+		for (int i = 0; i < deliveryBuildings.Count; i++) {
+			//visit store
+			yield return StartCoroutine(DoVisitStoreCommand(deliveryBuildings[i]));
+
+			//tell player what they delivered
+			//TODO: make screen blank, then have AUDIO stating what was delivered
+			trialLogger.LogInstructionEvent ();
+			exp.player.controls.ShouldLockControls = true;
+			yield return StartCoroutine (exp.ShowSingleInstruction ("You delivered " + "ITEM NAME" + " to the " + deliveryBuildings [i].name, true, false, false, Config.deliveryCompleteInstructionsTime));
+			exp.player.controls.ShouldLockControls = false;
+			//TODO: show sprite
+		}
+	}
+
+	IEnumerator DoRecallPhase(){
+		exp.player.controls.ShouldLockControls = true;
+
+		trialLogger.LogInstructionEvent ();
+		yield return StartCoroutine (exp.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+
+		exp.player.controls.ShouldLockControls = false;
 		yield return 0;
 	}
-	
 
 	//INDIVIDUAL TRIALS -- implement for repeating the same thing over and over again
 	//could also create other IEnumerators for other types of trials

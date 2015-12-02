@@ -7,11 +7,6 @@ public class Config : MonoBehaviour {
 	public static bool isJuice = true;
 	public static bool isSoundtrack = false; //WON'T PLAY IF ISJUICE IS FALSE.
 
-
-	//BOX SWAP MINIGAME VARIABLES
-	public static float boxMoveTime = 0.5f;
-	public static Vector3 boxAcceleration = Physics.gravity * 3.0f;
-
 	//stimulation variables
 	public static bool shouldDoStim;	//TODO
 	public static int stimFrequency;	//TODO
@@ -21,8 +16,10 @@ public class Config : MonoBehaviour {
 	//test session variables
 	//doTestSession (not implemented in the panda3d version )
 
-	public static int numTestTrials = 32; //IF 50% 2 OBJ, [1obj, counter1, 2a, counter2a, 2b, counter2b, 3, counter3] --> MULTIPLE OF EIGHT
-	public static Vector2 trialBlockDistribution = new Vector2 (4, 4); //4 2-item trials, 4 3-item trials
+	public static int numLearningIterations = 1;
+
+
+	public static int numTestTrials = 2;
 	
 	//practice settings
 	public static int numTrialsPract = 1;
@@ -30,16 +27,17 @@ public class Config : MonoBehaviour {
 	public static int numSpecialObjectsPract = 2;
 
 
-	//SPECIFIC COIN TASK VARIABLES:
+	//SPECIFIC TASK VARIABLES:
 	public static float randomJitterMin = 0.0f;
 	public static float randomJitterMax = 0.2f;
+
+	//STORES
+	public static int numDeliveryStores = 2; //out of the total number of stores
 
 
 
 	//DEFAULT OBJECTS
 	public static int numDefaultObjects = 5;
-
-	public static float selectionDiameter = 20.0f;
 
 	public static float objectToWallBuffer = 10.0f; //half of the selection diameter.
 	public static float objectToObjectBuffer { get { return CalculateObjectToObjectBuffer(); } } //calculated base on min time to drive between objects!
@@ -63,12 +61,12 @@ public class Config : MonoBehaviour {
 			"\n\nIf you say you are very sure, you should be at least 75% accurate." + 
 			"\n\nPress (X) to begin!";
 
-
-	public static float minObjselectionUITime = 0.5f;
+	
 	public static float minInitialInstructionsTime = 0.0f; //TODO: change back to 5.0f
+	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
-	public static float minScoreMapTime = 0.0f;
 
+	public static float recallTime = 2.0f;
 
 	//tilt variables
 	public static bool isAvatarTilting = true;
