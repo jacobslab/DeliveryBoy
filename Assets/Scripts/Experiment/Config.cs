@@ -33,21 +33,7 @@ public class Config : MonoBehaviour {
 
 	//STORES
 	public static int numDeliveryStores = 2; //out of the total number of stores
-
-
-
-	//DEFAULT OBJECTS
-	public static int numDefaultObjects = 5;
-
-	public static float objectToWallBuffer = 10.0f; //half of the selection diameter.
-	public static float objectToObjectBuffer { get { return CalculateObjectToObjectBuffer(); } } //calculated base on min time to drive between objects!
-	public static float specialObjectBufferMult = 0.0f; //the distance the object controller will try to keep between special objects. should be a multiple of objectToObjectBuffer
-
-	public static float minDriveTimeBetweenObjects = 0.5f; //half a second driving between objects
-
-
-	public static float rotateToSpecialObjectTime = 0.5f;
-	public static float pauseAtTreasureTime = 1.5f;
+	
 
 
 	public static string initialInstructions1 = "Welcome to Treasure Island!" + 
@@ -92,22 +78,6 @@ public class Config : MonoBehaviour {
 		else {
 			return numTestTrials + numTrialsPract;
 		}
-	}
-
-	public static float CalculateObjectToObjectBuffer(){
-		float buffer = 0;
-
-		if (Experiment.Instance != null) {
-
-			buffer = driveSpeed * minDriveTimeBetweenObjects; //d = vt
-
-			buffer += Experiment.Instance.objectController.GetMaxDefaultObjectColliderBoundXZ ();
-
-			//Debug.Log ("BUFFER: " + buffer);
-
-		}
-
-		return buffer;
 	}
 
 }

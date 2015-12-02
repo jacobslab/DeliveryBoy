@@ -266,9 +266,16 @@ public class TrialController : MonoBehaviour {
 			//TODO: make screen blank, then have AUDIO stating what was delivered
 			trialLogger.LogInstructionEvent ();
 			exp.player.controls.ShouldLockControls = true;
-			yield return StartCoroutine (exp.ShowSingleInstruction ("You delivered " + "ITEM NAME" + " to the " + deliveryBuildings [i].name, true, false, false, Config.deliveryCompleteInstructionsTime));
+
+			//show sprite of delivered item
+			//TODO: PUT OBJECTS IN A VISIBLE LOCATION. ALSO CHANGE THEM TO UI IMAGES INSTEAD OF GAMEOBJECTS.
+			GameObject itemDelivered = exp.objectController.SpawnDeliverable(Vector3.zero);
+			string itemText = exp.objectController.GetDeliverableText(itemDelivered);
+
+			yield return StartCoroutine (exp.ShowSingleInstruction ("You delivered " + itemText + " to the " + deliveryBuildings [i].name, true, false, false, Config.deliveryCompleteInstructionsTime));
 			exp.player.controls.ShouldLockControls = false;
-			//TODO: show sprite
+
+			Destroy(itemDelivered);
 		}
 	}
 
@@ -289,11 +296,11 @@ public class TrialController : MonoBehaviour {
 		currentTrial = trial;
 
 		if (isPracticeTrial) {
-			trialLogger.Log (-1, currentTrial.DefaultObjectLocationsXZ.Count);
+			trialLogger.Log (-1);
 			Debug.Log("Logged practice trial.");
 		} 
 		else {
-			trialLogger.Log (numRealTrials, currentTrial.DefaultObjectLocationsXZ.Count);
+			trialLogger.Log (numRealTrials);
 			numRealTrials++;
 			Debug.Log("Logged trial #: " + numRealTrials);
 		}
@@ -306,10 +313,10 @@ public class TrialController : MonoBehaviour {
 		exp.player.controls.ShouldLockControls = false;
 
 		//wait for player to collect all default objects
-		int numDefaultObjectsToCollect = currentTrial.DefaultObjectLocationsXZ.Count;
+		/*int numDefaultObjectsToCollect = currentTrial.DefaultObjectLocationsXZ.Count;
 		while (numStoresVisited < numDefaultObjectsToCollect) {
 			yield return 0;
-		}
+		}*/
 
 		//reset num default objects collected
 		numStoresVisited = 0;

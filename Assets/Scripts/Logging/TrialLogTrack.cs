@@ -16,16 +16,15 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	//gets called from trial controller instead of in update!
-	public void Log(int trialNumber, int numTreasureChests){
+	public void Log(int trialNumber){
 		if (ExperimentSettings.isLogging) {
-			LogTrial (trialNumber, numTreasureChests);
+			LogTrial (trialNumber);
 		}
 	}
 
 	//LOGGED ON THE START OF THE TRIAL.
-	void LogTrial(int trialNumber, int numTreasureChests){
-		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "Trial Info" + separator + "NUM_TRIALS" + separator + trialNumber + separator
-		                + "NUM_TREASURE" + separator + numTreasureChests);
+	void LogTrial(int trialNumber){
+		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "Trial Info" + separator + "NUM_TRIALS" + separator + trialNumber);
 	}
 
 
@@ -63,19 +62,6 @@ public class TrialLogTrack : LogTrack {
 		Debug.Log ("JITTER ENDED LOGGED: " + jitter);
 	}
 
-
-
-
-	public void LogAreYouSureResponse(bool response){
-		//TODO: CHANGE THE "DOUBLE DOWN" TO ARE YOU SURE OR SOMETHING.
-		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), gameObject.name + separator + "DOUBLE_DOWN_RESPONSE" + separator + response);
-		Debug.Log ("DOUBLE DOWN LOGGED: " + response);
-	}
-
-	public void LogRememberResponse(bool response){
-		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), gameObject.name + separator + "REMEMBER_RESPONSE" + separator + response);
-		Debug.Log ("REMEMBER LOGGED: " + response);
-	}
 
 	//if the UI answer selector has moved TODO: move to an answer selector logger?
 	public void LogAnswerPositionMoved(bool isYesPosition, bool isRememberResponse){ //either remember response or double down response
@@ -118,20 +104,6 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogTransportationToHomeEvent(){
-		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "HOMEBASE_TRANSPORT_STARTED");
-			Debug.Log ("Logged home transport event.");
-		}
-	}
-
-	public void LogTransportationToTowerEvent(){
-		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "TOWER_TRANSPORT_STARTED");
-			Debug.Log ("Logged tower transport event.");
-		}
-	}
-
 	public void LogTrialNavigationStarted(){
 		if (ExperimentSettings.isLogging) {
 			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "TRIAL_NAVIGATION_STARTED");
@@ -150,13 +122,6 @@ public class TrialLogTrack : LogTrack {
 		if (ExperimentSettings.isLogging) {
 			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_STARTED");
 			Debug.Log ("Logged recall started event.");
-		}
-	}
-
-	public void LogObjectToRecall(SpawnableObject spawnableToRecall){
-		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_SPECIAL" + separator + spawnableToRecall.GetName ());
-			Debug.Log ("Logged object recall event.");
 		}
 	}
 

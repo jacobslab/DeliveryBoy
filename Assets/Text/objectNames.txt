@@ -1,0 +1,256 @@
+an almanac
+an ashtray
+an atlas
+a bag
+a bandage
+a baseball
+a basketball
+a battery
+a binder
+a bird
+a biscuit
+a blue jay
+a blueberry
+a boot
+a briefcase
+a cabbage
+a cake
+candy
+a cane
+a cape
+a carpet
+a carrot
+a cash register
+a cat
+a caterpillar
+cauliflower
+celery
+a cello
+champagne
+checkers
+cheese
+cherries
+chocolate
+cigarettes
+a clamp
+a clarinet
+clippers
+a clock
+a coat
+coffee
+a coin
+cologne
+a comb
+a compass
+a computer
+a cone
+a cookie
+a copier
+a cord
+a costume
+a couch
+a cracker
+crayons
+cream
+a crib
+a crown
+crutches
+a cucumber
+a cup
+deodorant
+a desk
+detergent
+a diamond
+a diaper
+dice
+a dictionary
+a diploma
+a dishwasher
+a doll
+a door
+a doughnut
+a dress
+a dresser
+a drill
+a drum
+a dustpan
+earrings
+an envelope
+a fan
+a fiddle
+figs
+film
+a flag
+a flashlight
+a flask
+a flower
+a flute
+a football
+a fork
+a frame
+a freezer
+fries
+fruit
+fudge
+garlic
+a gift
+gin
+glasses
+a globe
+gloves
+gold
+a gown
+grapes
+a grill
+groceries
+a guitar
+gum
+a gun
+a ham
+a hamburger
+a hamper
+a handbag
+a headband
+a heater
+honey
+a hose
+incense
+jelly
+a keg
+a kite
+a knapsack
+a lemon
+a letter
+lettuce
+a lid
+lipstick
+a lollipop
+luggage
+a mailbox
+a marker
+mascara
+a mask
+matches
+a mattress
+mayonnaise
+a medal
+a microphone
+a microscope
+a microwave
+milk
+a mirror
+a mitten
+a mop
+a muffin
+a mushroom
+mustard
+a nail
+a napkin
+a necklace
+a newspaper
+a notebook
+an oar
+oatmeal
+olives
+an onion
+an orange
+paint
+pants
+paper
+parsley
+a peach
+peanuts
+a pear
+a pencil
+a periscope
+a pickle
+a pump
+a puppy
+a puzzle
+a quilt
+a radiator
+a radio
+a raft
+raisins
+raspberries
+a rattle
+rice
+a rifle
+a robe
+a robot
+a ruler
+a sack
+a salad
+salt
+a sardine can
+a saw
+a saxophone
+a scalpel
+a scarecrow
+a screen
+a screw
+a scroll
+a sculpture
+sheets
+shingles
+a shoelace
+shorts
+shutters
+a skate
+a skeleton
+a skirt
+skis
+a skull
+a sleigh
+a slide
+a snail
+a snorkel
+a soda
+spaghetti
+a spatula
+a sponge
+a spoon
+a stapler
+a stereo
+a stethoscope
+a stool
+a strawberry
+straws
+a suit
+a sweater
+syrup
+a tack
+tape
+a telescope
+a thimble
+a throne
+tickets
+a tie
+timber
+toast
+a toilet
+a tomato
+a toothbrush
+a tortoise
+a tote bag
+a tractor
+a tray
+a triangle
+a tricycle
+a trombone
+a trumpet
+a tuba
+a tutu
+a tuxedo
+a typewriter
+underwear
+a vine
+a volleyball
+a wagon
+a wand
+a washer
+a water bottle
+wine
+wires
+a wrench
+a zucchini

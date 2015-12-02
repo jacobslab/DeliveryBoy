@@ -8,7 +8,6 @@ public class Trial {
 
 	public Vector3 avatarStartPos;
 	public Quaternion avatarStartRot;
-	public List<Vector2> DefaultObjectLocationsXZ;
 
 	public Trial(){
 
@@ -22,10 +21,6 @@ public class Trial {
 			avatarStartRot = exp.player.controls.startPositionTransform2.rotation;
 		}
 
-		int numDefaultObjects = Config.numDefaultObjects;
-
-		//init default and special locations
-		DefaultObjectLocationsXZ = exp.objectController.GenerateOrderedDefaultObjectPositions (numDefaultObjects, avatarStartPos);
 
 	}
 
@@ -63,16 +58,6 @@ public class Trial {
 		else {
 			counterTrial.avatarStartPos = exp.player.controls.startPositionTransform1.position;
 			counterTrial.avatarStartRot = exp.player.controls.startPositionTransform1.rotation;
-		}
-
-		counterTrial.DefaultObjectLocationsXZ = new List<Vector2> ();
-		//counter the object positions
-		for (int i = 0; i < DefaultObjectLocationsXZ.Count; i++) {
-			Vector3 currPosition = new Vector3( DefaultObjectLocationsXZ[i].x, 0, DefaultObjectLocationsXZ[i].y );
-			Vector3 counteredPosition = GetReflectedPositionXZ( currPosition );
-
-			Vector2 counteredPositionXZ = new Vector2(counteredPosition.x, counteredPosition.z);
-			counterTrial.DefaultObjectLocationsXZ.Add(counteredPositionXZ);
 		}
 
 		
