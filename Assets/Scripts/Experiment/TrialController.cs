@@ -144,11 +144,12 @@ public class TrialController : MonoBehaviour {
 			//show instructions for exploring, wait for the action button
 			trialLogger.LogInstructionEvent();
 			yield return StartCoroutine (exp.ShowSingleInstruction (Config.initialInstructions1, true, true, false, Config.minInitialInstructionsTime));
-			yield return StartCoroutine (exp.ShowSingleInstruction (Config.initialInstructions2, true, true, false, Config.minInitialInstructionsTime));
 
-			//let player explore until the button is pressed again
-			//trialLogger.LogBeginningExplorationEvent();
-			//yield return StartCoroutine (exp.WaitForActionButton ());
+			//LEARNING PHASE
+			yield return StartCoroutine(LearnStoreLocations());
+
+
+
 			
 			//get the number of blocks so far -- floor half the number of trials recorded
 			int totalTrialCount = ExperimentSettings.currentSubject.trials;
@@ -218,6 +219,27 @@ public class TrialController : MonoBehaviour {
 		}
 		ConnectionUI.alpha = 0.0f;
 		isConnectingToHardware = false;
+	}
+
+	IEnumerator LearnStoreLocations(){
+
+		Building[] buildingsToVisit = exp.buildingController.GetBuildings ();
+
+		for (int i = 0; i < buildingsToVisit.Length; i++) {
+			exp.player.controls.ShouldLockControls = true;
+
+			trialLogger.LogInstructionEvent();
+			yield return StartCoroutine (exp.ShowSingleInstruction ("Go to the " + buildingsToVisit[i].name, true, true, false, Config.minInitialInstructionsTime));
+
+			//show instruction at top of screen, don't wait for button, wait for collision
+			trialLogger.LogInstructionEvent();
+			exp.instructionsController.SetSingleInstruction ("Go to the " + buildingsToVisit[i].name, false);
+			exp.player.controls.ShouldLockControls = false;
+			yield return StartCoroutine (exp.player.WaitForCollision(buildingsToVisit[i].name));
+			exp.instructionsController.SetInstructionsBlank();
+		}
+
+		yield return 0;
 	}
 	
 

@@ -27,6 +27,9 @@ public class Experiment : MonoBehaviour {
 	//object controller
 	public ObjectController objectController;
 
+	//building controller
+	public BuildingController buildingController;
+
 	//environment controller
 	public EnvironmentController environmentController;
 
@@ -198,7 +201,7 @@ public class Experiment : MonoBehaviour {
 		instructionsController.TurnOffInstructions ();
 		cameraController.SetInGame();
 	}
-	
+
 	public IEnumerator WaitForActionButton(){
 		bool hasPressedButton = false;
 		while(Input.GetAxis("Action Button") != 0f){

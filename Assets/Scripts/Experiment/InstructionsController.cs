@@ -40,6 +40,16 @@ public class InstructionsController : MonoBehaviour {
 		SetInstructionsBlank();
 	}
 
+	public void SetSingleInstruction(string text, bool isDark){
+		if (isDark) {
+			SetInstructionsColorful ();
+		} else {
+			SetInstructionsTransparentOverlay();
+		}
+
+		SetText (text);
+	}
+
 	void SetText(string newText){
 		if(ExperimentSettings.isOculus){
 			oculusText.text = newText;

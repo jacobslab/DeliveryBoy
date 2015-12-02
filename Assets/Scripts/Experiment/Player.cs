@@ -37,6 +37,17 @@ public class Player : MonoBehaviour {
 		visuals.SetActive (isVisible);
 	}
 
+	string lastCollisionName = "";
+	public IEnumerator WaitForCollision(string objectName){
+		while (lastCollisionName != objectName) {
+			yield return 0;
+		}
+	}
+
+	void OnCollisionEnter(Collision collision){
+		lastCollisionName = collision.gameObject.name;
+	}
+
 	void SetArrows(){
 		if ( exp.trialController.currentDefaultObject ) {
 			Vector2 currentDefaultPosXZ = new Vector2 ( exp.trialController.currentDefaultObject.transform.position.x, exp.trialController.currentDefaultObject.transform.position.z );
