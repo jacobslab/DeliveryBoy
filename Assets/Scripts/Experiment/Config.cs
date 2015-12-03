@@ -36,18 +36,12 @@ public class Config : MonoBehaviour {
 	
 
 
-	public static string initialInstructions1 = "Welcome to Treasure Island!" + 
-		"\n\nYou are going on a treasure hunt." + 
-			"\n\nUse the joystick to control your movement." + 
-			"\n\nDrive into treasure chests to open them. Remember where each object is located!";
+	public static string initialInstructions1 = "Welcome to the Town of PhildelphiaVille" + 
+		"\n\nYou will explore the town and deliver items to many stores." + 
+			"\n\nOnce you have delivered a set of items, you will be asked to recall as many as you can." + 
+			"\n\nUse the joystick to control your movement." +
+			"\n\nPress (X) to start learning about the town!";
 
-	public static string initialInstructions2 = "TIPS FOR MAXIMIZING YOUR SCORE" + 
-		"\n\nGet a time bonus by driving to the chests quickly." + 
-			"\n\nIf you are more than 50% sure of an object's location, you should say you remember." + 
-			"\n\nIf you say you are very sure, you should be at least 75% accurate." + 
-			"\n\nPress (X) to begin!";
-
-	
 	public static float minInitialInstructionsTime = 0.0f; //TODO: change back to 5.0f
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
