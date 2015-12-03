@@ -15,11 +15,11 @@ public class InstructionsController : MonoBehaviour {
 	//TextMesh _textMesh;
 	public Text text; //TODO: rename this!!!
 	public Text oculusText;
-	public Color textColorDefault;
+	Color textColorDefault;
 	public Color textColorOverlay;
 	public Image background;
 	public Image oculusBackground;
-	public Color backgroundColorDefault;
+	Color backgroundColorDefault;
 
 	public GameObject ScoreInstructions; //turn these on and off as necessary during the trial.......
 
@@ -27,7 +27,8 @@ public class InstructionsController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		backgroundColorDefault = background.color;
+		textColorDefault = text.color;
 	}
 	
 	// Update is called once per frame

@@ -148,7 +148,7 @@ public class TrialController : MonoBehaviour {
 
 
 			//LEARNING PHASE
-			yield return StartCoroutine(DoStoreLearningPhase());
+			//yield return StartCoroutine(DoStoreLearningPhase());
 
 			for(int i = 0; i < Config.numTestTrials; i++){
 

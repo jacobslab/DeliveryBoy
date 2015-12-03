@@ -1,16 +1,17 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
+using UnityEngine.UI;
 
 public class ObjectController : MonoBehaviour {
 
-	string deliverableItemFilePath = "Assets/Text/objectNames.txt";
-
-	public List<string> DeliverableItemText;
+	public TextAsset itemTextFile;
+	
 	List<GameObject> deliverableObjects;
+	public Dictionary<string, string> deliverableTextMap;
 
+	public Transform deliverableParent;
 
 	//experiment singleton
 	Experiment exp { get { return Experiment.Instance; } }
@@ -19,8 +20,8 @@ public class ObjectController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		CreateDeliverablesList ();
 		GetDeliverables ();
+		CreateDeliverablesMap ();
 	}
 	
 	// Update is called once per frame
@@ -28,19 +29,27 @@ public class ObjectController : MonoBehaviour {
 	
 	}
 
-	void CreateDeliverablesList(){
-		DeliverableItemText = new List<string> ();
+	//CREATES A MAP BETWEEN THE OBJECT AND ITS CORRESPONDING TEXT.
+	//ASSUMING THAT THE OBJECTS IN THE LIST ARE IN THE SAME ORDER AS IN THE FILE.
+	void CreateDeliverablesMap(){
+		if (deliverableObjects.Count == 0) {
+			GetDeliverables();
+		}
 
-		//read in from object file.
-		StreamReader fileReader = new StreamReader (deliverableItemFilePath);
+		deliverableTextMap = new Dictionary<string, string> ();
 
-		string currentLine = fileReader.ReadLine ();
+		//parse text asset
+		string itemTextFileAll = itemTextFile.text;
+		string[] itemTextFileLines = itemTextFileAll.Split ('\n');
 
-		//PARSE
-		while (currentLine != null) {
-			DeliverableItemText.Add(currentLine);
+		int numItems = Mathf.Min (deliverableObjects.Count, itemTextFileLines.Length); //pick smallest amount to avoid any out of bounds exceptions. however, there SHOULD be the same #.
+		for (int i = 0; i < numItems; i++) {
+			string deliverableName = GetDeliverableName(deliverableObjects[i].name);
+			string deliverableText = itemTextFileLines[i];
 
-			currentLine = fileReader.ReadLine();
+			if(deliverableText.Contains (deliverableName) ){
+				deliverableTextMap.Add(deliverableObjects[i].name, deliverableText);
+			}
 		}
 
 		int a = 0;
@@ -72,19 +81,13 @@ public class ObjectController : MonoBehaviour {
 
 	public string GetDeliverableText(GameObject deliverable){
 		string deliverableText = "";
-		for(int i = 0; i < DeliverableItemText.Count; i++){
-			deliverableText = DeliverableItemText[i];
+		deliverableTextMap.TryGetValue (GetDeliverableName(deliverable.name), out deliverableText);
 
-			string deliverableName = GetDeliverableName(deliverable.name);
-
-			if(deliverableText.Contains (deliverableName) ){
-				return deliverableText;
-			}
+		if (deliverableText == "") {
+			Debug.Log("TEXT IS EMPTY. LOOKING FOR: " + deliverable.name);
 		}
 
-		Debug.Log("NO DELIVERABLE IN LIST. LOOKING FOR: " + deliverable.name);
-
-		return "no item";
+		return deliverableText;
 	}
 
 	string GetDeliverableName(string origName){
@@ -146,6 +149,7 @@ public class ObjectController : MonoBehaviour {
 
 			GameObject newItem = Instantiate(itemToSpawn, spawnPosition, Quaternion.identity) as GameObject;
 
+			newItem.transform.SetParent(deliverableParent, false);
 			//CurrentTrialSpecialObjects.Add(newObject);
 
 			return newItem;
