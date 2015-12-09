@@ -148,9 +148,19 @@ public class TrialController : MonoBehaviour {
 
 
 			//LEARNING PHASE
-			//yield return StartCoroutine(DoLearningPhase());
+			yield return StartCoroutine(DoLearningPhase());
+
+			exp.player.controls.ShouldLockControls = true;
+			trialLogger.LogInstructionEvent ();
+			yield return StartCoroutine (exp.ShowSingleInstruction ("You will now begin delivering items! Press [X] to start your first delivery day.", true, true, false, Config.minDefaultInstructionTime));
+			exp.player.controls.ShouldLockControls = false;
 
 			for(int i = 0; i < Config.numTestTrials; i++){
+
+				if(i != 0){
+					trialLogger.LogInstructionEvent ();
+					yield return StartCoroutine (exp.ShowSingleInstruction ("Welcome to Delivery Day " + i + "/" + Config.numTestTrials + "!", true, true, false, Config.minDefaultInstructionTime));
+				}
 
 				//DELIVERY PHASE
 				yield return StartCoroutine(DoStoreDeliveryPhase(i));
@@ -275,12 +285,12 @@ public class TrialController : MonoBehaviour {
 			//show sprite of delivered item
 			//TODO: PUT OBJECTS IN A VISIBLE LOCATION. ALSO CHANGE THEM TO UI IMAGES INSTEAD OF GAMEOBJECTS.
 			GameObject itemDelivered = exp.objectController.SpawnDeliverable(Vector3.zero);
-			string itemText = exp.objectController.GetDeliverableText(itemDelivered);
+			string itemDisplayText = exp.objectController.GetDeliverableText(itemDelivered);
 
 			trialLogger.LogDeliveryMade(itemDelivered.GetComponent<SpawnableObject>().GetName());
 
 			trialLogger.LogInstructionEvent ();
-			yield return StartCoroutine (exp.ShowSingleInstruction ("You delivered " + itemText + " to the " + deliveryBuildings [i].name, true, false, false, Config.deliveryCompleteInstructionsTime));
+			yield return StartCoroutine (exp.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + deliveryBuildings [i].name, true, false, false, Config.deliveryCompleteInstructionsTime));
 			exp.player.controls.ShouldLockControls = false;
 
 			Destroy(itemDelivered);
