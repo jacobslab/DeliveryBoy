@@ -16,9 +16,6 @@ public class Config : MonoBehaviour {
 	//test session variables
 	//doTestSession (not implemented in the panda3d version )
 
-	public static int numLearningIterations = 2;
-
-
 	public static int numTestTrials = 2;
 	
 	//practice settings
@@ -31,10 +28,13 @@ public class Config : MonoBehaviour {
 	public static float randomJitterMin = 0.0f;
 	public static float randomJitterMax = 0.2f;
 
-	//STORES
-	public static int numDeliveryStores = 10; //out of the total number of stores
+	//DELIVERY VARIABLES
+	public static int numDeliveryStores = 2; //out of the total number of stores
 	
+	public static bool isAudioDelivery = false;
 
+	public static int numLearningIterations = 2;
+	public static bool doLearningPhase = false;
 
 	public static string initialInstructions1 = "Welcome to the Town of PhildelphiaVille" + 
 		"\n\nYou will explore the town and deliver items to many stores." + 

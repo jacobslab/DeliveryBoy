@@ -19,73 +19,16 @@ public class TrialController : MonoBehaviour {
 
 	TrialLogTrack trialLogger;
 
-	bool isPracticeTrial = false;
 	int numRealTrials = 0; //used for logging trial ID's
 
 	int numStoresVisited = 0;
 
-	Trial currentTrial;
-	Trial practiceTrial;
 
 	[HideInInspector] public GameObject currentDefaultObject; //current treasure chest we're looking for. assuming a one-by-one reveal.
-
-	List<List<Trial>> ListOfTrialBlocks;
+	
 
 	void Start(){
-		InitTrials ();
 		trialLogger = GetComponent<TrialLogTrack> ();
-	}
-
-	void InitTrials(){
-		ListOfTrialBlocks = new List<List<Trial>> ();
-
-		int numTestTrials = Config.numTestTrials;
-
-		int numTrialsPerBlock = 8;
-
-		if (numTestTrials % numTrialsPerBlock != 0) {
-			Debug.Log("CANNOT EXECUTE THIS TRIAL DISTRIBUTION");
-		}
-
-		int numTrialBlocks = numTestTrials / numTrialsPerBlock;
-		for (int i = 0; i < numTrialBlocks; i++) {
-			ListOfTrialBlocks.Add(GenerateTrialBlock());
-		}
-
-		if(Config.doPracticeTrial){
-			practiceTrial = new Trial();	//2 special objects for practice trial
-		}
-
-	}
-
-	List<Trial> GenerateTrialBlock(){
-		List<Trial> trialBlock = new List<Trial> ();
-
-		for (int i = 0; i < Config.numTestTrials / 2; i++) { //divide by two because we're adding a regular and a counterbalanced trial
-
-			Trial trial = new Trial();
-			Trial counterTrial = trial.GetCounterSelf();
-			
-			trialBlock.Add(trial);
-			trialBlock.Add(counterTrial);
-		}
-
-		return trialBlock;
-
-	}
-
-	Trial PickRandomTrial(List<Trial> trialBlock){
-		if (trialBlock.Count > 0) {
-			int randomTrialIndex = Random.Range (0, trialBlock.Count);
-			Trial randomTrial = trialBlock [randomTrialIndex];
-
-			trialBlock.RemoveAt (randomTrialIndex);
-			return randomTrial;
-		} 
-		else {
-			Debug.Log("No more trials left!");
-			return null;
-		}
 	}
 
 
@@ -148,7 +91,9 @@ public class TrialController : MonoBehaviour {
 
 
 			//LEARNING PHASE
-			yield return StartCoroutine(DoLearningPhase());
+			if(Config.doLearningPhase){
+				yield return StartCoroutine(DoLearningPhase());
+			}
 
 			exp.player.controls.ShouldLockControls = true;
 			trialLogger.LogInstructionEvent ();
@@ -171,52 +116,7 @@ public class TrialController : MonoBehaviour {
 
 			}
 
-			/*
-			//get the number of blocks so far -- floor half the number of trials recorded
-			int totalTrialCount = ExperimentSettings.currentSubject.trials;
-			numRealTrials = totalTrialCount;
-			if (Config.doPracticeTrial) {
-				if (numRealTrials >= 2) { //otherwise, leave numRealTrials at zero.
-					numRealTrials -= 1; //-1 for practice trial
-				}
-			}
 
-			
-			//run practice trials
-			if(Config.doPracticeTrial){
-				isPracticeTrial = true;
-			}
-			
-			if (isPracticeTrial) {
-
-				yield return StartCoroutine (RunTrial ( practiceTrial ));
-
-				Debug.Log ("PRACTICE TRIALS COMPLETED");
-				totalTrialCount += 1;
-				isPracticeTrial = false;
-			}
-
-
-			//RUN THE REST OF THE BLOCKS
-			for( int i = 0; i < ListOfTrialBlocks.Count; i++){
-				List<Trial> currentTrialBlock = ListOfTrialBlocks[i];
-				while (currentTrialBlock.Count > 0) {
-					Trial nextTrial = PickRandomTrial (currentTrialBlock);
-
-					yield return StartCoroutine (RunTrial ( nextTrial ));
-
-					totalTrialCount += 1;
-
-					Debug.Log ("TRIALS COMPLETED: " + totalTrialCount);
-				}
-
-				//FINISHED A TRIAL BLOCK, SHOW UI
-
-				exp.scoreController.Reset();
-
-				Debug.Log ("TRIAL Block: " + i);
-			}
-*/
 			yield return 0;
 		}
 		
@@ -277,23 +177,37 @@ public class TrialController : MonoBehaviour {
 			//visit store
 			yield return StartCoroutine(DoVisitStoreCommand(deliveryBuildings[i]));
 
-			//tell player what they delivered
-			//TODO: make screen blank, then have AUDIO stating what was delivered
-			exp.player.controls.ShouldLockControls = true;
+			//if not the last delivery, deliver an item.
+			if(i < deliveryBuildings.Count - 1){
+				exp.player.controls.ShouldLockControls = true;
 
-			//show sprite of delivered item
-			//TODO: PUT OBJECTS IN A VISIBLE LOCATION. ALSO CHANGE THEM TO UI IMAGES INSTEAD OF GAMEOBJECTS.
-			GameObject itemDelivered = exp.objectController.SpawnDeliverable(Vector3.zero);
-			string itemDisplayText = exp.objectController.GetDeliverableText(itemDelivered);
+				if(Config.isAudioDelivery){
+					yield return StartCoroutine(DeliverItemAudio());
+				}
+				else{
+					yield return StartCoroutine(DeliverItemVisible(deliveryBuildings [i].name));
+				}
 
-			trialLogger.LogDeliveryMade(itemDelivered.GetComponent<SpawnableObject>().GetName());
+				exp.player.controls.ShouldLockControls = false;
 
-			trialLogger.LogInstructionEvent ();
-			yield return StartCoroutine (exp.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + deliveryBuildings [i].name, true, false, false, Config.deliveryCompleteInstructionsTime));
-			exp.player.controls.ShouldLockControls = false;
-
-			Destroy(itemDelivered);
+			}
 		}
+	}
+
+	IEnumerator DeliverItemVisible(string toBuildingName){
+		//show delivered item
+		GameObject itemDelivered = exp.objectController.SpawnDeliverable(Vector3.zero);
+		string itemDisplayText = exp.objectController.GetDeliverableText(itemDelivered);
+		
+		trialLogger.LogDeliveryMade(itemDelivered.GetComponent<SpawnableObject>().GetName());
+		
+		trialLogger.LogInstructionEvent ();
+		yield return StartCoroutine (exp.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toBuildingName, true, false, false, Config.deliveryCompleteInstructionsTime));
+		Destroy(itemDelivered);
+	}
+
+	IEnumerator DeliverItemAudio(){
+		yield return 0;
 	}
 
 	IEnumerator DoRecallPhase(int numRecallPhase){
