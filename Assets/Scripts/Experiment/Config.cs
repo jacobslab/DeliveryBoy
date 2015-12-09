@@ -32,7 +32,7 @@ public class Config : MonoBehaviour {
 	public static float randomJitterMax = 0.2f;
 
 	//STORES
-	public static int numDeliveryStores = 2; //out of the total number of stores
+	public static int numDeliveryStores = 10; //out of the total number of stores
 	
 
 

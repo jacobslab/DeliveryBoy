@@ -43,9 +43,11 @@ public class Player : MonoBehaviour {
 
 	string lastCollisionName = "";
 	public IEnumerator WaitForCollision(string objectName){
+		Debug.Log("WAITING FOR COLLISION WITH: " + objectName);
 		while (lastCollisionName != objectName) {
 			yield return 0;
 		}
+		Debug.Log ("FOUND OBJECT");
 	}
 
 	void OnCollisionEnter(Collision collision){

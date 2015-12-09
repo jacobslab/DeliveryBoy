@@ -265,7 +265,6 @@ public class TrialController : MonoBehaviour {
 		trialLogger.LogInstructionEvent ();
 		exp.instructionsController.SetSingleInstruction ("Go to the " + buildingToVisit.name, false);
 		yield return StartCoroutine (exp.player.WaitForCollision (buildingToVisit.name));
-		exp.instructionsController.SetInstructionsBlank ();
 	}
 
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
