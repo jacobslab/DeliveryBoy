@@ -16,7 +16,7 @@ public class Config : MonoBehaviour {
 	//test session variables
 	//doTestSession (not implemented in the panda3d version )
 
-	public static int numLearningIterations = 1;
+	public static int numLearningIterations = 2;
 
 
 	public static int numTestTrials = 2;
