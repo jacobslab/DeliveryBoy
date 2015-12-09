@@ -17,10 +17,13 @@ public class TrialController : MonoBehaviour {
 	public CanvasGroup ConnectionUI;
 	public UIScreen DeliveryUI; 
 
+	//audio
+	public AudioSource recallBeep;
+
+
 	TrialLogTrack trialLogger;
 
 	int numRealTrials = 0; //used for logging trial ID's
-
 	int numStoresVisited = 0;
 
 
@@ -212,6 +215,11 @@ public class TrialController : MonoBehaviour {
 
 	IEnumerator DoRecallPhase(int numRecallPhase){
 		trialLogger.LogRecallPhaseStarted ();
+
+		recallBeep.Play ();
+		while (recallBeep.isPlaying) {
+			yield return 0;
+		}
 
 		exp.player.controls.ShouldLockControls = true;
 		string recallPath = GetRecallRecordingFilePath (numRecallPhase);
