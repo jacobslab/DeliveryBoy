@@ -87,6 +87,10 @@ public class ObjectLogTrack : LogTrack {
 		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), nameToLog + separator + "VISIBILITY" + separator + lastVisibility);
 	}
 
+	public void LogCollision(string collidedWith){
+		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), nameToLog + separator + "COLLISION" + separator + collidedWith);
+	}
+
 	public void LogShadowSettings(UnityEngine.Rendering.ShadowCastingMode shadowMode){
 		if (ExperimentSettings.isLogging) {
 			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), nameToLog + separator + "SHADOW_SETTING" + separator + shadowMode);

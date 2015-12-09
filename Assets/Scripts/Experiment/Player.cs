@@ -17,10 +17,14 @@ public class Player : MonoBehaviour {
 	EnableChildrenLogTrack rightArrowEnableLog;
 	public GameObject leftArrows;
 	EnableChildrenLogTrack leftArrowEnableLog;
+
+	ObjectLogTrack objLogTrack;
 	
 
 	// Use this for initialization
 	void Start () {
+		objLogTrack = GetComponent<ObjectLogTrack> ();
+
 		rightArrowEnableLog = rightArrows.GetComponent<EnableChildrenLogTrack> ();
 		leftArrowEnableLog = leftArrows.GetComponent<EnableChildrenLogTrack> ();
 
@@ -46,6 +50,12 @@ public class Player : MonoBehaviour {
 
 	void OnCollisionEnter(Collision collision){
 		lastCollisionName = collision.gameObject.name;
+
+		//log building collision
+		if (collision.gameObject.tag == "Building"){
+			objLogTrack.LogCollision (collision.gameObject.name);
+		}
+		
 	}
 
 	void SetArrows(){
