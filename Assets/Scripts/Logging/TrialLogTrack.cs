@@ -104,17 +104,17 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogTrialNavigationStarted(){
+	public void LogLearningPhaseStarted(int numLearningPhase){
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "TRIAL_NAVIGATION_STARTED");
-			Debug.Log ("Logged nav started event.");
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PHASE_STARTED" + separator + numLearningPhase);
+			Debug.Log ("Logged learning phase started event.");
 		}
 	}
 
-	public void LogDistractorGameStarted(){
+	public void LogDeliveryDayStarted(int deliveryDay){
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DISTRACTOR_GAME_STARTED");
-			Debug.Log ("Logged distractor game started event.");
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_STARTED" + separator + deliveryDay);
+			Debug.Log ("Logged delivery day started event.");
 		}
 	}
 

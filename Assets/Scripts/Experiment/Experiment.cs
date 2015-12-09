@@ -4,6 +4,9 @@ using System.IO;
 
 public class Experiment : MonoBehaviour {
 
+	//audio recorder
+	public AudioRecorder audioRecorder;
+
 	//juice controller
 	public JuiceController juiceController;
 
@@ -17,6 +20,9 @@ public class Experiment : MonoBehaviour {
 	public Logger_Threading subjectLog;
 	private string eegLogfile; //gets set based on the current subject in Awake()
 	public Logger_Threading eegLog;
+
+	public string SubjectDirectory { get { return subjectDirectory; } }
+	private string subjectDirectory;
 
 	//session controller
 	public TrialController trialController;
@@ -83,13 +89,12 @@ public class Experiment : MonoBehaviour {
 	
 	//TODO: move to logger_threading perhaps? *shrug*
 	void InitLogging(){
-		subjectLogfile = "TextFiles/" + ExperimentSettings.currentSubject.name + "Log";
-		eegLogfile = "TextFiles/" + ExperimentSettings.currentSubject.name + "EEGLog";
+		string subjectDirectory = "TextFiles/" + ExperimentSettings.currentSubject.name + "/";
 		
 		int logFileID = 0;
 		string logFileIDString = "000";
 
-		while(File.Exists(subjectLog.fileName) || logFileID == 0){
+		while(Directory.Exists(subjectDirectory) || logFileID == 0){
 			//TODO: move this function somewhere else...?
 			if(logFileID < 10){
 				logFileIDString = "00" + logFileID;
@@ -100,12 +105,17 @@ public class Experiment : MonoBehaviour {
 			else{
 				logFileIDString = logFileID.ToString();
 			}
-
-			subjectLog.fileName = subjectLogfile + "_" + logFileIDString + ".txt";
-			eegLog.fileName = eegLogfile + "_" + logFileIDString + ".txt";
-
+			
 			logFileID++;
+
+			subjectDirectory = "TextFiles/" + ExperimentSettings.currentSubject.name + logFileIDString + "/";
 		}
+
+		Directory.CreateDirectory(subjectDirectory);
+
+		subjectLog.fileName = subjectDirectory + ExperimentSettings.currentSubject.name + "Log" + ".txt";
+		eegLog.fileName = subjectDirectory + ExperimentSettings.currentSubject.name + "EEGLog" + ".txt";
+
 	}
 
 	// Use this for initialization

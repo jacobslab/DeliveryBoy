@@ -148,16 +148,16 @@ public class TrialController : MonoBehaviour {
 
 
 			//LEARNING PHASE
-			//yield return StartCoroutine(DoStoreLearningPhase());
+			yield return StartCoroutine(DoLearningPhase());
 
 			for(int i = 0; i < Config.numTestTrials; i++){
 
 				//DELIVERY PHASE
-				yield return StartCoroutine(DoStoreDeliveryPhase());
+				yield return StartCoroutine(DoStoreDeliveryPhase(i));
 
 
 				//RECALL PHASE
-				yield return StartCoroutine(DoRecallPhase());
+				yield return StartCoroutine(DoRecallPhase(i));
 
 			}
 
@@ -232,8 +232,11 @@ public class TrialController : MonoBehaviour {
 		isConnectingToHardware = false;
 	}
 
-	IEnumerator DoStoreLearningPhase(){
+	IEnumerator DoLearningPhase(){
+
 		for (int numIterations = 0; numIterations < Config.numLearningIterations; numIterations++) {
+
+			trialLogger.LogLearningPhaseStarted (numIterations);
 
 			Building[] buildingsToVisit = exp.buildingController.GetBuildings ();
 
@@ -255,7 +258,10 @@ public class TrialController : MonoBehaviour {
 		exp.instructionsController.SetInstructionsBlank ();
 	}
 
-	IEnumerator DoStoreDeliveryPhase(){
+	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
+
+		trialLogger.LogDeliveryDayStarted (deliveryDay);
+
 		List<Building> deliveryBuildings = exp.buildingController.GetRandomDeliveryBuildings();
 
 		for (int i = 0; i < deliveryBuildings.Count; i++) {
@@ -279,8 +285,12 @@ public class TrialController : MonoBehaviour {
 		}
 	}
 
-	IEnumerator DoRecallPhase(){
+	IEnumerator DoRecallPhase(int numRecallPhase){
+		trialLogger.LogRecallPhaseStarted ();
+
 		exp.player.controls.ShouldLockControls = true;
+		string recallPath = GetRecallRecordingFilePath (numRecallPhase);
+		exp.audioRecorder.Record (GetRecallRecordingFilePath (numRecallPhase));
 
 		trialLogger.LogInstructionEvent ();
 		yield return StartCoroutine (exp.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
@@ -289,59 +299,12 @@ public class TrialController : MonoBehaviour {
 		yield return 0;
 	}
 
-	//INDIVIDUAL TRIALS -- implement for repeating the same thing over and over again
-	//could also create other IEnumerators for other types of trials
-	IEnumerator RunTrial(Trial trial){
+	string GetRecallRecordingFilePath(int deliveryDay){
+		string filePath = exp.SubjectDirectory + ExperimentSettings.currentSubject.name + "_" + deliveryDay;
 
-		currentTrial = trial;
-
-		if (isPracticeTrial) {
-			trialLogger.Log (-1);
-			Debug.Log("Logged practice trial.");
-		} 
-		else {
-			trialLogger.Log (numRealTrials);
-			numRealTrials++;
-			Debug.Log("Logged trial #: " + numRealTrials);
-		}
-
-
-		//START NAVIGATION
-		trialLogger.LogTrialNavigationStarted ();
-
-		//unlock avatar controls
-		exp.player.controls.ShouldLockControls = false;
-
-		//wait for player to collect all default objects
-		/*int numDefaultObjectsToCollect = currentTrial.DefaultObjectLocationsXZ.Count;
-		while (numStoresVisited < numDefaultObjectsToCollect) {
-			yield return 0;
-		}*/
-
-		//reset num default objects collected
-		numStoresVisited = 0;
-
-		//lock player movement
-		exp.player.controls.ShouldLockControls = true;
-
-
-
-		//jitter before the first object is shown
-		yield return StartCoroutine(exp.WaitForJitter(Config.randomJitterMin, Config.randomJitterMax));
-
-		//show instructions for location selection 
-		trialLogger.LogRecallPhaseStarted();
-		
-		//increment subject's trial count
-		ExperimentSettings.currentSubject.IncrementTrial ();
-
+		return filePath;
 	}
 
-	IEnumerator ShowFeedback(List<int> specialObjectOrder, List<Vector3> chosenPositions, List<bool> rememberResponses, List<bool> areYouSureResponses){
-
-		yield return 0;
-	}
-	
 	void DestroyGameObjectList(List<GameObject> listOfGameObjects){
 		int numObjects = listOfGameObjects.Count;
 		for (int i = 0; i < numObjects; i++) {
