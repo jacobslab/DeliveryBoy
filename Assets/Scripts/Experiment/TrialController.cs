@@ -270,7 +270,6 @@ public class TrialController : MonoBehaviour {
 
 			//tell player what they delivered
 			//TODO: make screen blank, then have AUDIO stating what was delivered
-			trialLogger.LogInstructionEvent ();
 			exp.player.controls.ShouldLockControls = true;
 
 			//show sprite of delivered item
@@ -278,6 +277,9 @@ public class TrialController : MonoBehaviour {
 			GameObject itemDelivered = exp.objectController.SpawnDeliverable(Vector3.zero);
 			string itemText = exp.objectController.GetDeliverableText(itemDelivered);
 
+			trialLogger.LogDeliveryMade(itemDelivered.GetComponent<SpawnableObject>().GetName());
+
+			trialLogger.LogInstructionEvent ();
 			yield return StartCoroutine (exp.ShowSingleInstruction ("You delivered " + itemText + " to the " + deliveryBuildings [i].name, true, false, false, Config.deliveryCompleteInstructionsTime));
 			exp.player.controls.ShouldLockControls = false;
 

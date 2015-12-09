@@ -118,6 +118,13 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
+	public void LogDeliveryMade(string itemDelivered){
+		if (ExperimentSettings.isLogging) {
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERED" + separator + itemDelivered);
+			Debug.Log ("Logged item delivered event.");
+		}
+	}
+
 	public void LogRecallPhaseStarted(){
 		if (ExperimentSettings.isLogging) {
 			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_STARTED");
