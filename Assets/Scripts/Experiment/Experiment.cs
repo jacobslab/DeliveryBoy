@@ -143,7 +143,7 @@ public class Experiment : MonoBehaviour {
 	}
 
 	public IEnumerator RunOutOfTrials(){
-		yield return StartCoroutine(ShowSingleInstruction("You have finished your trials! \nPress the button to proceed.", true, true, false, 0.0f));
+		yield return StartCoroutine(instructionsController.ShowSingleInstruction("You have finished your trials! \nPress the button to proceed.", true, true, false, 0.0f));
 		instructionsController.SetInstructionsColorful(); //want to keep a dark screen before transitioning to the end!
 		instructionsController.DisplayText("...loading end screen...");
 		EndExperiment();
@@ -183,55 +183,6 @@ public class Experiment : MonoBehaviour {
 		SceneController.Instance.LoadEndMenu();
 	}
 
-	//TODO: move to instructions controller...
-	public IEnumerator ShowSingleInstruction(string line, bool isDark, bool waitForButton, bool addRandomPostJitter, float minDisplayTimeSeconds){
-		if(isDark){
-			instructionsController.SetInstructionsColorful();
-		}
-		else{
-			instructionsController.SetInstructionsTransparentOverlay();
-		}
-		instructionsController.DisplayText(line);
-
-		yield return new WaitForSeconds (minDisplayTimeSeconds);
-
-		if (waitForButton) {
-			yield return StartCoroutine (WaitForActionButton ());
-		}
-
-		if (addRandomPostJitter) {
-			yield return StartCoroutine(WaitForJitter ( Config.randomJitterMin, Config.randomJitterMax ) );
-		}
-
-		instructionsController.TurnOffInstructions ();
-		cameraController.SetInGame();
-	}
-
-	public IEnumerator WaitForActionButton(){
-		bool hasPressedButton = false;
-		while(Input.GetAxis("Action Button") != 0f){
-			yield return 0;
-		}
-		while(!hasPressedButton){
-			if(Input.GetAxis("Action Button") == 1.0f){
-				hasPressedButton = true;
-			}
-			yield return 0;
-		}
-	}
-
-	public IEnumerator WaitForJitter(float minJitter, float maxJitter){
-		float randomJitter = Random.Range(minJitter, maxJitter);
-		trialController.GetComponent<TrialLogTrack>().LogWaitForJitterStarted(randomJitter);
-		
-		float currentTime = 0.0f;
-		while (currentTime < randomJitter) {
-			currentTime += Time.deltaTime;
-			yield return 0;
-		}
-
-		trialController.GetComponent<TrialLogTrack>().LogWaitForJitterEnded(currentTime);
-	}
 
 
 	public void OnExit(){ //call in scene controller when switching to another scene!

@@ -77,4 +77,30 @@ public class UsefulFunctions {
 	public static float GetDistance(Vector2 startPos, Vector2 endPos){
 		return (startPos - endPos).magnitude;
 	}
+
+	public static IEnumerator WaitForJitter(float minJitter, float maxJitter){
+		float randomJitter = Random.Range(minJitter, maxJitter);
+		Experiment.Instance.trialController.GetComponent<TrialLogTrack>().LogWaitForJitterStarted(randomJitter);
+		
+		float currentTime = 0.0f;
+		while (currentTime < randomJitter) {
+			currentTime += Time.deltaTime;
+			yield return 0;
+		}
+		
+		Experiment.Instance.trialController.GetComponent<TrialLogTrack>().LogWaitForJitterEnded(currentTime);
+	}
+
+	public static IEnumerator WaitForActionButton(){
+		bool hasPressedButton = false;
+		while(Input.GetAxis("Action Button") != 0f){
+			yield return 0;
+		}
+		while(!hasPressedButton){
+			if(Input.GetAxis("Action Button") == 1.0f){
+				hasPressedButton = true;
+			}
+			yield return 0;
+		}
+	}
 }

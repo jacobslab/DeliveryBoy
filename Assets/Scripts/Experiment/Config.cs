@@ -36,12 +36,7 @@ public class Config : MonoBehaviour {
 	public static int numLearningIterations = 2;
 	public static bool doLearningPhase = false;
 
-	public static string initialInstructions1 = "Welcome to the Town of PhildelphiaVille" + 
-		"\n\nYou will explore the town and deliver items to many stores." + 
-			"\n\nOnce you have delivered a set of items, you will be asked to recall as many as you can." + 
-			"\n\nUse the joystick to control your movement." +
-			"\n\nPress (X) to start learning about the town!";
-
+	
 	public static float minInitialInstructionsTime = 0.0f; //TODO: change back to 5.0f
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for

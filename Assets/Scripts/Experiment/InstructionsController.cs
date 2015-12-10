@@ -7,7 +7,9 @@ using System.Text.RegularExpressions;
 using UnityEngine.UI;
 
 public class InstructionsController : MonoBehaviour {
-	
+
+	Experiment exp { get { return Experiment.Instance; } }
+
 	public float timePerInstruction;
 
 	public bool isFinished = false;
@@ -23,7 +25,37 @@ public class InstructionsController : MonoBehaviour {
 
 	public GameObject ScoreInstructions; //turn these on and off as necessary during the trial.......
 
-	List<string> _instructions;
+
+	//INITIAL INSTRUCTIONS
+	public static string initialInstructions1 = "In this game you will play a delivery person in a small city." +
+		"\n\nYour task is to drive through the city delivering packages to the correct stores, as quickly as possible." +
+			"\n\nYour current delivery goal will be shown in the top left of the screen.  Simply drive right up to the store, and the item you delivered will spoken out loud." +
+			"\n\nOn each trial you will make a series of deliveries to stores all over the town." +
+			"\n\n\n\nPress [X] to continue!";
+	
+	public static string initialInstructions2 = "On the final delivery of a given trial, no item will be said." +
+		"\n\nRather, the screen will go blank, and you'll see a row of asterisks (*******), and hear a tone." +
+			"\n\nAt this point your job is to verbally recall all of the delivered items that you can remember, in any order." +
+			"\n\nAfter the recall period you'll have a chance for a short break, and then the next set of deliveries will start." +
+			"\n\n\n\nPress [X] to continue!";
+	
+	public static string initialInstructions3 = "Before you start the full task, you'll have a chance to explore the town, to get your bearings. We will describe this practice period next." +
+		"\n\nWe will describe this practice period next." +
+			"\n\nPlease tell the investigator when you have finished reading these instructions.";// +
+	//"\n\n\n\nPress [X] to continue.";
+	
+
+	//LEARNING PHASE INSTRUCTIONS
+	public static string learningInstructions1 = "Before you start making deliveries, we want to make sure you know your way around the city." +
+		"You'll be asked to go from store to store without delivering items." +
+		"\n\nThe city will be exactly the same during the practice as during the later delivery trials, so you can use this time to figure out the fastest way to get from place to place." +
+			"\n\nTo help you out, we will often send you from one store to another store that is nearby in the town." +
+			"\n\n\n\nPress [X] to continue.";
+	
+	public static string learningInstructions2 = "Don't worry if it takes a little while to learn the city!" +
+		"Your bonus is not affected by how long the practice period takes." +
+			"\n\nFinding the correct stores will be difficult at first, but it will get easier when you become more familiar with the city." +
+			"\n\nPlease tell the investigator when you have finished reading.";
 
 	// Use this for initialization
 	void Start () {
@@ -36,9 +68,45 @@ public class InstructionsController : MonoBehaviour {
 	
 	}
 
+
+
 	public void TurnOffInstructions(){
 		SetInstructionsTransparentOverlay();
 		SetInstructionsBlank();
+	}
+
+	public IEnumerator PlayStartInstructions(){
+		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions1, true, true, false, Config.minInitialInstructionsTime));
+		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions2, true, true, false, Config.minInitialInstructionsTime));
+		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions3, true, true, false, Config.minInitialInstructionsTime));
+	}
+
+	public IEnumerator PlayLearningInstructions(){
+		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.learningInstructions1, true, true, false, Config.minInitialInstructionsTime));
+		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.learningInstructions2, true, true, false, Config.minInitialInstructionsTime));
+	}
+
+	public IEnumerator ShowSingleInstruction(string line, bool isDark, bool waitForButton, bool addRandomPostJitter, float minDisplayTimeSeconds){
+		if(isDark){
+			SetInstructionsColorful();
+		}
+		else{
+			SetInstructionsTransparentOverlay();
+		}
+		DisplayText(line);
+		
+		yield return new WaitForSeconds (minDisplayTimeSeconds);
+		
+		if (waitForButton) {
+			yield return StartCoroutine (UsefulFunctions.WaitForActionButton ());
+		}
+		
+		if (addRandomPostJitter) {
+			yield return StartCoroutine(UsefulFunctions.WaitForJitter ( Config.randomJitterMin, Config.randomJitterMax ) );
+		}
+		
+		TurnOffInstructions ();
+		exp.cameraController.SetInGame();
 	}
 
 	public void SetSingleInstruction(string text, bool isDark){
@@ -58,6 +126,10 @@ public class InstructionsController : MonoBehaviour {
 		else{
 			text.text = newText;
 		}
+	}
+
+	public void DisplayText(string line){
+		SetText(line);
 	}
 
 	public void SetInstructionsBlank(){
@@ -87,85 +159,6 @@ public class InstructionsController : MonoBehaviour {
 			text.color = textColorOverlay;
 		}
 	}
-
-	public void RunInstructions(){
-		SetInstructionsColorful();
-		isFinished = false;
-		Parse ();
-		StartCoroutine (DisplayReadInText ());
-	}
-
-	public void Parse(){
-		_instructions = new List<string> ();
-
-		StreamReader reader = new StreamReader ("TextFiles/Instructions.txt");
-		string line = reader.ReadLine ();
-
-		string newInstruction = "";
-
-		while (line != null) {
-			char[] characters = line.ToCharArray ();
-			if(characters.Length > 0){
-				if (characters [0] == '%') { //new instruction
-					AddInstruction(newInstruction);
-					newInstruction = line;
-					newInstruction += '\n';
-				}
-				else {
-					newInstruction += line;
-					newInstruction += '\n';
-				}
-			}
-			else{
-				newInstruction += '\n';
-			}
-
-			line = reader.ReadLine ();
-		}
-		AddInstruction(newInstruction); //add the last instruction
-
-	}
-
-	void AddInstruction(string newInstruction){
-		if (newInstruction != "" && newInstruction != null) {
-			newInstruction = newInstruction.Replace("%" , ""); //if the 'new instructions symbol' is in the line, take it out.
-			_instructions.Add (newInstruction);
-		}
-	}
-
-	IEnumerator DisplayReadInText(){
-		for (int i = 0; i < _instructions.Count; i++) {
-			SetText(_instructions[i]);
-			yield return StartCoroutine(WaitForInstruction());
-		}
-		isFinished = true;
-	}
-
-	public void DisplayText(string line){
-		SetText(line);
-	}
-
-	IEnumerator WaitForInstruction(){
-		float timePassed = 0;
-
-		bool actionButtonUp = false;
-
-		while (timePassed < timePerInstruction) {
-			//want to make sure its a new button press
-			if(Input.GetAxis("Action Button") == 0.0f){
-				actionButtonUp = true;
-			}
-
-			//if button pressed after action button was up -- skip the instruction
-			if(Input.GetAxis("Action Button") == 1.0f && actionButtonUp){
-				timePassed += timePerInstruction; // will skip instruction!
-			}
-
-			//otherwise, increment the timePassed
-			timePassed += Time.deltaTime;
-			yield return 0;
-		}
-	}
-
+	
 
 }
