@@ -16,6 +16,7 @@ public class TrialController : MonoBehaviour {
 	public CanvasGroup PauseUI;
 	public CanvasGroup ConnectionUI;
 	public UIScreen DeliveryUI; 
+	public CanvasGroup RecallUI;
 
 	//audio
 	public AudioSource recallBeep;
@@ -101,14 +102,16 @@ public class TrialController : MonoBehaviour {
 			exp.player.controls.ShouldLockControls = true;
 			trialLogger.LogInstructionEvent ();
 			yield return StartCoroutine (exp.ShowSingleInstruction ("You will now begin delivering items! Press [X] to start your first delivery day.", true, true, false, Config.minDefaultInstructionTime));
-			exp.player.controls.ShouldLockControls = false;
 
 			for(int i = 0; i < Config.numTestTrials; i++){
+				exp.player.controls.ShouldLockControls = true;
 
 				if(i != 0){
 					trialLogger.LogInstructionEvent ();
 					yield return StartCoroutine (exp.ShowSingleInstruction ("Welcome to Delivery Day " + i + "/" + Config.numTestTrials + "!", true, true, false, Config.minDefaultInstructionTime));
 				}
+
+				exp.player.controls.ShouldLockControls = false;
 
 				//DELIVERY PHASE
 				yield return StartCoroutine(DoStoreDeliveryPhase(i));
@@ -216,6 +219,8 @@ public class TrialController : MonoBehaviour {
 	IEnumerator DoRecallPhase(int numRecallPhase){
 		trialLogger.LogRecallPhaseStarted ();
 
+		RecallUI.alpha = 1.0f;
+
 		recallBeep.Play ();
 		while (recallBeep.isPlaying) {
 			yield return 0;
@@ -229,6 +234,9 @@ public class TrialController : MonoBehaviour {
 		yield return StartCoroutine (exp.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
 
 		exp.player.controls.ShouldLockControls = false;
+
+		RecallUI.alpha = 0.0f;
+
 		yield return 0;
 	}
 
