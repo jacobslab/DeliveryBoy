@@ -62,13 +62,6 @@ public class InstructionsController : MonoBehaviour {
 		backgroundColorDefault = background.color;
 		textColorDefault = text.color;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-
 
 	public void TurnOffInstructions(){
 		SetInstructionsTransparentOverlay();
@@ -87,6 +80,8 @@ public class InstructionsController : MonoBehaviour {
 	}
 
 	public IEnumerator ShowSingleInstruction(string line, bool isDark, bool waitForButton, bool addRandomPostJitter, float minDisplayTimeSeconds){
+		Experiment.Instance.trialController.GetComponent<TrialLogTrack> ().LogInstructionEvent ();
+
 		if(isDark){
 			SetInstructionsColorful();
 		}
@@ -110,6 +105,7 @@ public class InstructionsController : MonoBehaviour {
 	}
 
 	public void SetSingleInstruction(string text, bool isDark){
+		Experiment.Instance.trialController.GetComponent<TrialLogTrack> ().LogInstructionEvent ();
 		if (isDark) {
 			SetInstructionsColorful ();
 		} else {

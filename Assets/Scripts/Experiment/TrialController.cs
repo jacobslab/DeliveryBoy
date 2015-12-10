@@ -90,7 +90,6 @@ public class TrialController : MonoBehaviour {
 			}
 
 			//show instructions for exploring, wait for the action button
-			trialLogger.LogInstructionEvent();
 			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
 
 
@@ -101,14 +100,12 @@ public class TrialController : MonoBehaviour {
 			}
 
 			exp.player.controls.ShouldLockControls = true;
-			trialLogger.LogInstructionEvent ();
 			yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You will now begin delivering items! Press [X] to start your first delivery day.", true, true, false, Config.minDefaultInstructionTime));
 
 			for(int i = 0; i < Config.numTestTrials; i++){
 				exp.player.controls.ShouldLockControls = true;
 
 				if(i != 0){
-					trialLogger.LogInstructionEvent ();
 					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Welcome to Delivery Day " + i + "/" + Config.numTestTrials + "!", true, true, false, Config.minDefaultInstructionTime));
 				}
 
@@ -169,7 +166,6 @@ public class TrialController : MonoBehaviour {
 		exp.player.controls.ShouldLockControls = false;
 
 		//show instruction at top of screen, don't wait for button, wait for collision
-		trialLogger.LogInstructionEvent ();
 		exp.instructionsController.SetSingleInstruction ("Go to the " + buildingToVisit.name, false);
 		yield return StartCoroutine (exp.player.WaitForCollision (buildingToVisit.name));
 	}
@@ -207,8 +203,7 @@ public class TrialController : MonoBehaviour {
 		string itemDisplayText = exp.objectController.GetDeliverableText(itemDelivered);
 		
 		trialLogger.LogDeliveryMade(itemDelivered.GetComponent<SpawnableObject>().GetName());
-		
-		trialLogger.LogInstructionEvent ();
+
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toBuildingName, true, false, false, Config.deliveryCompleteInstructionsTime));
 		Destroy(itemDelivered);
 	}
@@ -231,7 +226,6 @@ public class TrialController : MonoBehaviour {
 		string recallPath = GetRecallRecordingFilePath (numRecallPhase);
 		exp.audioRecorder.Record (GetRecallRecordingFilePath (numRecallPhase));
 
-		trialLogger.LogInstructionEvent ();
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
 
 		exp.player.controls.ShouldLockControls = false;
