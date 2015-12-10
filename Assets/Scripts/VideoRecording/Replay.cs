@@ -250,6 +250,7 @@ public class Replay : MonoBehaviour {
 									objInScene = exp.objectController.ChooseSpawnableObject(objShortName);
 									
 									if(objInScene != null){ //if it did grab the prefab...
+
 										objInScene = exp.objectController.SpawnObject(objInScene, Vector3.zero); //position and rotation should be set next...
 										SpawnableObject objInSceneSpawnable = objInScene.GetComponent<SpawnableObject>();
 										objInScene.name = objInSceneSpawnable.GetName();

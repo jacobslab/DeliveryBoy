@@ -65,18 +65,14 @@ public class ObjectController : MonoBehaviour {
 	}
 
 	//used in replay
-	void CreateCompleteSpawnableList (List<SpawnableObject> spawnableListToFill){
+	void CreateCompleteDeliverableList (List<SpawnableObject> spawnableListToFill){
 		spawnableListToFill.Clear();
-		Object[] specialPrefabs = Resources.LoadAll("Prefabs/Objects");
-		Object[] otherPrefabs = Resources.LoadAll("Prefabs/OtherSpawnables");
-		for (int i = 0; i < specialPrefabs.Length; i++) {
-			SpawnableObject spawnable = ( (GameObject)specialPrefabs[i] ).GetComponent<SpawnableObject>();
+		Object[] deliverables = Resources.LoadAll("Deliverables");
+		for (int i = 0; i < deliverables.Length; i++) {
+			SpawnableObject spawnable = ( (GameObject)deliverables[i] ).GetComponent<SpawnableObject>();
 			spawnableListToFill.Add(spawnable);
 		}
-		for (int i = 0; i < otherPrefabs.Length; i++) {
-			SpawnableObject spawnable = ( (GameObject)otherPrefabs[i] ).GetComponent<SpawnableObject>();
-			spawnableListToFill.Add(spawnable);
-		}
+		//add in any other things that may need to be spawned here, that may not be deliverables.
 	}
 
 	public string GetDeliverableText(GameObject deliverable){
@@ -101,7 +97,7 @@ public class ObjectController : MonoBehaviour {
 	//used in replay
 	public GameObject ChooseSpawnableObject(string objectName){
 		List<SpawnableObject> allSpawnables = new List<SpawnableObject>(); //note: this is technically getting instantiated twice now... as it's instantiated in CREATE as well.
-		CreateCompleteSpawnableList (allSpawnables);
+		CreateCompleteDeliverableList (allSpawnables);
 
 		for (int i = 0; i < allSpawnables.Count; i++) {
 			if(allSpawnables[i].GetName() == objectName){
@@ -138,6 +134,10 @@ public class ObjectController : MonoBehaviour {
 	//for more generic object spawning -- such as in Replay!
 	public GameObject SpawnObject( GameObject objToSpawn, Vector3 spawnPos ){
 		GameObject spawnedObj = Instantiate(objToSpawn, spawnPos, objToSpawn.transform.rotation) as GameObject;
+
+		if(spawnedObj.tag == "Deliverable"){
+			spawnedObj.transform.SetParent(deliverableParent, false);
+		}
 
 		return spawnedObj;
 	}
