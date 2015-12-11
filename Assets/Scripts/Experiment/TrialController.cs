@@ -21,6 +21,9 @@ public class TrialController : MonoBehaviour {
 	//audio
 	public AudioSource recallBeep;
 
+	//delivery timer
+	public SimpleTimer deliveryTimer;
+
 
 	TrialLogTrack trialLogger;
 
@@ -175,8 +178,13 @@ public class TrialController : MonoBehaviour {
 		List<Building> deliveryBuildings = exp.buildingController.GetRandomDeliveryBuildings();
 
 		for (int i = 0; i < deliveryBuildings.Count; i++) {
+			//start delivery timer
+			deliveryTimer.StartTimer();
 			//visit store
 			yield return StartCoroutine(DoVisitStoreCommand(deliveryBuildings[i]));
+
+			//calculate score, reset the delivery timer
+			exp.scoreController.CalculateTimeBonus(deliveryTimer.GetSecondsInt());
 
 			//if not the last delivery, deliver an item.
 			if(i < deliveryBuildings.Count - 1){
@@ -192,6 +200,8 @@ public class TrialController : MonoBehaviour {
 				exp.player.controls.ShouldLockControls = false;
 
 			}
+			//reset timer
+			deliveryTimer.ResetTimer();
 		}
 	}
 
