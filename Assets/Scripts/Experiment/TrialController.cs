@@ -24,6 +24,9 @@ public class TrialController : MonoBehaviour {
 	//delivery timer
 	public SimpleTimer deliveryTimer;
 
+	//building rotation phase
+	public Transform buildingRotationTransform;
+	public VisibilityToggler rotationBackgroundCube;
 
 	TrialLogTrack trialLogger;
 
@@ -36,6 +39,7 @@ public class TrialController : MonoBehaviour {
 
 	void Start(){
 		trialLogger = GetComponent<TrialLogTrack> ();
+		rotationBackgroundCube.TurnVisible (false);
 	}
 
 
@@ -96,9 +100,13 @@ public class TrialController : MonoBehaviour {
 			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
 
 
+			//ROTATION PHASE
+			if(Config.doRotationPhase){
+				yield return StartCoroutine(DoStoreRotationPhase());
+			}
+
 			//LEARNING PHASE
 			if(Config.doLearningPhase){
-				yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 				yield return StartCoroutine(DoLearningPhase());
 			}
 
@@ -151,6 +159,8 @@ public class TrialController : MonoBehaviour {
 
 	IEnumerator DoLearningPhase(){
 
+		yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
+
 		for (int numIterations = 0; numIterations < Config.numLearningIterations; numIterations++) {
 
 			trialLogger.LogLearningPhaseStarted (numIterations);
@@ -161,6 +171,36 @@ public class TrialController : MonoBehaviour {
 
 			yield return 0;
 		}
+	}
+
+	IEnumerator DoStoreRotationPhase(){
+		rotationBackgroundCube.TurnVisible (true);
+		//for each building, move it to the rotation location, rotate it for x seconds, return it to its original location
+		for (int i = 0; i < exp.buildingController.buildings.Length; i++) {
+			Building currBuilding = exp.buildingController.buildings[i];
+
+			//move building
+			currBuilding.transform.position = buildingRotationTransform.position;
+			currBuilding.transform.rotation = buildingRotationTransform.rotation;
+
+			//rotate building
+			float currTime = 0.0f;
+			float timePerRotation = Config.buildingRotateTime / ((float)Config.numBuildingRotations);
+			for(int j = 0; j < Config.numBuildingRotations; j++){
+				while(currTime < timePerRotation){
+					yield return 0;
+					float degToRotate = (360.0f / timePerRotation) * Time.deltaTime;
+					currBuilding.transform.RotateAround(currBuilding.transform.position, Vector3.up, degToRotate);
+					currTime += Time.deltaTime;
+				}
+				currTime = 0.0f;
+			}
+
+			//put building back
+			currBuilding.Reset();
+		}
+
+		rotationBackgroundCube.TurnVisible (true);
 	}
 
 	IEnumerator DoVisitStoreCommand(Building buildingToVisit){

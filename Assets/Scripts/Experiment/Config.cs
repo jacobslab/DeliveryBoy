@@ -35,9 +35,12 @@ public class Config : MonoBehaviour {
 
 	public static int numLearningIterations = 2;
 	public static bool doLearningPhase = false;
+	public static bool doRotationPhase = true;
 
+	public static float buildingRotateTime = 5;
+	public static float numBuildingRotations = 2;
 	
-	public static float minInitialInstructionsTime = 0.0f; //TODO: change back to 5.0f
+	public static float minInitialInstructionsTime = 0.0f;
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
