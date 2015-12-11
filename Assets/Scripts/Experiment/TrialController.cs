@@ -175,6 +175,7 @@ public class TrialController : MonoBehaviour {
 
 	IEnumerator DoStoreRotationPhase(){
 		rotationBackgroundCube.TurnVisible (true);
+		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 0.0f;
 		//for each building, move it to the rotation location, rotate it for x seconds, return it to its original location
 		for (int i = 0; i < exp.buildingController.buildings.Length; i++) {
 			Building currBuilding = exp.buildingController.buildings[i];
@@ -199,8 +200,8 @@ public class TrialController : MonoBehaviour {
 			//put building back
 			currBuilding.Reset();
 		}
-
-		rotationBackgroundCube.TurnVisible (true);
+		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 1.0f;
+		rotationBackgroundCube.TurnVisible (false);
 	}
 
 	IEnumerator DoVisitStoreCommand(Building buildingToVisit){

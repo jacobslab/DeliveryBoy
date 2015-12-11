@@ -42,6 +42,9 @@ public class Experiment : MonoBehaviour {
 	//avatar
 	public Player player;
 
+	//Canvas
+	public Canvas mainCanvas;
+
 	//public bool isOculus = false;
 
 	//state enum
