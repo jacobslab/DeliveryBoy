@@ -165,8 +165,10 @@ public class TrialController : MonoBehaviour {
 
 			trialLogger.LogLearningPhaseStarted (numIterations);
 
-			for (int i = 0; i < exp.buildingController.buildings.Length; i++) {
-				yield return StartCoroutine(DoVisitStoreCommand(exp.buildingController.buildings[i]));
+			List<Building> buildingsLearningOrder = exp.buildingController.GetLearningOrderBuildings();
+
+			for (int i = 0; i < buildingsLearningOrder.Count; i++) {
+				yield return StartCoroutine(DoVisitStoreCommand(buildingsLearningOrder[i]));
 			}
 
 			yield return 0;

@@ -29,92 +29,98 @@ public class BuildingController : MonoBehaviour {
 		return deliveryBuildings;
 	}
 
-	//START ON dbCode.py on line 449
+	//STARTED ON dbCode.py on line 449
 	public List<Building> GetLearningOrderBuildings(){
 		List<Building> learningBuildings = new List<Building> ();
+
+		//grab buildings as a list for easy mutability
+		List<Building> possibleNextBuildings = new List<Building> ();
+		for (int i = 0; i < buildings.Length; i++) {
+			possibleNextBuildings.Add(buildings[i]);
+		}
 
 		// weight vector (50%, 30%, 15%, 5%) for which closest store to choose
 		int[] randWeights = {1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,4};
 
-		float[,] buildingDistances = GetBuildingDistances();
+		Building currBuilding = buildings[0]; //ASSUMING THAT THERE ARE MORE THAN ZERO BUILDINGS
+		for(int i = 0; i < buildings.Length - 1; i++){
 
-		for(int i = 0; i < buildings.Length; i++){
+			//add the very first building to the list!
+			if(i == 0){
+				learningBuildings.Add(currBuilding);
+				//remove this building from possible next buildings
+				possibleNextBuildings.RemoveAt(i);
+			}
+
 			// which of the closest stores
 			int nextDistWeight = randWeights[Random.Range(0,randWeights.Length)];
 
 			//sort distance vector
-			List<float> distancesFromBuilding = GetDistancesFromBuilding(i, buildingDistances);
-			List<int> orderedBuildingIndices = GetOrderedBuildingIndicesByDistance(distancesFromBuilding);
+			List<float> buildingDistances = GetBuildingDistances(currBuilding, possibleNextBuildings);
+			List<int> orderedBuildingIndices = GetOrderedBuildingIndicesByDistance(buildingDistances);
 
 			/// HOW TO I USE THE WEIGHT DISTRIBUTION VECTOR EXACTLY?
-			//float nextStoreDist = distancesFromBuilding[
-			//TODO: FINISH THIS!!!
+			float nextStoreDist = 0.0f;
 
+			if(nextDistWeight > orderedBuildingIndices.Count){
+				nextDistWeight = orderedBuildingIndices.Count;
+			}
+
+			int nextStoreIndex = orderedBuildingIndices[nextDistWeight - 1];
+			nextStoreDist = buildingDistances[nextStoreIndex];
+
+			//save building to order list
+			currBuilding = possibleNextBuildings[nextStoreIndex];
+			learningBuildings.Add(currBuilding);
+			//remove this building
+			possibleNextBuildings.Remove(currBuilding);
 		}
 
 		return learningBuildings;
 
 	}
-
-	List<float> GetDistancesFromBuilding(int buildingIndex, float[,] allDistances){
-
-		List<float> distancesFromBuilding = new List<float> ();
-		//get all distances from building in the order of the buildings
-		for (int i = 0; i < buildings.Length; i++) {
-			distancesFromBuilding.Add(allDistances[buildingIndex, i]);
-		}
-
-		return distancesFromBuilding;
-
-	}
+	
 
 	List<int> GetOrderedBuildingIndicesByDistance(List<float> distancesFromBuilding){
 
+		List<float> distancesCopy = new List<float> (distancesFromBuilding);
+
 		List<int> orderedBuildingIndices = new List<int> ();
-		float minDistance = 0.0f;
+		float minDistance = -1.0f;
 		int minDistanceIndex = -1;
-		//for num buildings...
-		for(int i = 0; i < buildings.Length; i++){
-			//pick out the next min distance!
-			for (int j = 0; j < distancesFromBuilding.Count; j++) {
-				//don't use an index we've already used (which gets set to -1)
-				if(distancesFromBuilding[j] != -1){
-					//initialize it!
-					if(minDistance == -1){
-						minDistance = distancesFromBuilding[j];
-					}
-					else if(minDistance > distancesFromBuilding[j]){
-						minDistance = distancesFromBuilding[j];
+
+		int numOtherBuildings = distancesFromBuilding.Count;
+		for (int i = 0; i < numOtherBuildings; i++) {
+			for(int j = 0; j < distancesCopy.Count; j++){
+				float currDist = distancesCopy[j];
+				if(minDistance == -1.0f || minDistance > currDist){
+					if(currDist > -1.0f){
 						minDistanceIndex = j;
+						minDistance = currDist;
 					}
 				}
 			}
-			orderedBuildingIndices.Add (minDistanceIndex);
-			distancesFromBuilding[minDistanceIndex] = -1; // tell the list we've already used this index
+
+			distancesCopy[minDistanceIndex] = -1;	// tell the list we've already used this index
+			orderedBuildingIndices.Add(minDistanceIndex);	// add the min index to the ordered list
 			minDistance = -1; //reset this to initialize it on the next round
+
 		}
-		
+
 		return orderedBuildingIndices;
 
 	}
-	
-	float[,] GetBuildingDistances(){
-		float[,] distances = new float[buildings.Length, buildings.Length];
 
-		List<Building> buildingsCopy = new List<Building>();
-		for(int i = 0; i < buildings.Length; i++){
-			buildingsCopy.Add(buildings[i]);
-		}
+	//will not include itself. (unless otherBuildings does)
+	List<float> GetBuildingDistances(Building building, List<Building> otherBuildings){
+		List<float> distances = new List<float>();
 
-		for(int i = 0; i < buildings.Length; i++){
-			for(int j = i; j < buildingsCopy.Count; j++){ //j = i --> skip all that came before it
-				float distance = (buildings[i].transform.position - buildingsCopy[j].transform.position).magnitude;
-				//fill in both spots so we don't have to do this distance calculation more than once
-				distances[i,j] = distance;
-				distances[j,i] = distance;
-			}
+		for (int i = 0; i < otherBuildings.Count; i++) {
+			float distance = (building.transform.position - otherBuildings[i].transform.position).magnitude;
+			distances.Add(distance);
 		}
 
 		return distances;
 	}
+
 }

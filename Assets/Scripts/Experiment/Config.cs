@@ -34,8 +34,8 @@ public class Config : MonoBehaviour {
 	public static bool isAudioDelivery = false;
 
 	public static int numLearningIterations = 2;
-	public static bool doLearningPhase = false;
-	public static bool doRotationPhase = true;
+	public static bool doLearningPhase = true;
+	public static bool doRotationPhase = false;
 
 	public static float buildingRotateTime = 5;
 	public static float numBuildingRotations = 2;
