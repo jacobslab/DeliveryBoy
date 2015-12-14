@@ -93,32 +93,34 @@ public class Experiment : MonoBehaviour {
 	//TODO: move to logger_threading perhaps? *shrug*
 	void InitLogging(){
 		string subjectDirectory = "TextFiles/" + ExperimentSettings.currentSubject.name + "/";
-		
-		int logFileID = 0;
-		string logFileIDString = "000";
+		string sessionDirectory = subjectDirectory + "session000" + "/";;
 
-		while(Directory.Exists(subjectDirectory) || logFileID == 0){
-			//TODO: move this function somewhere else...?
-			if(logFileID < 10){
-				logFileIDString = "00" + logFileID;
+		int sessionID = 0;
+		string sessionIDString = "000";
+
+		if(!Directory.Exists(subjectDirectory)){
+			Directory.CreateDirectory(subjectDirectory);
+		}
+		while (Directory.Exists(sessionDirectory)) {
+			if(sessionID < 10){
+				sessionIDString = "00" + sessionID;
 			}
-			else if (logFileID < 100){
-				logFileIDString = "0" + logFileID;
+			else if (sessionID < 100){
+				sessionIDString = "0" + sessionID;
 			}
 			else{
-				logFileIDString = logFileID.ToString();
+				sessionIDString = sessionID.ToString();
 			}
 			
-			logFileID++;
-
-			subjectDirectory = "TextFiles/" + ExperimentSettings.currentSubject.name + logFileIDString + "/";
+			sessionID++;
+			
+			sessionDirectory = subjectDirectory + "session" + sessionIDString + "/";
 		}
 
-		Directory.CreateDirectory(subjectDirectory);
+		Directory.CreateDirectory(sessionDirectory);
 
-		subjectLog.fileName = subjectDirectory + ExperimentSettings.currentSubject.name + "Log" + ".txt";
-		eegLog.fileName = subjectDirectory + ExperimentSettings.currentSubject.name + "EEGLog" + ".txt";
-
+		subjectLog.fileName = sessionDirectory + ExperimentSettings.currentSubject.name + "Log" + ".txt";
+		eegLog.fileName = sessionDirectory + ExperimentSettings.currentSubject.name + "EEGLog" + ".txt";
 	}
 
 	// Use this for initialization
