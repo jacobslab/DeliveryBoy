@@ -9,7 +9,9 @@ public class Building : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		myLabel.text = gameObject.name;
+		if (myLabel) {
+			myLabel.text = gameObject.name;
+		}
 		origPosition = transform.position;
 		origRotation = transform.rotation;
 	}
