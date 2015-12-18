@@ -39,7 +39,7 @@ public class InstructionsController : MonoBehaviour {
 			"\n\nAfter the recall period you'll have a chance for a short break, and then the next set of deliveries will start." +
 			"\n\n\n\nPress [X] to continue!";
 	
-	public static string initialInstructions3 = "Before you start the full task, you'll have a chance to explore the town, to get your bearings. We will describe this practice period next." +
+	public static string initialInstructions3 = "Before you start the full task, you'll have a chance to explore the town, to get your bearings." +
 		"\n\nWe will describe this practice period next." +
 			"\n\nPlease tell the investigator when you have finished reading these instructions.";// +
 	//"\n\n\n\nPress [X] to continue.";
