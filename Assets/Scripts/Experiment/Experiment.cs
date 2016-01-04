@@ -21,7 +21,8 @@ public class Experiment : MonoBehaviour {
 	private string eegLogfile; //gets set based on the current subject in Awake()
 	public Logger_Threading eegLog;
 
-	public string SubjectDirectory { get { return subjectDirectory; } }
+	public string SessionDirectory { get { return sessionDirectory; } }
+	private string sessionDirectory;
 	private string subjectDirectory;
 
 	//session controller
@@ -92,8 +93,8 @@ public class Experiment : MonoBehaviour {
 	
 	//TODO: move to logger_threading perhaps? *shrug*
 	void InitLogging(){
-		string subjectDirectory = "TextFiles/" + ExperimentSettings.currentSubject.name + "/";
-		string sessionDirectory = subjectDirectory + "session000" + "/";;
+		subjectDirectory = "TextFiles/" + ExperimentSettings.currentSubject.name + "/";
+		sessionDirectory = subjectDirectory + "session000" + "/";;
 
 		int sessionID = 0;
 		string sessionIDString = "000";

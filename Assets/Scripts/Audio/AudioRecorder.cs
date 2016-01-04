@@ -11,14 +11,14 @@ public class AudioRecorder : MonoBehaviour {
 
 	}
 
-	public void Record(string fileName){
+	public void Record(string filePath, string fileName){
 		if (CheckForRecordingDevice ()) {
 			Debug.Log("There is a recording device!");
 			AudioSource aud = GetComponent<AudioSource> ();
 			aud.clip = Microphone.Start ("Built-in Microphone", true, 10, 44100);
 			aud.Play ();
 
-			SavWav.Save (fileName, aud.clip);
+			SavWav.Save (filePath, fileName, aud.clip);
 		} 
 		else {
 			Debug.Log ("No recording device.");

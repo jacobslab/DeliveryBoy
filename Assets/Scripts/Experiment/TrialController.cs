@@ -274,8 +274,10 @@ public class TrialController : MonoBehaviour {
 		}
 
 		exp.player.controls.ShouldLockControls = true;
-		string recallPath = GetRecallRecordingFilePath (numRecallPhase);
-		exp.audioRecorder.Record (GetRecallRecordingFilePath (numRecallPhase));
+
+		//record audio to a file in the session directory
+		string fileName = ExperimentSettings.currentSubject.name + "_" + numRecallPhase;
+		exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName);
 
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
 
@@ -284,12 +286,6 @@ public class TrialController : MonoBehaviour {
 		RecallUI.alpha = 0.0f;
 
 		yield return 0;
-	}
-
-	string GetRecallRecordingFilePath(int deliveryDay){
-		string filePath = exp.SubjectDirectory + ExperimentSettings.currentSubject.name + "_" + deliveryDay;
-
-		return filePath;
 	}
 
 	void DestroyGameObjectList(List<GameObject> listOfGameObjects){
