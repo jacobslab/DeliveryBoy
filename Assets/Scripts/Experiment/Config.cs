@@ -31,7 +31,7 @@ public class Config : MonoBehaviour {
 	//DELIVERY VARIABLES
 	public static int numDeliveryStores = 2; //out of the total number of stores
 	
-	public static bool isAudioDelivery = false;
+	public static bool isAudioDelivery = true;
 
 	public static int numLearningIterations = 1;
 	public static bool doLearningPhase = false;

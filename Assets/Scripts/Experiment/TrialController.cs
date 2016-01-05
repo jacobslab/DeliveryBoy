@@ -6,6 +6,16 @@ using System.Collections.Generic;
 public class TrialController : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
+
+	public enum TrialState{
+		rotationLearning,
+		navigationLearning,
+		delivery,
+		recall
+	}
+	public TrialState currentState = TrialState.rotationLearning;
+
+
 	//hardware connection
 	bool isConnectingToHardware = false;
 
@@ -159,6 +169,8 @@ public class TrialController : MonoBehaviour {
 
 	IEnumerator DoLearningPhase(){
 
+		currentState = TrialState.navigationLearning;
+
 		yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 
 		for (int numIterations = 0; numIterations < Config.numLearningIterations; numIterations++) {
@@ -176,6 +188,8 @@ public class TrialController : MonoBehaviour {
 	}
 
 	IEnumerator DoStoreRotationPhase(){
+		currentState = TrialState.rotationLearning;
+
 		rotationBackgroundCube.TurnVisible (true);
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 0.0f;
 		//for each building, move it to the rotation location, rotate it for x seconds, return it to its original location
@@ -210,11 +224,14 @@ public class TrialController : MonoBehaviour {
 		exp.player.controls.ShouldLockControls = false;
 
 		//show instruction at top of screen, don't wait for button, wait for collision
+		
 		exp.instructionsController.SetSingleInstruction ("Go to the " + buildingToVisit.name, false);
-		yield return StartCoroutine (exp.player.WaitForCollision (buildingToVisit.name));
+		yield return StartCoroutine (exp.player.WaitForObjectCollision (buildingToVisit.name));
 	}
 
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
+
+		currentState = TrialState.delivery;
 
 		trialLogger.LogDeliveryDayStarted (deliveryDay);
 
@@ -260,10 +277,24 @@ public class TrialController : MonoBehaviour {
 	}
 
 	IEnumerator DeliverItemAudio(){
+		GameObject playerCollisionObject = exp.player.GetCollisionObject ();
+
+		if (playerCollisionObject != null) {
+		
+			//play building audio! as long as it's not the last building.
+			if(playerCollisionObject.tag == "Building"){
+				Building collisionBuilding = playerCollisionObject.GetComponent<Building>();
+				yield return StartCoroutine(collisionBuilding.PlayDeliveryAudio());
+			}
+		
+		}
+
 		yield return 0;
 	}
 
 	IEnumerator DoRecallPhase(int numRecallPhase){
+		currentState = TrialState.recall;
+
 		trialLogger.LogRecallPhaseStarted ();
 
 		RecallUI.alpha = 1.0f;

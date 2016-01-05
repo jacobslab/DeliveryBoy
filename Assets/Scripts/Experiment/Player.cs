@@ -41,17 +41,32 @@ public class Player : MonoBehaviour {
 		visuals.SetActive (isVisible);
 	}
 
-	string lastCollisionName = "";
-	public IEnumerator WaitForCollision(string objectName){
+	GameObject waitForCollisionObject;
+	bool isLookingForObject = false;
+	public IEnumerator WaitForObjectCollision(string objectName){
+		isLookingForObject = true;
 		Debug.Log("WAITING FOR COLLISION WITH: " + objectName);
+		
+		string lastCollisionName = "";
 		while (lastCollisionName != objectName) {
+			if(waitForCollisionObject != null){
+				lastCollisionName = waitForCollisionObject.name;
+			}
 			yield return 0;
 		}
-		Debug.Log ("FOUND OBJECT");
+
+		Debug.Log ("FOUND BUILDING");
+		
+		isLookingForObject = false;
+
+	}
+
+	public GameObject GetCollisionObject(){
+		return waitForCollisionObject;
 	}
 
 	void OnCollisionEnter(Collision collision){
-		lastCollisionName = collision.gameObject.name;
+		waitForCollisionObject = collision.gameObject;
 
 		//log building collision
 		if (collision.gameObject.tag == "Building"){
