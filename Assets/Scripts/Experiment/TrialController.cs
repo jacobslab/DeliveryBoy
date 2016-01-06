@@ -214,7 +214,7 @@ public class TrialController : MonoBehaviour {
 			}
 
 			//put building back
-			currBuilding.Reset();
+			currBuilding.ResetBuilding();
 		}
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 1.0f;
 		rotationBackgroundCube.TurnVisible (false);

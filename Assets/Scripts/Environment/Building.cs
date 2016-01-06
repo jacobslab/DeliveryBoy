@@ -60,7 +60,7 @@ public class Building : MonoBehaviour {
 		}
 	}
 	
-	public void Reset(){
+	public void ResetBuilding(){
 		transform.position = origPosition;
 		transform.rotation = origRotation;
 	}
