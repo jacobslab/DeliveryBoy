@@ -306,9 +306,9 @@ public class TrialController : MonoBehaviour {
 
 		exp.player.controls.ShouldLockControls = true;
 
-		//record audio to a file in the session directory
+		//record audio to a file in the session directory for the duration of the recall period
 		string fileName = ExperimentSettings.currentSubject.name + "_" + numRecallPhase;
-		exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName);
+		StartCoroutine(exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, Config.recallTime));
 
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
 

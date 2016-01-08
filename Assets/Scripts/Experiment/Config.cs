@@ -44,7 +44,7 @@ public class Config : MonoBehaviour {
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
-	public static float recallTime = 2.0f;
+	public static int recallTime = 2;
 
 	//tilt variables
 	public static bool isAvatarTilting = true;
