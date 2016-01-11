@@ -1,0 +1,117 @@
+DATE: 1/11/2016
+63588122817074	0	Main Camera	CAMERA_ENABLED	True
+63588122817087	1	Connecting to EEG UI	CANVAS_GROUP_ALPHA	0
+63588122817087	1	Game Paused Text	TEXT	✪ GAME PAUSED ✪
+63588122817087	1	Game Paused Text	TEXT_COLOR	0.01568628	0.09803922	0.2431373	1
+63588122817087	1	Text	TEXT	Connecting...
+63588122817087	1	Text	TEXT_COLOR	0.8602941	0.8602941	0.8602941	1
+63588122817088	1	Experiment Info	ENV_CENTER	6.85495	0	13.83395
+63588122817088	1	Experiment Info	ENV_WALL_XPOS	41.85495	4.352175	14
+63588122817088	1	Experiment Info	ENV_WALL_XNEG	-28.14505	4.352175	14
+63588122817088	1	Experiment Info	ENV_WALL_ZPOS	6.85495	4.352175	64.33582
+63588122817088	1	Experiment Info	ENV_WALL_ZNEG	6.85495	4.352175	-37
+63588122817089	1	Connecting to EEG Panel	PANEL	0.1843137	0.8000001	0.854902	1
+63588122817089	1	Pause Instruction Text	TEXT	[ (B) to Pause ]
+63588122817089	1	Pause Instruction Text	TEXT_COLOR	0	0.0481744	0.3676471	1
+63588122817089	1	Rotation Background Cube	SPAWNED	Untagged
+63588122817090	1	Rotation Background Cube	POSITION	54	28.7	166.1
+63588122817090	1	Rotation Background Cube	ROTATION	0	0	0
+63588122817090	1	Rotation Background Cube	SCALE	50	50	1
+63588122817090	1	Rotation Background Cube	VISIBILITY	False
+63588122817090	1	Score Text	TEXT	$ 0
+63588122817090	1	Score Text	TEXT_COLOR	0.9647059	0.9647059	0.9647059	1
+63588122817090	1	Recall Asterisk Text	TEXT	*******
+63588122817090	1	Recall Asterisk Text	TEXT_COLOR	0.9632353	0.9632353	0.9632353	1
+63588122817090	1	PausePanel	PANEL	0.8088235	1	1	0.816
+63588122817090	1	TiltablePlayer	SPAWNED	TiltablePlayer
+63588122817090	1	TiltablePlayer	POSITION	6.587006	6.91	63.10999
+63588122817090	1	TiltablePlayer	ROTATION	0	180	0
+63588122817090	1	TiltablePlayer	SCALE	1	1	1
+63588122817090	1	NewInstructionsText	TEXT	New Text
+63588122817090	1	NewInstructionsText	TEXT_COLOR	0.9632353	0.9632353	0.9632353	1
+63588122817090	1	Player	SPAWNED	Player
+63588122817090	1	Player	POSITION	6.587006	6.91	63.10999
+63588122817090	1	Player	ROTATION	0	180	0
+63588122817090	1	Player	SCALE	0.4	0.4	0.4
+63588122817090	1	Main Canvas	CANVAS_GROUP_ALPHA	1
+63588122817090	1	InstructionsPanel	PANEL	0	0.001014191	0.1470588	0.816
+63588122817090	1	PauseUI	CANVAS_GROUP_ALPHA	0
+63588122817090	1	Replay Pause Instruction Text	TEXT	[ (B) to Pause ]
+63588122817090	1	Replay Pause Instruction Text	TEXT_COLOR	1	1	1	1
+63588122817090	1	Recall Overlay Panel	CANVAS_GROUP_ALPHA	0
+63588122817090	1	Recall Overlay Panel	PANEL	0	0.001014191	0.1470588	1
+63588122817225	1	Trial Event	SHOWING_INSTRUCTIONS
+63588122817231	2	NewInstructionsText	TEXT	In this game you will play a delivery person in a small city._NEWLINE__NEWLINE_Your task is to drive through the city delivering packages to the correct stores, as quickly as possible._NEWLINE__NEWLINE_Your current delivery goal will be shown in the top left of the screen.  Simply drive right up to the store, and the item you delivered will spoken out loud._NEWLINE__NEWLINE_On each trial you will make a series of deliveries to stores all over the town._NEWLINE__NEWLINE__NEWLINE__NEWLINE_Press [X] to continue!
+63588122817231	2	NewInstructionsText	TEXT_COLOR	0.9632353	0.9632353	0.9632353	1
+63588122817927	30	Keyboard	space
+63588122817943	31	Keyboard	space
+63588122817944	31	Trial Event	SHOWING_INSTRUCTIONS
+63588122817944	31	NewInstructionsText	TEXT	On the final delivery of a given trial, no item will be said._NEWLINE__NEWLINE_Rather, the screen will go blank, and you'll see a row of asterisks (*******), and hear a tone._NEWLINE__NEWLINE_At this point your job is to verbally recall all of the delivered items that you can remember, in any order._NEWLINE__NEWLINE_After the recall period you'll have a chance for a short break, and then the next set of deliveries will start._NEWLINE__NEWLINE__NEWLINE__NEWLINE_Press [X] to continue!
+63588122817944	31	NewInstructionsText	TEXT_COLOR	0.9632353	0.9632353	0.9632353	1
+63588122817975	32	Keyboard	space
+63588122818074	38	Keyboard	space
+63588122818091	39	Keyboard	space
+63588122818091	39	Trial Event	SHOWING_INSTRUCTIONS
+63588122818092	39	NewInstructionsText	TEXT	Before you start the full task, you'll have a chance to explore the town, to get your bearings._NEWLINE__NEWLINE_We will describe this practice period next._NEWLINE__NEWLINE_Please tell the investigator when you have finished reading these instructions.
+63588122818092	39	NewInstructionsText	TEXT_COLOR	0.9632353	0.9632353	0.9632353	1
+63588122818123	40	Keyboard	space
+63588122818139	41	Keyboard	space
+63588122818167	42	Keyboard	space
+63588122818290	49	Keyboard	space
+63588122818306	50	Keyboard	space
+63588122818306	50	Trial Event	SHOWING_INSTRUCTIONS
+63588122818307	50	NewInstructionsText	TEXT	You will now begin delivering items! Press [X] to start your first delivery day.
+63588122818307	50	NewInstructionsText	TEXT_COLOR	0.9632353	0.9632353	0.9632353	1
+63588122818339	51	Keyboard	space
+63588122818356	52	Keyboard	space
+63588122818456	57	Keyboard	space
+63588122818473	58	Keyboard	space
+63588122818474	58	Trial Event	DELIVERY_DAY_STARTED	0
+63588122818475	58	Trial Event	SHOWING_INSTRUCTIONS
+63588122818477	58	NewInstructionsText	TEXT	Go to the video game store
+63588122818477	58	NewInstructionsText	TEXT_COLOR	0	0.1411765	0.4156863	1
+63588122818477	58	InstructionsPanel	PANEL	0	0	0	0
+63588122818511	59	Keyboard	space
+63588122818842	77	Keyboard	up
+63588122818858	78	Keyboard	up
+63588122818874	79	Keyboard	up
+63588122818891	80	Keyboard	up
+63588122818908	81	Keyboard	up
+63588122818924	82	Keyboard	up
+63588122818941	83	Keyboard	up
+63588122818958	84	Keyboard	up
+63588122818974	85	Keyboard	up
+63588122818991	86	Keyboard	up
+63588122819007	87	Keyboard	up
+63588122819023	88	Keyboard	up
+63588122819040	89	Keyboard	up
+63588122819057	90	Keyboard	up
+63588122819074	91	Keyboard	up
+63588122819090	92	Keyboard	up
+63588122819107	93	Keyboard	up
+63588122819123	94	Keyboard	up
+63588122819140	95	Keyboard	up
+63588122819156	96	Keyboard	up
+63588122819173	97	Keyboard	up
+63588122819190	98	Keyboard	up
+63588122819206	99	Keyboard	up
+63588122819223	100	Keyboard	up
+63588122819240	101	Keyboard	up
+63588122819256	102	Keyboard	up
+63588122819273	103	Keyboard	up
+63588122819374	109	Keyboard	down
+63588122819391	110	Keyboard	down
+63588122819407	111	Keyboard	down
+63588122819427	112	Keyboard	down
+63588122819444	113	Keyboard	down
+63588122819460	114	Keyboard	down
+63588122819477	115	Keyboard	down
+63588122819494	116	Keyboard	down
+63588122819511	117	Keyboard	down
+63588122819527	118	Keyboard	down
+63588122819544	119	Keyboard	down
+63588122819560	120	Keyboard	down
+63588122819577	121	Keyboard	down
+63588122819593	122	Keyboard	down
+63588122819610	123	Keyboard	down
+63588122819626	124	Keyboard	down

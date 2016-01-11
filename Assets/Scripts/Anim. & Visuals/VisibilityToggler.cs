@@ -3,12 +3,16 @@ using System.Collections;
 
 public class VisibilityToggler : MonoBehaviour {
 
+	public bool isVisibleAtStart = true;
+
 	bool isVisible = true;
 	float currentAlpha = 1.0f;
 
 	// Use this for initialization
 	void Start () {
-
+		if (!isVisibleAtStart) {
+			TurnVisible(false);
+		}
 	}
 	
 	// Update is called once per frame

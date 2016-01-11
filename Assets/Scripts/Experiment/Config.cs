@@ -16,7 +16,7 @@ public class Config : MonoBehaviour {
 	//test session variables
 	//doTestSession (not implemented in the panda3d version )
 
-	public static int numTestTrials = 2;
+	public static int numTestTrials = 4;
 	
 	//practice settings
 	public static int numTrialsPract = 1;
@@ -51,7 +51,7 @@ public class Config : MonoBehaviour {
 	public static float turnAngleMult = 0.07f;
 
 	//drive variables
-	public static float driveSpeed = 22;
+	public static float driveSpeed = 10;
 
 	//object buffer variables
 
