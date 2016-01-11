@@ -46,6 +46,8 @@ public class Config : MonoBehaviour {
 
 	public static int recallTime = 2;
 
+	public static float timeUntilWaypoints = 10.0f;
+
 	//tilt variables
 	public static bool isAvatarTilting = true;
 	public static float turnAngleMult = 0.07f;
