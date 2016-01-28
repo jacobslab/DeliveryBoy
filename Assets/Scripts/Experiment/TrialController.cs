@@ -202,8 +202,24 @@ public class TrialController : MonoBehaviour {
 
 			//rotate building
 			float currTime = 0.0f;
-			float timePerRotation = Config.buildingRotateTime / ((float)Config.numBuildingRotations);
-			for(int j = 0; j < Config.numBuildingRotations; j++){
+			//float timePerRotation = Config.buildingRotateTime / (Config.numBuildingRotations);
+
+			float totalDegreesToRotate = Config.numBuildingRotations * 360.0f;
+
+			float degPerSecond = totalDegreesToRotate / Config.buildingRotateTime;
+
+			while( currTime < Config.buildingRotateTime ){
+				yield return 0;
+				float degToRotate = degPerSecond * Time.deltaTime;
+				currBuilding.transform.RotateAround(currBuilding.transform.position, Vector3.up, degToRotate);
+				currTime += Time.deltaTime;
+			}
+
+
+
+
+
+			/*for(int j = 0; j < Config.numBuildingRotations; j++){
 				while(currTime < timePerRotation){
 					yield return 0;
 					float degToRotate = (360.0f / timePerRotation) * Time.deltaTime;
@@ -211,7 +227,7 @@ public class TrialController : MonoBehaviour {
 					currTime += Time.deltaTime;
 				}
 				currTime = 0.0f;
-			}
+			}*/
 
 			//put building back
 			currBuilding.ResetBuilding();
