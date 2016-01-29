@@ -2,7 +2,11 @@
 using System.Collections;
 
 public class Waypoint : MonoBehaviour {
+	public Waypoint[] neighbors;
+
 	VisibilityToggler[] waypointArrowVisuals;
+
+	[HideInInspector] public float DijkstraDistance; //for use by the waypoint controller in determining shortest path
 
 	// Use this for initialization
 	void Start () {
@@ -14,22 +18,30 @@ public class Waypoint : MonoBehaviour {
 	
 	}
 
-	public void LightUp(Vector3 positionToPointTo){
-		VisibilityToggler closestArrow= waypointArrowVisuals[0];
-
-		float shortestDistance = -1;
-
+	public void TurnOff(){
 		for(int i = 0; i < waypointArrowVisuals.Length; i++){
-			float arrowDistance = (positionToPointTo - waypointArrowVisuals[i].transform.position).magnitude;
-			if(shortestDistance == -1 || arrowDistance < shortestDistance){
-				shortestDistance = arrowDistance;
-			}
-			else if(arrowDistance < shortestDistance){
-				shortestDistance = arrowDistance;
-				closestArrow = waypointArrowVisuals[i];
-			}
+			waypointArrowVisuals[i].TurnVisible(false);
 		}
+	}
 
-		closestArrow.TurnVisible (true);
+	void TurnOn(){
+		for(int i = 0; i < waypointArrowVisuals.Length; i++){
+			waypointArrowVisuals[i].TurnVisible(true);
+		}
+	}
+
+	public void LightUp(Vector3 positionToPointTo){
+		TurnOn ();
+
+		RotateTowards (positionToPointTo);
+	}
+
+	//modified from FacePosiion.cs FaceThePosition() function
+	void RotateTowards(Vector3 positionToFace){
+		Quaternion origRot = transform.rotation;
+		transform.LookAt (positionToFace);
+		float yRot = transform.rotation.eulerAngles.y;
+		
+		transform.rotation = Quaternion.Euler (origRot.eulerAngles.x, yRot, origRot.eulerAngles.z);
 	}
 }

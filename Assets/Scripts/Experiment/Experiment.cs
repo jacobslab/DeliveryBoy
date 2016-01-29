@@ -43,6 +43,9 @@ public class Experiment : MonoBehaviour {
 	//avatar
 	public Player player;
 
+	//waypoint controller
+	public WaypointController waypointController;
+
 	//Canvas
 	public Canvas mainCanvas;
 

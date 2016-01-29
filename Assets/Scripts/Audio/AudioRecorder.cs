@@ -1,39 +1,4 @@
-﻿/*using UnityEngine;
-using System.Collections;
-
-public class AudioRecorder : MonoBehaviour {
-
-	void Start() {
-
-		foreach (string device in Microphone.devices) {
-			Debug.Log("Name: " + device);
-		}
-
-	}
-
-	public void Record(string filePath, string fileName, float duration){
-		if (CheckForRecordingDevice ()) {
-			Debug.Log("There is a recording device!");
-			AudioSource aud = GetComponent<AudioSource> ();
-			aud.clip = Microphone.Start ("Built-in Microphone", true, duration, 44100);
-			aud.Play ();
-
-			SavWav.Save (filePath, fileName, aud.clip);
-		} 
-		else {
-			Debug.Log ("No recording device.");
-		}
-	}
-
-	bool CheckForRecordingDevice(){
-		if (Microphone.devices.Length > 0) {
-			return true;
-		}
-		return false;
-	}
-}*/
-
-//SCRIPT MODIFIED FROM: http://wiki.unity3d.com/index.php/Mic_Input
+﻿//SCRIPT MODIFIED FROM: http://wiki.unity3d.com/index.php/Mic_Input
 
 using UnityEngine;
 using System.Collections;

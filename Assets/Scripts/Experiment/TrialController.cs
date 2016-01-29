@@ -215,20 +215,6 @@ public class TrialController : MonoBehaviour {
 				currTime += Time.deltaTime;
 			}
 
-
-
-
-
-			/*for(int j = 0; j < Config.numBuildingRotations; j++){
-				while(currTime < timePerRotation){
-					yield return 0;
-					float degToRotate = (360.0f / timePerRotation) * Time.deltaTime;
-					currBuilding.transform.RotateAround(currBuilding.transform.position, Vector3.up, degToRotate);
-					currTime += Time.deltaTime;
-				}
-				currTime = 0.0f;
-			}*/
-
 			//put building back
 			currBuilding.ResetBuilding();
 		}
@@ -239,6 +225,9 @@ public class TrialController : MonoBehaviour {
 	IEnumerator DoVisitStoreCommand(Building buildingToVisit){
 		exp.player.controls.ShouldLockControls = false;
 
+		//light up path
+		exp.waypointController.IlluminateShortestWaypointPath (exp.player.transform.position, buildingToVisit.transform.position);
+		Debug.Log (buildingToVisit.name + "Pos: " + buildingToVisit.transform.position);
 		//show instruction at top of screen, don't wait for button, wait for collision
 		
 		exp.instructionsController.SetSingleInstruction ("Go to the " + buildingToVisit.name, false);
@@ -324,7 +313,9 @@ public class TrialController : MonoBehaviour {
 
 		//record audio to a file in the session directory for the duration of the recall period
 		string fileName = ExperimentSettings.currentSubject.name + "_" + numRecallPhase;
-		StartCoroutine(exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, Config.recallTime));
+		if (ExperimentSettings.isLogging) {
+			StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, Config.recallTime));
+		}
 
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
 
