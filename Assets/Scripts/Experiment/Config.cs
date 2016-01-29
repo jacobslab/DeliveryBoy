@@ -46,6 +46,7 @@ public class Config : MonoBehaviour {
 
 	public static int recallTime = 2;
 
+	public static bool shouldUseWaypoints = true;
 	public static float timeUntilWaypoints = 10.0f;
 
 	//tilt variables

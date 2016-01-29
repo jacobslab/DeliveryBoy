@@ -26,22 +26,32 @@ public class Player : MonoBehaviour {
 	}
 
 	GameObject waitForCollisionObject;
-	bool isLookingForObject = false;
-	public IEnumerator WaitForObjectCollision(string objectName){
-		isLookingForObject = true;
-		Debug.Log("WAITING FOR COLLISION WITH: " + objectName);
+	bool isLookingForBuilding = false;
+	public IEnumerator WaitForBuildingCollision(GameObject building, bool shouldUseWaypoints){
+		float timeWaiting = 0.0f;
+
+		isLookingForBuilding = true;
+		Debug.Log("WAITING FOR COLLISION WITH: " + building.name);
 		
 		string lastCollisionName = "";
-		while (lastCollisionName != objectName) {
+		while (lastCollisionName != building.name) {
 			if(waitForCollisionObject != null){
 				lastCollisionName = waitForCollisionObject.name;
 			}
 			yield return 0;
+
+			if(shouldUseWaypoints){
+				timeWaiting += Time.deltaTime;
+				if(timeWaiting > Config.timeUntilWaypoints){
+					//light up path
+					exp.waypointController.IlluminateShortestWaypointPath (exp.player.transform.position, building.transform.position);
+				}
+			}
 		}
 
 		Debug.Log ("FOUND BUILDING");
 		
-		isLookingForObject = false;
+		isLookingForBuilding = false;
 
 	}
 

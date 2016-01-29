@@ -133,6 +133,10 @@ public class WaypointController : MonoBehaviour {
 					smallestDistIndex = i;
 				}
 			}
+			if(smallestDistIndex == -1){
+				int a = 0; 
+				Debug.Log("DEBUG HERE. WE HAVE AN INDEX OF -1");
+			}
 			currNode = unvisitedPoints[smallestDistIndex];
 		}
 

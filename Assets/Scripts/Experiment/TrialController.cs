@@ -225,13 +225,10 @@ public class TrialController : MonoBehaviour {
 	IEnumerator DoVisitStoreCommand(Building buildingToVisit){
 		exp.player.controls.ShouldLockControls = false;
 
-		//light up path
-		exp.waypointController.IlluminateShortestWaypointPath (exp.player.transform.position, buildingToVisit.transform.position);
-		Debug.Log (buildingToVisit.name + "Pos: " + buildingToVisit.transform.position);
 		//show instruction at top of screen, don't wait for button, wait for collision
 		
 		exp.instructionsController.SetSingleInstruction ("Go to the " + buildingToVisit.name, false);
-		yield return StartCoroutine (exp.player.WaitForObjectCollision (buildingToVisit.name));
+		yield return StartCoroutine (exp.player.WaitForBuildingCollision (buildingToVisit.gameObject, Config.shouldUseWaypoints));
 	}
 
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
