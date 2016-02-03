@@ -57,8 +57,7 @@ public class WaypointController : MonoBehaviour {
 		startPoint.DijkstraDistance = 0;
 		float minDistanceToStart = (startPosition - startPoint.transform.position).magnitude;
 
-		Waypoint endPoint = waypoints [0];
-		endPoint.DijkstraDistance = Mathf.Infinity;
+		Waypoint endPoint = waypoints [0]; //don't set endpoint distance to -inf until later (though it should get set in looking for the start node anyway...)
 		float minDistanceToEnd = (endPosition - endPoint.transform.position).magnitude;
 
 		for (int i = 1; i < waypoints.Length; i++) { //already used the 0 index to initialize, so start at index 1
@@ -67,7 +66,7 @@ public class WaypointController : MonoBehaviour {
 			float endToCurrPointDist = (endPosition - currPoint.transform.position).magnitude;
 
 			//min distance check
-			if(startToCurrPointDist < minDistanceToStart){
+			if(startToCurrPointDist < minDistanceToStart){}
 				startPoint.DijkstraDistance = Mathf.Infinity;	//set old start point distance to infinity
 				currPoint.DijkstraDistance = 0;		//set new start point distance to 0
 				startPoint = currPoint;				//set new start point
@@ -84,8 +83,9 @@ public class WaypointController : MonoBehaviour {
 			}
 		}
 
-		Debug.Log ("start: " + startPoint.name);
-		Debug.Log ("end: " + endPoint.name);
+		if (endPoint != startPoint) {
+			endPoint.DijkstraDistance = Mathf.Infinity;
+		}
 
 		//2. Set the initial node as current. Mark all other nodes unvisited. Create a set of all the unvisited nodes called the unvisited set.
 		Waypoint currNode = startPoint;
@@ -133,10 +133,7 @@ public class WaypointController : MonoBehaviour {
 					smallestDistIndex = i;
 				}
 			}
-			if(smallestDistIndex == -1){
-				int a = 0; 
-				Debug.Log("DEBUG HERE. WE HAVE AN INDEX OF -1");
-			}
+
 			currNode = unvisitedPoints[smallestDistIndex];
 		}
 
