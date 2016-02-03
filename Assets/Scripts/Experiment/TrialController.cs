@@ -127,7 +127,7 @@ public class TrialController : MonoBehaviour {
 				exp.player.controls.ShouldLockControls = true;
 
 				if(i != 0){
-					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Welcome to Delivery Day " + i + "/" + Config.numTestTrials + "!", true, true, false, Config.minDefaultInstructionTime));
+					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Welcome to Delivery Day " + i + "/" + Config.numTestTrials + "!" + "\n\nPress [X] to continue.", true, true, false, Config.minDefaultInstructionTime));
 				}
 
 				exp.player.controls.ShouldLockControls = false;
