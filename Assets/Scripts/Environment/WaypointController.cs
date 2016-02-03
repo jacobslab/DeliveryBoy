@@ -66,7 +66,7 @@ public class WaypointController : MonoBehaviour {
 			float endToCurrPointDist = (endPosition - currPoint.transform.position).magnitude;
 
 			//min distance check
-			if(startToCurrPointDist < minDistanceToStart){}
+			if(startToCurrPointDist < minDistanceToStart){
 				startPoint.DijkstraDistance = Mathf.Infinity;	//set old start point distance to infinity
 				currPoint.DijkstraDistance = 0;		//set new start point distance to 0
 				startPoint = currPoint;				//set new start point
