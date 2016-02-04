@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 public class Waypoint : MonoBehaviour {
 	public Waypoint[] neighbors;
@@ -10,7 +11,27 @@ public class Waypoint : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		waypointArrowVisuals = gameObject.GetComponentsInChildren<VisibilityToggler> ();
+		InitChildren ();
+	}
+
+	void InitChildren(){
+		string IDString = GetIDString ();
+		foreach (Transform child in transform) {
+			child.name += IDString;
+		}
+
+		waypointArrowVisuals = GetComponentsInChildren<VisibilityToggler> ();
+		TurnOff ();
+	}
+
+	string GetIDString(){
+		//also used in Replay.cs
+		Regex numAlpha = new Regex("(?<Alpha>[a-zA-Z ']*)(?<Numeric>[0-9]*)");
+		Match match = numAlpha.Match(gameObject.name);
+		//string objShortName = match.Groups["Alpha"].Value;
+		string IDString = match.Groups["Numeric"].Value;
+
+		return IDString;
 	}
 	
 	// Update is called once per frame
@@ -36,7 +57,7 @@ public class Waypoint : MonoBehaviour {
 		RotateTowards (positionToPointTo);
 	}
 
-	//modified from FacePosiion.cs FaceThePosition() function
+	//modified from FacePosition.cs FaceThePosition() function
 	void RotateTowards(Vector3 positionToFace){
 		Quaternion origRot = transform.rotation;
 		transform.LookAt (positionToFace);

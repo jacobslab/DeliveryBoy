@@ -241,7 +241,7 @@ public class Replay : MonoBehaviour {
 
 									//TODO: use new functions in spawnable object?
 									//separate out the object name from a numeric ID
-									Regex numAlpha = new Regex("(?<Alpha>[a-zA-Z ]*)(?<Numeric>[0-9]*)");
+									Regex numAlpha = new Regex("(?<Alpha>[a-zA-Z ']*)(?<Numeric>[0-9]*)");
 									Match match = numAlpha.Match(objName);
 									string objShortName = match.Groups["Alpha"].Value;
 									string objID = match.Groups["Numeric"].Value;
