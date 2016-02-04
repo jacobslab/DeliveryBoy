@@ -38,7 +38,7 @@ public class TrialController : MonoBehaviour {
 	public Transform buildingRotationTransform;
 	public VisibilityToggler rotationBackgroundCube;
 
-	TrialLogTrack trialLogger;
+	public TrialLogTrack trialLogger;
 
 	int numRealTrials = 0; //used for logging trial ID's
 	int numStoresVisited = 0;
@@ -137,7 +137,8 @@ public class TrialController : MonoBehaviour {
 
 
 				//RECALL PHASE
-				yield return StartCoroutine(DoRecallPhase(i));
+				//TODO: implement different kinds of recall phases
+				yield return StartCoroutine(DoRecallPhase( Config.RecallType.FreeItemRecall, i));
 
 			}
 
@@ -173,9 +174,11 @@ public class TrialController : MonoBehaviour {
 
 		yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 
+		trialLogger.LogLearningPhaseStarted (true);
+
 		for (int numIterations = 0; numIterations < Config.numLearningIterations; numIterations++) {
 
-			trialLogger.LogLearningPhaseStarted (numIterations);
+			trialLogger.LogLearningIteration (numIterations);
 
 			List<Building> buildingsLearningOrder = exp.buildingController.GetLearningOrderBuildings();
 
@@ -185,16 +188,22 @@ public class TrialController : MonoBehaviour {
 
 			yield return 0;
 		}
+
+		trialLogger.LogLearningPhaseStarted (false);
 	}
 
 	IEnumerator DoStoreRotationPhase(){
 		currentState = TrialState.rotationLearning;
+
+		trialLogger.LogRotationPhase (true);
 
 		rotationBackgroundCube.TurnVisible (true);
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 0.0f;
 		//for each building, move it to the rotation location, rotate it for x seconds, return it to its original location
 		for (int i = 0; i < exp.buildingController.buildings.Length; i++) {
 			Building currBuilding = exp.buildingController.buildings[i];
+
+			trialLogger.LogBuildingRotationPresented(currBuilding, true);
 
 			//move building
 			currBuilding.transform.position = buildingRotationTransform.position;
@@ -217,25 +226,33 @@ public class TrialController : MonoBehaviour {
 
 			//put building back
 			currBuilding.ResetBuilding();
+
+			trialLogger.LogBuildingRotationPresented(currBuilding, false);
 		}
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 1.0f;
 		rotationBackgroundCube.TurnVisible (false);
+
+		trialLogger.LogRotationPhase (false);
 	}
 
 	IEnumerator DoVisitStoreCommand(Building buildingToVisit){
+		trialLogger.LogBuildingTarget (buildingToVisit, true);
+
 		exp.player.controls.ShouldLockControls = false;
 
 		//show instruction at top of screen, don't wait for button, wait for collision
 		
 		exp.instructionsController.SetSingleInstruction ("Go to the " + buildingToVisit.name, false);
 		yield return StartCoroutine (exp.player.WaitForBuildingCollision (buildingToVisit.gameObject, Config.shouldUseWaypoints));
+
+		trialLogger.LogBuildingTarget (buildingToVisit, false);
 	}
 
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
 
 		currentState = TrialState.delivery;
 
-		trialLogger.LogDeliveryDayStarted (deliveryDay);
+		trialLogger.LogDeliveryDay (deliveryDay, true);
 
 		List<Building> deliveryBuildings = exp.buildingController.GetRandomDeliveryBuildings();
 
@@ -265,16 +282,22 @@ public class TrialController : MonoBehaviour {
 			//reset timer
 			deliveryTimer.ResetTimer();
 		}
+
+		trialLogger.LogDeliveryDay (deliveryDay, false);
 	}
 
 	IEnumerator DeliverItemVisible(string toBuildingName){
 		//show delivered item
 		GameObject itemDelivered = exp.objectController.SpawnDeliverable(Vector3.zero);
 		string itemDisplayText = exp.objectController.GetDeliverableText(itemDelivered);
-		
-		trialLogger.LogDeliveryMade(itemDelivered.GetComponent<SpawnableObject>().GetName());
+
+		string itemName = itemDelivered.GetComponent<SpawnableObject> ().GetName ();
+		trialLogger.LogVisibleDeliveryPresentation(itemName, true);
 
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toBuildingName, true, false, false, Config.deliveryCompleteInstructionsTime));
+
+		trialLogger.LogVisibleDeliveryPresentation(itemName, false);
+
 		Destroy(itemDelivered);
 	}
 
@@ -286,6 +309,8 @@ public class TrialController : MonoBehaviour {
 			//play building audio! as long as it's not the last building.
 			if(playerCollisionObject.tag == "Building"){
 				Building collisionBuilding = playerCollisionObject.GetComponent<Building>();
+			
+				//TRIAL LOGGER LOGS THIS IN PLAYDELIVERYAUDIO() COROUTINE
 				yield return StartCoroutine(collisionBuilding.PlayDeliveryAudio());
 			}
 		
@@ -294,10 +319,10 @@ public class TrialController : MonoBehaviour {
 		yield return 0;
 	}
 
-	IEnumerator DoRecallPhase(int numRecallPhase){
+	IEnumerator DoRecallPhase(Config.RecallType recallType, int numRecallPhase){
 		currentState = TrialState.recall;
 
-		trialLogger.LogRecallPhaseStarted ();
+		trialLogger.LogRecallPhaseStarted (recallType, true);
 
 		RecallUI.alpha = 1.0f;
 
@@ -314,11 +339,32 @@ public class TrialController : MonoBehaviour {
 			StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, Config.recallTime));
 		}
 
-		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+		switch(recallType){
+			case Config.RecallType.FreeItemRecall:
+				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				break;
+			case Config.RecallType.FreeBuildingRecall:
+				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				break;
+			case Config.RecallType.ItemCuedRecall:
+				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				break;
+			case Config.RecallType.BuildingCuedRecall:
+				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				break;
+			case Config.RecallType.FinalItemRecall:
+				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				break;
+			case Config.RecallType.FinalBuildingRecall:
+				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				break;
+		}
 
 		exp.player.controls.ShouldLockControls = false;
 
 		RecallUI.alpha = 0.0f;
+
+		trialLogger.LogRecallPhaseStarted (recallType, false);
 
 		yield return 0;
 	}

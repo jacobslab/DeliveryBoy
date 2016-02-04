@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 [RequireComponent (typeof (AudioSource))]
 public class Building : MonoBehaviour {
-	
+
+	Experiment exp { get { return Experiment.Instance; } }
+
 	public TextMesh myLabel;
 	Vector3 origPosition;
 	Quaternion origRotation;
@@ -50,9 +52,14 @@ public class Building : MonoBehaviour {
 			myAudioPlayer.clip = audioToPlay;
 			myAudioPlayer.Play ();
 			audioLeftToUse.RemoveAt(randomAudioIndex);
+
+			exp.trialController.trialLogger.LogAudioDeliveryPresentation(myAudioPlayer.clip.name , true); //TODO: move into trial controller if possible.
+
 			while(myAudioPlayer.isPlaying){
 				yield return 0;
 			}
+
+			exp.trialController.trialLogger.LogAudioDeliveryPresentation(myAudioPlayer.clip.name , true); //TODO: move into trial controller if possible.
 		}
 		else{
 			Debug.Log("No audio for this building!" + gameObject.name);

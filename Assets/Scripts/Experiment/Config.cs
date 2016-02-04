@@ -31,11 +31,11 @@ public class Config : MonoBehaviour {
 	//DELIVERY VARIABLES
 	public static int numDeliveryStores = 5; //out of the total number of stores
 	
-	public static bool isAudioDelivery = false;
+	public static bool isAudioDelivery = true;
 
 	public static int numLearningIterations = 1;
 	public static bool doLearningPhase = true;
-	public static bool doRotationPhase = false;
+	public static bool doRotationPhase = true;
 
 	public static float buildingRotateTime = 8.0f;
 	public static float numBuildingRotations = 1.3f;
@@ -45,6 +45,18 @@ public class Config : MonoBehaviour {
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
 	public static int recallTime = 2;
+
+	public enum RecallType
+	{
+		FreeItemRecall,
+		FreeBuildingRecall,
+		ItemCuedRecall,
+		BuildingCuedRecall,
+		FinalItemRecall,
+		FinalBuildingRecall,
+		FinalFreeRecall
+	}
+
 
 	public static bool shouldUseWaypoints = true;
 	public static float timeUntilWaypoints = 10.0f;

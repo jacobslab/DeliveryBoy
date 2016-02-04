@@ -104,38 +104,115 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogLearningPhaseStarted(int numLearningPhase){
+
+	public void LogRotationPhase(bool isStarting){
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PHASE_STARTED" + separator + numLearningPhase);
-			Debug.Log ("Logged learning phase started event.");
+			if(isStarting){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_PHASE_STARTED");
+				Debug.Log ("Logged rotation phase started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_PHASE_ENDED");
+				Debug.Log ("Logged rotation phase ended event.");
+			}
 		}
 	}
 
-	public void LogDeliveryDayStarted(int deliveryDay){
+	public void LogBuildingRotationPresented(Building building, bool isStarting){
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_STARTED" + separator + deliveryDay);
-			Debug.Log ("Logged delivery day started event.");
+			if(isStarting){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_BUILDING_STARTED" + separator + building.name);
+				Debug.Log ("Logged rotation building started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_BUILDING_ENDED" + separator + building.name);
+				Debug.Log ("Logged rotation building ended event.");
+			}
 		}
 	}
 
-	public void LogDeliveryMade(string itemDelivered){
+	public void LogLearningIteration(int numLearningPhase){
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERED" + separator + itemDelivered);
-			Debug.Log ("Logged item delivered event.");
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_ITERATION" + separator + numLearningPhase);
+			Debug.Log ("Logged learning iteration event.");
 		}
 	}
 
-	public void LogRecallPhaseStarted(){
+	public void LogLearningPhaseStarted(bool isStarting){
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_STARTED");
-			Debug.Log ("Logged recall started event.");
+			if(isStarting){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PHASE_STARTED");
+				Debug.Log ("Logged learning phase started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PHASE_ENDED");
+				Debug.Log ("Logged learning phase ended event.");
+			}
 		}
 	}
 
-	public void LogFeedbackStarted(){
+	public void LogDeliveryDay(int deliveryDay, bool isStarting){
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "FEEDBACK_STARTED");
-			Debug.Log ("Logged feedback event.");
+			if(isStarting){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_STARTED" + separator + deliveryDay);
+				Debug.Log ("Logged delivery day started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_ENDED" + separator + deliveryDay);
+				Debug.Log ("Logged delivery day ended event.");
+			}
+		}
+	}
+
+	public void LogBuildingTarget(Building building, bool isStarting){
+		if (ExperimentSettings.isLogging) {
+			if(isStarting){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "BUILDING_TARGET_STARTED" + separator + building.name);
+				Debug.Log ("Logged building target started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "BUILDING_TARGET_ENDED" + separator + building.name);
+				Debug.Log ("Logged building target ended event.");
+			}
+		}
+	}
+
+	public void LogVisibleDeliveryPresentation(string itemDelivered, bool isStarting){
+		if (ExperimentSettings.isLogging) {
+			if(isStarting){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_VISUAL_STARTED" + separator + itemDelivered);
+				Debug.Log ("Logged item delivered started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_VISUAL_ENDED" + separator + itemDelivered);
+				Debug.Log ("Logged item delivered ended event.");
+			}
+		}
+	}
+
+	public void LogAudioDeliveryPresentation(string itemDelivered, bool isStarting){
+		if (ExperimentSettings.isLogging) {
+			if(isStarting){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_AUDIO_STARTED" + separator + itemDelivered);
+				Debug.Log ("Logged item delivered started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_AUDIO_ENDED" + separator + itemDelivered);
+				Debug.Log ("Logged item delivered ended event.");
+			}
+		}
+	}
+
+	public void LogRecallPhaseStarted(Config.RecallType recallType, bool isStarted){
+		if (ExperimentSettings.isLogging) {
+			if(isStarted){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_STARTED" + separator + recallType.ToString());
+				Debug.Log ("Logged recall started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_ENDED" + separator + recallType.ToString());
+				Debug.Log ("Logged recall ended event.");
+			}
 		}
 	}
 
