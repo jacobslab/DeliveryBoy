@@ -25,6 +25,9 @@ public class Experiment : MonoBehaviour {
 	private string sessionDirectory;
 	private string subjectDirectory;
 
+	//event logger!
+	public TrialLogTrack eventLogger;
+
 	//session controller
 	public TrialController trialController;
 
@@ -34,8 +37,8 @@ public class Experiment : MonoBehaviour {
 	//object controller
 	public ObjectController objectController;
 
-	//building controller
-	public BuildingController buildingController;
+	//store controller
+	public StoreController storeController;
 
 	//environment controller
 	public EnvironmentController environmentController;
@@ -91,6 +94,8 @@ public class Experiment : MonoBehaviour {
 			instructionsController.TurnOffInstructions();
 			cameraController.SetInGame(); //don't use oculus for replay mode
 		}
+
+		eventLogger = GetComponent<TrialLogTrack> ();
 
 	}
 	

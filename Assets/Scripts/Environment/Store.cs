@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent (typeof (AudioSource))]
-public class Building : MonoBehaviour {
+public class Store : MonoBehaviour {
 
 	Experiment exp { get { return Experiment.Instance; } }
 
@@ -29,10 +29,10 @@ public class Building : MonoBehaviour {
 		myAudioPlayer = GetComponent<AudioSource>();
 		
 		audioLeftToUse = new List<AudioClip>();
-		string folder = "BuildingAudio/" + gameObject.name;
-		AudioClip[] buildingAudioClips = Resources.LoadAll<AudioClip>(folder);
-		for(int i = 0; i < buildingAudioClips.Length; i++){
-			audioLeftToUse.Add(buildingAudioClips[i]);
+		string folder = "StoreAudio/" + gameObject.name;
+		AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip>(folder);
+		for(int i = 0; i < storeAudioClips.Length; i++){
+			audioLeftToUse.Add(storeAudioClips[i]);
 		}
 	}
 	
@@ -53,21 +53,21 @@ public class Building : MonoBehaviour {
 			myAudioPlayer.Play ();
 			audioLeftToUse.RemoveAt(randomAudioIndex);
 
-			exp.trialController.trialLogger.LogAudioDeliveryPresentation(myAudioPlayer.clip.name , true); //TODO: move into trial controller if possible.
+			exp.eventLogger.LogAudioDeliveryPresentation(myAudioPlayer.clip.name , true); //TODO: move into trial controller if possible.
 
 			while(myAudioPlayer.isPlaying){
 				yield return 0;
 			}
 
-			exp.trialController.trialLogger.LogAudioDeliveryPresentation(myAudioPlayer.clip.name , true); //TODO: move into trial controller if possible.
+			exp.eventLogger.LogAudioDeliveryPresentation(myAudioPlayer.clip.name , true); //TODO: move into trial controller if possible.
 		}
 		else{
-			Debug.Log("No audio for this building!" + gameObject.name);
+			Debug.Log("No audio for this store!" + gameObject.name);
 			yield return 0;
 		}
 	}
 	
-	public void ResetBuilding(){
+	public void ResetStore(){
 		transform.position = origPosition;
 		transform.rotation = origRotation;
 	}

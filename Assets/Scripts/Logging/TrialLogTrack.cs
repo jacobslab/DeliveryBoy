@@ -118,15 +118,15 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogBuildingRotationPresented(Building building, bool isStarting){
+	public void LogStoreRotationPresented(Store store, bool isStarting){
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_BUILDING_STARTED" + separator + building.name);
-				Debug.Log ("Logged rotation building started event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_STORE_STARTED" + separator + store.name);
+				Debug.Log ("Logged rotation store started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_BUILDING_ENDED" + separator + building.name);
-				Debug.Log ("Logged rotation building ended event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_STORE_ENDED" + separator + store.name);
+				Debug.Log ("Logged rotation store ended event.");
 			}
 		}
 	}
@@ -164,15 +164,15 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogBuildingTarget(Building building, bool isStarting){
+	public void LogStoreTarget(Store store, bool isStarting){
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "BUILDING_TARGET_STARTED" + separator + building.name);
-				Debug.Log ("Logged building target started event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_TARGET_STARTED" + separator + store.name);
+				Debug.Log ("Logged store target started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "BUILDING_TARGET_ENDED" + separator + building.name);
-				Debug.Log ("Logged building target ended event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_TARGET_ENDED" + separator + store.name);
+				Debug.Log ("Logged store target ended event.");
 			}
 		}
 	}

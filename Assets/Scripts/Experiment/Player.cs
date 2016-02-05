@@ -26,15 +26,15 @@ public class Player : MonoBehaviour {
 	}
 
 	GameObject waitForCollisionObject;
-	bool isLookingForBuilding = false;
-	public IEnumerator WaitForBuildingCollision(GameObject building, bool shouldUseWaypoints){
+	bool isLookingForStore = false;
+	public IEnumerator WaitForStoreCollision(GameObject store, bool shouldUseWaypoints){
 		float timeWaiting = 0.0f;
 
-		isLookingForBuilding = true;
-		Debug.Log("WAITING FOR COLLISION WITH: " + building.name);
+		isLookingForStore = true;
+		Debug.Log("WAITING FOR COLLISION WITH: " + store.name);
 		
 		string lastCollisionName = "";
-		while (lastCollisionName != building.name) {
+		while (lastCollisionName != store.name) {
 			if(waitForCollisionObject != null){
 				lastCollisionName = waitForCollisionObject.name;
 			}
@@ -44,14 +44,14 @@ public class Player : MonoBehaviour {
 				timeWaiting += Time.deltaTime;
 				if(timeWaiting > Config.timeUntilWaypoints){
 					//light up path
-					exp.waypointController.IlluminateShortestWaypointPath (exp.player.transform.position, building.transform.position);
+					exp.waypointController.IlluminateShortestWaypointPath (exp.player.transform.position, store.transform.position);
 				}
 			}
 		}
 
-		Debug.Log ("FOUND BUILDING");
+		Debug.Log ("FOUND STORE");
 		
-		isLookingForBuilding = false;
+		isLookingForStore = false;
 
 	}
 
@@ -62,8 +62,8 @@ public class Player : MonoBehaviour {
 	void OnCollisionEnter(Collision collision){
 		waitForCollisionObject = collision.gameObject;
 
-		//log building collision
-		if (collision.gameObject.tag == "Building"){
+		//log store collision
+		if (collision.gameObject.tag == "Store"){
 			objLogTrack.LogCollision (collision.gameObject.name);
 		}
 		

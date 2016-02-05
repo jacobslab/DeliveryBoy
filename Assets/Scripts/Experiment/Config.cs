@@ -16,12 +16,11 @@ public class Config : MonoBehaviour {
 	//test session variables
 	//doTestSession (not implemented in the panda3d version )
 
-	public static int numTestTrials = 4;
+	public static int numTestTrials = 8;
 	
 	//practice settings
 	public static int numTrialsPract = 1;
 	public static bool doPracticeTrial = false;
-	public static int numSpecialObjectsPract = 2;
 
 
 	//SPECIFIC TASK VARIABLES:
@@ -29,16 +28,16 @@ public class Config : MonoBehaviour {
 	public static float randomJitterMax = 0.2f;
 
 	//DELIVERY VARIABLES
-	public static int numDeliveryStores = 5; //out of the total number of stores
+	public static int numDeliveryStores = 12; //out of the total number of stores
 	
 	public static bool isAudioDelivery = true;
 
 	public static int numLearningIterations = 1;
-	public static bool doLearningPhase = true;
-	public static bool doRotationPhase = true;
+	public static bool doLearningPhase = false;
+	public static bool doRotationPhase = false;
 
-	public static float buildingRotateTime = 8.0f;
-	public static float numBuildingRotations = 1.3f;
+	public static float storeRotateTime = 8.0f;
+	public static float numStoreRotations = 1.3f;
 	
 	public static float minInitialInstructionsTime = 0.0f;
 	public static float deliveryCompleteInstructionsTime = 2.0f;
@@ -49,11 +48,11 @@ public class Config : MonoBehaviour {
 	public enum RecallType
 	{
 		FreeItemRecall,
-		FreeBuildingRecall,
+		FreeStoreRecall,
 		ItemCuedRecall,
-		BuildingCuedRecall,
+		StoreCuedRecall,
 		FinalItemRecall,
-		FinalBuildingRecall,
+		FinalStoreRecall,
 		FinalFreeRecall
 	}
 
