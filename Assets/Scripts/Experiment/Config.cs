@@ -49,11 +49,10 @@ public class Config : MonoBehaviour {
 	{
 		FreeItemRecall,
 		FreeStoreRecall,
-		ItemCuedRecall,
-		StoreCuedRecall,
+		CuedItemRecall,
+		CuedStoreRecall,
 		FinalItemRecall,
 		FinalStoreRecall,
-		FinalFreeRecall
 	}
 
 

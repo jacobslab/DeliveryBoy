@@ -151,6 +151,13 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
+	public void LogSessionStarted(){ //gets logged at the start of all delivery days
+		if (ExperimentSettings.isLogging) {
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "SESS_STARTED");
+			Debug.Log ("Logged session started event.");
+		}
+	}
+
 	public void LogDeliveryDay(int deliveryDay, bool isStarting){
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
@@ -164,53 +171,121 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogStoreTarget(Store store, bool isStarting){
+	public void LogStoreStarted(Store store, bool isLearning, bool isStarting){ //if it's not learning, it's a delivery!
 		if (ExperimentSettings.isLogging) {
+			string learningOrDelivery = "learning";
+			if(!isLearning){
+				learningOrDelivery = "delivery";
+			}
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_TARGET_STARTED" + separator + store.name);
-				Debug.Log ("Logged store target started event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_STARTED" + separator + store.name + separator + learningOrDelivery);
+				Debug.Log ("Logged store started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_TARGET_ENDED" + separator + store.name);
-				Debug.Log ("Logged store target ended event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_ENDED" + separator + store.name + separator + learningOrDelivery);
+				Debug.Log ("Logged store ended event.");
 			}
 		}
 	}
 
-	public void LogVisibleDeliveryPresentation(string itemDelivered, bool isStarting){
+	public void LogDeliveryPresentation(string itemDelivered, bool isAudio, bool isStarting){
+		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
+		if (!isAudio) {
+			audioOrVisual = "visual";
+		}
+
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_VISUAL_STARTED" + separator + itemDelivered);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_STARTED" + separator + itemDelivered + separator + audioOrVisual);
 				Debug.Log ("Logged item delivered started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_VISUAL_ENDED" + separator + itemDelivered);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_ENDED" + separator + itemDelivered + separator + audioOrVisual);
 				Debug.Log ("Logged item delivered ended event.");
 			}
 		}
 	}
 
-	public void LogAudioDeliveryPresentation(string itemDelivered, bool isStarting){
+	
+	public void LogRecallItemPresentation (string itemPresented, bool isAudio, bool isStarting){
+		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
+		if (!isAudio) {
+			audioOrVisual = "visual";
+		}
+		
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_AUDIO_STARTED" + separator + itemDelivered);
-				Debug.Log ("Logged item delivered started event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_PRESENTED_STARTED" + separator + itemPresented + separator + audioOrVisual);
+				Debug.Log ("Logged item presentation started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_AUDIO_ENDED" + separator + itemDelivered);
-				Debug.Log ("Logged item delivered ended event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_PRESENTED_ENDED" + separator + itemPresented + separator + audioOrVisual);
+				Debug.Log ("Logged item presentation ended event.");
+			}
+		}
+	}
+
+	public void LogRecallBuildingPresentation (string storePresented, bool isAudio, bool isStarting){
+		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
+		if (!isAudio) {
+			audioOrVisual = "visual";
+		}
+		
+		if (ExperimentSettings.isLogging) {
+			if(isStarting){
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_PRESENTED_STARTED" + separator + storePresented + separator + audioOrVisual);
+				Debug.Log ("Logged item presentation started event.");
+			}
+			else{
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_PRESENTED_ENDED" + separator + storePresented + separator + audioOrVisual);
+				Debug.Log ("Logged item presentation ended event.");
 			}
 		}
 	}
 
 	public void LogRecallPhaseStarted(Config.RecallType recallType, bool isStarted){
+
+		string eventString = "";
+		string itemOrStore = "item";
+
+		switch (recallType) {
+		case Config.RecallType.FreeItemRecall:
+			eventString = "FREE_RECALL";
+			break;
+		case Config.RecallType.FreeStoreRecall:
+			eventString = "FREE_RECALL";
+			itemOrStore = "store";
+			break;
+		case Config.RecallType.CuedItemRecall:
+			eventString = "CUED_RECALL";
+			break;
+		case Config.RecallType.CuedStoreRecall:
+			eventString = "CUED_RECALL";
+			itemOrStore = "store";
+			break;
+		case Config.RecallType.FinalItemRecall:
+			eventString = "FINAL_RECAL";
+			break;
+		case Config.RecallType.FinalStoreRecall:
+			eventString = "FINAL_RECAL";
+			itemOrStore = "store";
+			break;
+		}
+		
+		if(isStarted){
+			eventString += "_STARTED";
+		}
+		else{
+			eventString += "_ENDED";
+		}
+
 		if (ExperimentSettings.isLogging) {
 			if(isStarted){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_STARTED" + separator + recallType.ToString());
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + eventString + separator + itemOrStore);
 				Debug.Log ("Logged recall started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_ENDED" + separator + recallType.ToString());
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + eventString + separator + itemOrStore);
 				Debug.Log ("Logged recall ended event.");
 			}
 		}

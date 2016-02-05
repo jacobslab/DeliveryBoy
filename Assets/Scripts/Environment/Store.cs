@@ -53,13 +53,13 @@ public class Store : MonoBehaviour {
 			myAudioPlayer.Play ();
 			audioLeftToUse.RemoveAt(randomAudioIndex);
 
-			exp.eventLogger.LogAudioDeliveryPresentation(myAudioPlayer.clip.name , true); //TODO: move into trial controller if possible.
+			exp.eventLogger.LogDeliveryPresentation(myAudioPlayer.clip.name , true, true); //TODO: move into trial controller if possible.
 
 			while(myAudioPlayer.isPlaying){
 				yield return 0;
 			}
 
-			exp.eventLogger.LogAudioDeliveryPresentation(myAudioPlayer.clip.name , true); //TODO: move into trial controller if possible.
+			exp.eventLogger.LogDeliveryPresentation(myAudioPlayer.clip.name , true, true); //TODO: move into trial controller if possible.
 		}
 		else{
 			Debug.Log("No audio for this store!" + gameObject.name);

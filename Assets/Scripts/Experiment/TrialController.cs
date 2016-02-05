@@ -117,6 +117,8 @@ public class TrialController : MonoBehaviour {
 				yield return StartCoroutine(DoLearningPhase());
 			}
 
+			exp.eventLogger.LogSessionStarted();
+
 			exp.player.controls.ShouldLockControls = true;
 			yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You will now begin delivering items! Press [X] to start your first delivery day.", true, true, false, Config.minDefaultInstructionTime));
 
@@ -129,11 +131,11 @@ public class TrialController : MonoBehaviour {
 
 				exp.player.controls.ShouldLockControls = false;
 
-				//DELIVERY PHASE
+				//DELIVERY DAY
 				yield return StartCoroutine(DoStoreDeliveryPhase(i));
 
 
-				//RECALL PHASE
+				//RECALL
 				//TODO: implement different kinds of recall phases
 				yield return StartCoroutine(DoRecallPhase( Config.RecallType.FreeItemRecall, i));
 
@@ -180,7 +182,7 @@ public class TrialController : MonoBehaviour {
 			List<Store> storeLearningOrder = exp.storeController.GetLearningOrderStores();
 
 			for (int i = 0; i < storeLearningOrder.Count; i++) {
-				yield return StartCoroutine(DoVisitStoreCommand(storeLearningOrder[i]));
+				yield return StartCoroutine(DoVisitStoreCommand(storeLearningOrder[i], true));
 			}
 
 			yield return 0;
@@ -231,8 +233,8 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogRotationPhase (false);
 	}
 
-	IEnumerator DoVisitStoreCommand(Store storeToVisit){
-		exp.eventLogger.LogStoreTarget (storeToVisit, true);
+	IEnumerator DoVisitStoreCommand(Store storeToVisit, bool isLearning){ //if it's not learning, it's a delivery!
+		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, true);
 
 		exp.player.controls.ShouldLockControls = false;
 
@@ -241,7 +243,7 @@ public class TrialController : MonoBehaviour {
 		exp.instructionsController.SetSingleInstruction ("Go to the " + storeToVisit.name, false);
 		yield return StartCoroutine (exp.player.WaitForStoreCollision (storeToVisit.gameObject, Config.shouldUseWaypoints));
 
-		exp.eventLogger.LogStoreTarget (storeToVisit, false);
+		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, false);
 	}
 
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
@@ -256,7 +258,7 @@ public class TrialController : MonoBehaviour {
 			//start delivery timer
 			deliveryTimer.StartTimer();
 			//visit store
-			yield return StartCoroutine(DoVisitStoreCommand(deliveryStores[i]));
+			yield return StartCoroutine(DoVisitStoreCommand(deliveryStores[i], false));
 
 			//calculate score, reset the delivery timer
 			exp.scoreController.CalculateTimeBonus(deliveryTimer.GetSecondsInt());
@@ -288,11 +290,11 @@ public class TrialController : MonoBehaviour {
 		string itemDisplayText = exp.objectController.GetDeliverableText(itemDelivered);
 
 		string itemName = itemDelivered.GetComponent<SpawnableObject> ().GetName ();
-		exp.eventLogger.LogVisibleDeliveryPresentation(itemName, true);
+		exp.eventLogger.LogDeliveryPresentation(itemName, false, true);
 
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toStoreName, true, false, false, Config.deliveryCompleteInstructionsTime));
 
-		exp.eventLogger.LogVisibleDeliveryPresentation(itemName, false);
+		exp.eventLogger.LogDeliveryPresentation(itemName, false, false);
 
 		Destroy(itemDelivered);
 	}
@@ -342,10 +344,10 @@ public class TrialController : MonoBehaviour {
 			case Config.RecallType.FreeStoreRecall:
 				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
 				break;
-			case Config.RecallType.ItemCuedRecall:
+			case Config.RecallType.CuedItemRecall:
 				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
 				break;
-			case Config.RecallType.StoreCuedRecall:
+			case Config.RecallType.CuedStoreRecall:
 				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
 				break;
 			case Config.RecallType.FinalItemRecall:
