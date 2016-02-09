@@ -117,7 +117,7 @@ public class TrialController : MonoBehaviour {
 				yield return StartCoroutine(DoLearningPhase());
 			}
 
-			exp.eventLogger.LogSessionStarted();
+			exp.eventLogger.LogSessionStarted(Experiment.sessionID);
 
 			exp.player.controls.ShouldLockControls = true;
 			yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You will now begin delivering items! Press [X] to start your first delivery day.", true, true, false, Config.minDefaultInstructionTime));

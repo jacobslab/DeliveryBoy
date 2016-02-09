@@ -151,9 +151,9 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogSessionStarted (){//int sessionNum){ //gets logged at the start of all delivery days
+	public void LogSessionStarted (int sessionNum){ //gets logged at the start of all delivery days
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "SESS_STARTED");// + separator + sessionNum);
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "SESS_STARTED");
 			Debug.Log ("Logged session started event.");
 		}
 	}
