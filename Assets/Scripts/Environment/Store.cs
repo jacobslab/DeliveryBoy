@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -41,7 +41,7 @@ public class Store : MonoBehaviour {
 		
 	}
 	
-	public IEnumerator PlayDeliveryAudio(){
+	public IEnumerator PlayDeliveryAudio(int deliverySerialPosition){
 		Debug.Log ("Should play delivery audio! " + gameObject.name);
 		if(audioLeftToUse.Count == 0){
 			InitAudio();
@@ -53,13 +53,13 @@ public class Store : MonoBehaviour {
 			myAudioPlayer.Play ();
 			audioLeftToUse.RemoveAt(randomAudioIndex);
 
-			exp.eventLogger.LogDeliveryPresentation(myAudioPlayer.clip.name , true, true); //TODO: move into trial controller if possible.
+			exp.eventLogger.LogItemDelivery(myAudioPlayer.clip.name, this, deliverySerialPosition, true, true); //TODO: move into trial controller if possible.
 
 			while(myAudioPlayer.isPlaying){
 				yield return 0;
 			}
 
-			exp.eventLogger.LogDeliveryPresentation(myAudioPlayer.clip.name , true, true); //TODO: move into trial controller if possible.
+			exp.eventLogger.LogItemDelivery(myAudioPlayer.clip.name, this, deliverySerialPosition, true, true); //TODO: move into trial controller if possible.
 		}
 		else{
 			Debug.Log("No audio for this store!" + gameObject.name);

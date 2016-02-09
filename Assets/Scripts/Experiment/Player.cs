@@ -27,7 +27,9 @@ public class Player : MonoBehaviour {
 
 	GameObject waitForCollisionObject;
 	bool isLookingForStore = false;
-	public IEnumerator WaitForStoreCollision(GameObject store, bool shouldUseWaypoints){
+	public IEnumerator WaitForStoreCollision(GameObject store){
+		bool areWayPointsEnabled = false;
+
 		float timeWaiting = 0.0f;
 
 		isLookingForStore = true;
@@ -40,13 +42,18 @@ public class Player : MonoBehaviour {
 			}
 			yield return 0;
 
-			if(shouldUseWaypoints){
+			if(Config.shouldUseWaypoints){
 				timeWaiting += Time.deltaTime;
 				if(timeWaiting > Config.timeUntilWaypoints){
-					//light up path
-					exp.waypointController.IlluminateShortestWaypointPath (exp.player.transform.position, store.transform.position);
+					//light up path -- should get enabled/updated every frame because player's position changes
+					exp.waypointController.EnableWaypoints (exp.player.transform.position, store.transform.position);
+					areWayPointsEnabled = true;
 				}
 			}
+		}
+
+		if (areWayPointsEnabled) {
+			exp.waypointController.DisableWaypoints ();
 		}
 
 		Debug.Log ("FOUND STORE");

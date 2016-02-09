@@ -7,6 +7,10 @@ public class WaypointController : MonoBehaviour {
 
 	Waypoint[] waypoints;
 
+	bool areWaypointsEnabled = false;
+	Vector3 pathStartPos;
+	Vector3 pathEndPos;
+
 	void Awake(){
 		GetWaypoints ();
 	}
@@ -22,23 +26,40 @@ public class WaypointController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (areWaypointsEnabled) {
+			IlluminateShortestWaypointPath();
+		}
 	}
 
-	public void TurnOffAllWaypoints(){
+	public void EnableWaypoints(Vector3 startPosition, Vector3 endPosition){
+		areWaypointsEnabled = true;
+		pathStartPos = startPosition;
+		pathEndPos = endPosition;
+
+		exp.eventLogger.LogWayPoints (true);
+	}
+
+	public void DisableWaypoints(){
+		areWaypointsEnabled = false;
+		TurnOffAllWaypoints();
+
+		exp.eventLogger.LogWayPoints (false);
+	}
+
+	void TurnOffAllWaypoints(){
 		for (int i = 0; i < waypoints.Length; i++) {
 			waypoints[i].TurnOff();
 		}
 	}
 
-	public void IlluminateShortestWaypointPath(Vector3 startPosition, Vector3 endPosition){
+	void IlluminateShortestWaypointPath(){
 		TurnOffAllWaypoints ();
 
-		List<Waypoint> waypointPath = GetShortestWaypointPath(startPosition, endPosition);
+		List<Waypoint> waypointPath = GetShortestWaypointPath(pathStartPos, pathEndPos);
 
 		//light up the waypoints in the path
 		for(int i = 0; i < waypointPath.Count; i++){
-			Vector3 closePosition = endPosition;
+			Vector3 closePosition = pathEndPos;
 			if(i != waypointPath.Count - 1){ //if i is not the last waypoint in the path...
 				//point to the next waypoint in the path
 				closePosition = waypointPath[i + 1].transform.position;

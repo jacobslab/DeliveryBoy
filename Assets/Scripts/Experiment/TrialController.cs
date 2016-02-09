@@ -182,7 +182,7 @@ public class TrialController : MonoBehaviour {
 			List<Store> storeLearningOrder = exp.storeController.GetLearningOrderStores();
 
 			for (int i = 0; i < storeLearningOrder.Count; i++) {
-				yield return StartCoroutine(DoVisitStoreCommand(storeLearningOrder[i], true));
+				yield return StartCoroutine(DoVisitStoreCommand(storeLearningOrder[i], true, -1));
 			}
 
 			yield return 0;
@@ -233,17 +233,17 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogRotationPhase (false);
 	}
 
-	IEnumerator DoVisitStoreCommand(Store storeToVisit, bool isLearning){ //if it's not learning, it's a delivery!
-		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, true);
+	IEnumerator DoVisitStoreCommand(Store storeToVisit, bool isLearning, int numDeliveryToday){ //if it's not learning, it's a delivery!
+		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, true, numDeliveryToday);
 
 		exp.player.controls.ShouldLockControls = false;
 
 		//show instruction at top of screen, don't wait for button, wait for collision
 		
 		exp.instructionsController.SetSingleInstruction ("Go to the " + storeToVisit.name, false);
-		yield return StartCoroutine (exp.player.WaitForStoreCollision (storeToVisit.gameObject, Config.shouldUseWaypoints));
+		yield return StartCoroutine (exp.player.WaitForStoreCollision (storeToVisit.gameObject));
 
-		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, false);
+		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, false, numDeliveryToday);
 	}
 
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
@@ -254,24 +254,24 @@ public class TrialController : MonoBehaviour {
 
 		List<Store> deliveryStores = exp.storeController.GetRandomDeliveryStores();
 
-		for (int i = 0; i < deliveryStores.Count; i++) {
+		for (int numDelivery = 0; numDelivery < deliveryStores.Count; numDelivery++) {
 			//start delivery timer
 			deliveryTimer.StartTimer();
 			//visit store
-			yield return StartCoroutine(DoVisitStoreCommand(deliveryStores[i], false));
+			yield return StartCoroutine(DoVisitStoreCommand(deliveryStores[numDelivery], false, numDelivery));
 
 			//calculate score, reset the delivery timer
 			exp.scoreController.CalculateTimeBonus(deliveryTimer.GetSecondsInt());
 
 			//if not the last delivery, deliver an item.
-			if(i < deliveryStores.Count - 1){
+			if(numDelivery < deliveryStores.Count - 1){
 				exp.player.controls.ShouldLockControls = true;
 
 				if(Config.isAudioDelivery){
-					yield return StartCoroutine(DeliverItemAudio());
+					yield return StartCoroutine(DeliverItemAudio(numDelivery));
 				}
 				else{
-					yield return StartCoroutine(DeliverItemVisible(deliveryStores [i].name));
+					yield return StartCoroutine(DeliverItemVisible(deliveryStores [numDelivery], numDelivery));
 				}
 
 				exp.player.controls.ShouldLockControls = false;
@@ -284,22 +284,22 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogDeliveryDay (deliveryDay, false);
 	}
 
-	IEnumerator DeliverItemVisible(string toStoreName){
+	IEnumerator DeliverItemVisible(Store toStore, int numDelivery){
 		//show delivered item
 		GameObject itemDelivered = exp.objectController.SpawnDeliverable(Vector3.zero);
 		string itemDisplayText = exp.objectController.GetDeliverableText(itemDelivered);
 
 		string itemName = itemDelivered.GetComponent<SpawnableObject> ().GetName ();
-		exp.eventLogger.LogDeliveryPresentation(itemName, false, true);
+		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, true);
 
-		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toStoreName, true, false, false, Config.deliveryCompleteInstructionsTime));
+		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toStore.name, true, false, false, Config.deliveryCompleteInstructionsTime));
 
-		exp.eventLogger.LogDeliveryPresentation(itemName, false, false);
+		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, false);
 
 		Destroy(itemDelivered);
 	}
 
-	IEnumerator DeliverItemAudio(){
+	IEnumerator DeliverItemAudio(int numDelivery){
 		GameObject playerCollisionObject = exp.player.GetCollisionObject ();
 
 		if (playerCollisionObject != null) {
@@ -309,7 +309,7 @@ public class TrialController : MonoBehaviour {
 				Store collisionStore = playerCollisionObject.GetComponent<Store>();
 			
 				//TRIAL LOGGER LOGS THIS IN PLAYDELIVERYAUDIO() COROUTINE
-				yield return StartCoroutine(collisionStore.PlayDeliveryAudio());
+				yield return StartCoroutine(collisionStore.PlayDeliveryAudio(numDelivery));
 			}
 		
 		}

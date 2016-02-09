@@ -72,16 +72,20 @@ public class AudioRecorder : MonoBehaviour {
 
 	public Text recordText;
 	public IEnumerator Record(string filePath, string fileName, int duration){
-		Color origTextColor = recordText.color;
-		recordText.color = Color.red;
+		if (Microphone.devices.Length > 0) {
+			Color origTextColor = recordText.color;
+			recordText.color = Color.red;
 
-		StartMicrophone (duration);
-		yield return new WaitForSeconds (duration);
+			StartMicrophone (duration);
+			yield return new WaitForSeconds (duration);
 
-		StopMicrophone ();
-		recordText.color = Color.white;
+			StopMicrophone ();
+			recordText.color = Color.white;
 
-		SavWav.Save (filePath, fileName, audio.clip);
+			SavWav.Save (filePath, fileName, audio.clip);
+		} else {
+			Debug.Log("No mic to record with!");
+		}
 	}
 
 	public void StartMicrophone (int duration) {

@@ -28,7 +28,7 @@ public class Config : MonoBehaviour {
 	public static float randomJitterMax = 0.2f;
 
 	//DELIVERY VARIABLES
-	public static int numDeliveryStores = 12; //out of the total number of stores
+	public static int numDeliveryStores = 13; //out of the total number of stores -- LAST STORE DOES NOT ACTUALLY GET DELIVERY
 	
 	public static bool isAudioDelivery = true;
 
