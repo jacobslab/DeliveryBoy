@@ -3,6 +3,22 @@ using System.Collections;
 
 public class Config : MonoBehaviour {
 
+	public enum Version
+	{
+		DBoy3	
+	}
+	
+	public static Version BuildVersion = Version.DBoy3;
+	public static string VersionNumber = "3.0";
+	
+	public static bool isSyncbox = false;
+	public static bool isSystem2 = true;
+
+
+	//REPLAY
+	public static int replayPadding = 6;
+
+	
 	//JUICE
 	public static bool isJuice = true;
 	public static bool isSoundtrack = false; //WON'T PLAY IF ISJUICE IS FALSE.

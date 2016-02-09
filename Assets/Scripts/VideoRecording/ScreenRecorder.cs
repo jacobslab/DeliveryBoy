@@ -42,22 +42,23 @@ public class ScreenRecorder : MonoBehaviour {
 
 	public string ScreenShotName(int width, int height, RecordingType recordingType) {
 		string name = "";
-
+		
 		if (recordingType == RecordingType.screenshot) {
 			name = string.Format ("{0}/screenshots/screen_{1}x{2}_{3}.png", 
-		                     Application.dataPath, 
-		                     width, height, 
-		                     System.DateTime.Now.ToString ("yyyy-MM-dd_HH-mm-ss"));
+			                      Application.dataPath, 
+			                      width, height, 
+			                      System.DateTime.Now.ToString ("yyyy-MM-dd_HH-mm-ss"));
 		}
 		else if (recordingType == RecordingType.continuousVideo) {
-			name = string.Format ("{0}/screen_{1}x{2}_{3}.png", 
+			string numFramesPadded = numFrames.ToString();
+			numFramesPadded = numFramesPadded.PadLeft(Config.replayPadding, '0');
+			name = string.Format ("{0}/screen_{1}.png", 
 			                      path, //change to path variable? 
-			                      width, height, 
-			                      numFrames);
-
+			                      numFramesPadded);
+			
 			numFrames++;
 		}
-
+		
 		return name;
 	}
 	

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.IO;
 
 public class ExperimentSettings : MonoBehaviour { //should be in main menu AND experiment
 
@@ -18,8 +19,6 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			//fileName = "TextFiles/" + _currentSubject.name + "Log.txt";
 		}
 	}
-
-
 
 	//subject selection controller
 	public SubjectSelectionController subjectSelectionController;
@@ -49,6 +48,12 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public bool isPilot { get { return GetIsPilot (); } }
 
 
+	//LOGGING
+	public static string defaultLoggingPath = ""; //SET IN RESETDEFAULTLOGGINGPATH();
+	string DB3Folder = "/DB3/";
+	public Text defaultLoggingPathDisplay;
+	public InputField loggingPathInputField;
+
 
 	//SINGLETON
 	private static ExperimentSettings _instance;
@@ -67,7 +72,52 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			return;
 		}
 		_instance = this;
+
+		InitLoggingPath ();
+		InitMainMenuLabels ();
 	}
+
+	void ResetDefaultLoggingPath(){
+		defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data";
+	}
+	
+	void InitLoggingPath(){
+		ResetDefaultLoggingPath ();
+		
+		if(Directory.Exists(defaultLoggingPath)){
+			if (Config.BuildVersion == Config.Version.DBoy3) {
+				defaultLoggingPath += DB3Folder;
+			} 
+			
+			if(!Directory.Exists(defaultLoggingPath)){ //if that TH folder doesn't exist, make it!
+				Directory.CreateDirectory(defaultLoggingPath);
+			}
+		}
+		else{
+			defaultLoggingPath = "TextFiles/";
+		}
+		
+		if (defaultLoggingPathDisplay != null) {
+			defaultLoggingPathDisplay.text = defaultLoggingPath;
+		}
+	}
+
+	public Text ExpNameVersion;
+	public Text BuildType;
+	void InitMainMenuLabels(){
+		if (Application.loadedLevel == 0) {
+			ExpNameVersion.text = Config.BuildVersion.ToString () + "/" + Config.VersionNumber;
+			if (Config.isSyncbox) {
+				BuildType.text = "Sync Box";
+			} else if (Config.isSystem2) {
+				BuildType.text = "System 2";
+			} else {
+				BuildType.text = "Demo";
+			}
+		}
+	}
+
+
 	// Use this for initialization
 	void Start () {
 		SetOculus();

@@ -20,10 +20,9 @@ public class Experiment : MonoBehaviour {
 	public Logger_Threading subjectLog;
 	private string eegLogfile; //gets set based on the current subject in Awake()
 	public Logger_Threading eegLog;
+	public static int sessionID;
 
-	public string SessionDirectory { get { return sessionDirectory; } }
-	private string sessionDirectory;
-	private string subjectDirectory;
+	public string SessionDirectory;
 
 	//event logger!
 	public TrialLogTrack eventLogger;
@@ -95,41 +94,33 @@ public class Experiment : MonoBehaviour {
 			cameraController.SetInGame(); //don't use oculus for replay mode
 		}
 
-		eventLogger = GetComponent<TrialLogTrack> ();
-
 	}
 	
 	//TODO: move to logger_threading perhaps? *shrug*
 	void InitLogging(){
-		subjectDirectory = "TextFiles/" + ExperimentSettings.currentSubject.name + "/";
-		sessionDirectory = subjectDirectory + "session000" + "/";;
+		eventLogger = GetComponent<TrialLogTrack> ();
 
-		int sessionID = 0;
-		string sessionIDString = "000";
-
+		string subjectDirectory = ExperimentSettings.defaultLoggingPath + ExperimentSettings.currentSubject.name + "/";
+		SessionDirectory = subjectDirectory + "session_0" + "/";
+		
+		sessionID = 0;
+		string sessionIDString = "_0";
+		
 		if(!Directory.Exists(subjectDirectory)){
 			Directory.CreateDirectory(subjectDirectory);
 		}
-		while (Directory.Exists(sessionDirectory)) {
-			if(sessionID < 10){
-				sessionIDString = "00" + sessionID;
-			}
-			else if (sessionID < 100){
-				sessionIDString = "0" + sessionID;
-			}
-			else{
-				sessionIDString = sessionID.ToString();
-			}
-			
+		while (Directory.Exists(SessionDirectory)) {
 			sessionID++;
 			
-			sessionDirectory = subjectDirectory + "session" + sessionIDString + "/";
+			sessionIDString = "_" + sessionID.ToString();
+			
+			SessionDirectory = subjectDirectory + "session" + sessionIDString + "/";
 		}
-
-		Directory.CreateDirectory(sessionDirectory);
-
-		subjectLog.fileName = sessionDirectory + ExperimentSettings.currentSubject.name + "Log" + ".txt";
-		eegLog.fileName = sessionDirectory + ExperimentSettings.currentSubject.name + "EEGLog" + ".txt";
+		
+		Directory.CreateDirectory(SessionDirectory);
+		
+		subjectLog.fileName = SessionDirectory + ExperimentSettings.currentSubject.name + "Log" + ".txt";
+		eegLog.fileName = SessionDirectory + ExperimentSettings.currentSubject.name + "EEGLog" + ".txt";
 	}
 
 	// Use this for initialization
