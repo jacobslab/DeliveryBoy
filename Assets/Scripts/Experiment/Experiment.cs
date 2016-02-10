@@ -86,12 +86,13 @@ public class Experiment : MonoBehaviour {
 
 		juiceController.Init ();
 
+		cameraController.SetInGame();
+
 		if (ExperimentSettings.isLogging) {
 			InitLogging();
 		}
 		else if(ExperimentSettings.isReplay) {
 			instructionsController.TurnOffInstructions();
-			cameraController.SetInGame(); //don't use oculus for replay mode
 		}
 
 	}

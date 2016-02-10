@@ -188,7 +188,7 @@ public class Replay : MonoBehaviour {
 							yield return 0; //advance the game a frame before continuing
 							
 						}
-						else if(timeDifference > millisecondsPerFrame){
+						else if(timeDifference > millisecondsPerFrame && currentFrame > 0){
 							int numFramesToCapture = Mathf.FloorToInt( (float)timeDifference / millisecondsPerFrame ); //EXAMPLE: if time passed is 30 milliseconds and the required time per frame is 15 milliseconds, you should capture 2 frames
 							
 							//record and wait the appropriate number of frames
