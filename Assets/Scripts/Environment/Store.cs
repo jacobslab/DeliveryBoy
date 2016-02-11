@@ -59,7 +59,7 @@ public class Store : MonoBehaviour {
 				yield return 0;
 			}
 
-			exp.eventLogger.LogItemDelivery(myAudioPlayer.clip.name, this, deliverySerialPosition, true, true); //TODO: move into trial controller if possible.
+			exp.eventLogger.LogItemDelivery(myAudioPlayer.clip.name, this, deliverySerialPosition, true, false); //TODO: move into trial controller if possible.
 		}
 		else{
 			Debug.Log("No audio for this store!" + gameObject.name);

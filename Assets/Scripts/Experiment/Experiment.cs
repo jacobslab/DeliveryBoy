@@ -95,11 +95,12 @@ public class Experiment : MonoBehaviour {
 			instructionsController.TurnOffInstructions();
 		}
 
+		eventLogger = GetComponent<TrialLogTrack> ();
+
 	}
 	
 	//TODO: move to logger_threading perhaps? *shrug*
 	void InitLogging(){
-		eventLogger = GetComponent<TrialLogTrack> ();
 
 		string subjectDirectory = ExperimentSettings.defaultLoggingPath + ExperimentSettings.currentSubject.name + "/";
 		SessionDirectory = subjectDirectory + "session_0" + "/";
