@@ -117,6 +117,7 @@ public class TrialController : MonoBehaviour {
 				yield return StartCoroutine(DoLearningPhase());
 			}
 
+
 			exp.eventLogger.LogSessionStarted(Experiment.sessionID);
 
 			exp.player.controls.ShouldLockControls = true;

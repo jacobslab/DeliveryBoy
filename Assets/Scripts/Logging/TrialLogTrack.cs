@@ -171,14 +171,15 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogDeliveryDay(int deliveryDay, bool isStarting){
+	public void LogDeliveryDay(int deliveryDayIndex, bool isStarting){
+		deliveryDayIndex++; //want to log starting at index 1
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_STARTED" + separator + deliveryDay);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_STARTED" + separator + deliveryDayIndex);
 				Debug.Log ("Logged delivery day started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_ENDED" + separator + deliveryDay);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_ENDED" + separator + deliveryDayIndex);
 				Debug.Log ("Logged delivery day ended event.");
 			}
 		}
