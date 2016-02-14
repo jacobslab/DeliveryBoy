@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class TrialController : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
+	List<Store> orderedStores;
+	List<string> orderedItemsDelivered;
 
 	public enum TrialState{
 		rotationLearning,
@@ -47,6 +49,8 @@ public class TrialController : MonoBehaviour {
 
 	void Start(){
 		rotationBackgroundCube.TurnVisible (false);
+		orderedStores = new List<Store>();
+		orderedItemsDelivered = new List<string>();
 	}
 
 
@@ -133,14 +137,28 @@ public class TrialController : MonoBehaviour {
 				exp.player.controls.ShouldLockControls = false;
 
 				//DELIVERY DAY
+				orderedStores.Clear();
+				orderedItemsDelivered.Clear();
 				yield return StartCoroutine(DoStoreDeliveryPhase(i));
 
 
 				//RECALL
 				//TODO: implement different kinds of recall phases
-				yield return StartCoroutine(DoRecallPhase( Config.RecallType.FreeItemRecall, i));
+				Config.RecallType recallType = Config.RecallTypesAcrossTrials[i];
+				yield return StartCoroutine(DoRecallPhase( recallType, i));
 
 			}
+
+
+			//FINAL RECALL
+			if(Config.doFinalItemRecall){
+				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, Config.numTestTrials));
+			}
+
+			if(Config.doFinalStoreRecall){
+				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, Config.numTestTrials));
+			}
+
 
 
 			yield return 0;
@@ -298,6 +316,9 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, false);
 
 		Destroy(itemDelivered);
+
+		orderedStores.Add(toStore);
+		orderedItemsDelivered.Add(itemName);
 	}
 
 	IEnumerator DeliverItemAudio(int numDelivery){
@@ -308,9 +329,13 @@ public class TrialController : MonoBehaviour {
 			//play store audio! as long as it's not the last store.
 			if(playerCollisionObject.tag == "Store"){
 				Store collisionStore = playerCollisionObject.GetComponent<Store>();
-			
+
 				//TRIAL LOGGER LOGS THIS IN PLAYDELIVERYAUDIO() COROUTINE
 				yield return StartCoroutine(collisionStore.PlayDeliveryAudio(numDelivery));
+				string item = collisionStore.GetComponent<AudioSource>().clip.name;
+
+				orderedStores.Add(collisionStore);
+				orderedItemsDelivered.Add(item);
 			}
 		
 		}
@@ -334,29 +359,34 @@ public class TrialController : MonoBehaviour {
 
 		//record audio to a file in the session directory for the duration of the recall period
 		string fileName = ExperimentSettings.currentSubject.name + "_" + numRecallPhase;
-		if (ExperimentSettings.isLogging) {
-			StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, Config.recallTime));
-		}
+
+		int recallTime = 0;
 
 		switch(recallType){
 			case Config.RecallType.FreeItemRecall:
-				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				recallTime = Config.freeRecallTime;
+			StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Free recall as many delivered items as you can.", true, false, false, recallTime));
 				break;
 			case Config.RecallType.FreeStoreRecall:
-				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				recallTime = Config.freeRecallTime;
+			StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Free recall as many stores that you delivered to as you can.", true, false, false, recallTime));
 				break;
-			case Config.RecallType.CuedItemRecall:
-				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
-				break;
-			case Config.RecallType.CuedStoreRecall:
-				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
-				break;
+			case Config.RecallType.CuedRecall:
+				yield return StartCoroutine( DoCuedRecall (fileName));
+			break;
 			case Config.RecallType.FinalItemRecall:
-				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				recallTime = Config.finalRecallTime;
+			StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Free recall as many delivered items as you can from the entire session.", true, false, false, recallTime));
 				break;
 			case Config.RecallType.FinalStoreRecall:
-				//yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Recall as many delivered items as you can.", true, false, false, Config.recallTime));
+				recallTime = Config.finalRecallTime;
+				StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Free recall as many stores as you can that you delivered to across the entire sesion.", true, false, false, recallTime));
 				break;
+		}
+
+		//only record here if free recall! cued recall recording handled within DoCuedRecall()
+		if (ExperimentSettings.isLogging && recallType != Config.RecallType.CuedRecall) {
+			yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, recallTime));
 		}
 
 		exp.player.controls.ShouldLockControls = false;
@@ -364,6 +394,44 @@ public class TrialController : MonoBehaviour {
 		RecallUI.alpha = 0.0f;
 
 		exp.eventLogger.LogRecallPhaseStarted (recallType, false);
+
+		yield return 0;
+	}
+
+	IEnumerator DoCuedRecall(string recordFileName){
+		//go through all item-store pairs, and cue half with the store and half with the item
+
+		//randomize order of indices
+		//there shouldbe the same # of ordered stores and ordered items
+		List<int> randomIndexOrder = UsefulFunctions.GetRandomIndexOrder(orderedStores.Count);
+
+		for(int i = 0; i < orderedStores.Count; i++){
+			int index = randomIndexOrder[i];
+
+			//if divisible by 2, make it store cued
+			if(index % 2 == 0){
+				Store storeCue = orderedStores[i];
+
+				exp.eventLogger.LogRecallStorePresentation(storeCue.name, true, true);
+
+				StartCoroutine (exp.instructionsController.ShowSingleInstruction ("What did you deliver to the " + storeCue.name + "?", true, false, false, Config.cuedRecallTime));
+
+				exp.eventLogger.LogRecallStorePresentation(storeCue.name, true, false);
+			}
+			else{	//item cued
+				string itemCue = orderedItemsDelivered[index];
+
+				exp.eventLogger.LogRecallItemPresentation(itemCue, true, true);
+
+				StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Where did you deliver the " + itemCue + "?", true, false, false, Config.cuedRecallTime));
+
+				exp.eventLogger.LogRecallItemPresentation(itemCue, true, false);
+			}
+
+			if (ExperimentSettings.isLogging) {
+				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", recordFileName, Config.cuedRecallTime));
+			}
+		}
 
 		yield return 0;
 	}

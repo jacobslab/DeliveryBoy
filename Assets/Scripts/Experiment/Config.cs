@@ -52,6 +52,9 @@ public class Config : MonoBehaviour {
 	public static bool doLearningPhase = false;
 	public static bool doRotationPhase = false;
 
+	public static bool doFinalItemRecall = true;
+	public static bool doFinalStoreRecall = true;
+
 	public static float storeRotateTime = 8.0f;
 	public static float numStoreRotations = 1.3f;
 	
@@ -59,17 +62,24 @@ public class Config : MonoBehaviour {
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
-	public static int recallTime = 2;
+	public static int freeRecallTime = 5;
+	public static int cuedRecallTime = 5;
+	public static int finalRecallTime = 10;
 
 	public enum RecallType
 	{
 		FreeItemRecall,
 		FreeStoreRecall,
-		CuedItemRecall,
-		CuedStoreRecall,
-		FinalItemRecall,
+		CuedRecall,
+		FinalItemRecall,	
 		FinalStoreRecall,
 	}
+
+	//NOTE: THE LENGTH OF THIS ARRAY SHOULD MATCH THE NUMBER OF DELIVERY DAYS / TEST TRIALS.
+	// 0 - free recall
+	// 1 - cued recall
+	// 2 - both free and cued
+	public static RecallType[] RecallTypesAcrossTrials = { RecallType.FreeItemRecall, RecallType.FreeStoreRecall, RecallType.CuedRecall, RecallType.FreeItemRecall, RecallType.FreeStoreRecall, RecallType.CuedRecall, RecallType.FreeItemRecall, RecallType.FreeStoreRecall };
 
 
 	public static bool shouldUseWaypoints = true;

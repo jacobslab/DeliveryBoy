@@ -241,7 +241,7 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
-	public void LogRecallBuildingPresentation (string storePresented, bool isAudio, bool isStarting){
+	public void LogRecallStorePresentation (string storePresented, bool isAudio, bool isStarting){
 		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
 		if (!isAudio) {
 			audioOrVisual = "visual";
@@ -272,18 +272,15 @@ public class TrialLogTrack : LogTrack {
 			eventString = "FREE_RECALL";
 			itemOrStore = "store";
 			break;
-		case Config.RecallType.CuedItemRecall:
+		case Config.RecallType.CuedRecall:
 			eventString = "CUED_RECALL";
-			break;
-		case Config.RecallType.CuedStoreRecall:
-			eventString = "CUED_RECALL";
-			itemOrStore = "store";
+			itemOrStore = "item_and_store";
 			break;
 		case Config.RecallType.FinalItemRecall:
-			eventString = "FINAL_RECAL";
+			eventString = "FINAL_RECALL";
 			break;
 		case Config.RecallType.FinalStoreRecall:
-			eventString = "FINAL_RECAL";
+			eventString = "FINAL_RECALL";
 			itemOrStore = "store";
 			break;
 		}

@@ -51,8 +51,6 @@ public class ObjectController : MonoBehaviour {
 				deliverableTextMap.Add(deliverableObjects[i].name, deliverableText);
 			}
 		}
-
-		int a = 0;
 	}
 
 	void GetDeliverables(){
