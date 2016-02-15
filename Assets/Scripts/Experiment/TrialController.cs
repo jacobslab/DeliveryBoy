@@ -150,13 +150,16 @@ public class TrialController : MonoBehaviour {
 			}
 
 
+			yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You have finished your deliveries! \n\n Please press (X) to continue on to final recall.", true, true, false, Config.minDefaultInstructionTime));
+
+
 			//FINAL RECALL
 			if(Config.doFinalItemRecall){
 				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, Config.numTestTrials));
 			}
 
 			if(Config.doFinalStoreRecall){
-				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, Config.numTestTrials + 1));
+				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, Config.numTestTrials + 1));
 			}
 
 
@@ -344,7 +347,6 @@ public class TrialController : MonoBehaviour {
 	}
 
 	IEnumerator DoRecallPhase(Config.RecallType recallType, int numRecallPhase){
-		Debug.Log ("DOING RECALL PHASE: " + recallType.ToString ());
 
 		currentState = TrialState.recall;
 
@@ -402,8 +404,6 @@ public class TrialController : MonoBehaviour {
 		RecallUI.alpha = 0.0f;
 
 		exp.eventLogger.LogRecallPhaseStarted (recallType, false);
-
-		yield return 0;
 	}
 
 	IEnumerator DoCuedRecall(string recordFileName){

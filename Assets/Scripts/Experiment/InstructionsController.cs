@@ -59,7 +59,9 @@ public class InstructionsController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		backgroundColorDefault = background.color;
+		if (background != null) {
+			backgroundColorDefault = background.color;
+		}
 		textColorDefault = text.color;
 	}
 
