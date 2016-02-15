@@ -12,6 +12,7 @@ public class Experiment : MonoBehaviour {
 
 	//instructions
 	public InstructionsController instructionsController;
+	public InstructionsController recallInstructionsController;
 	//public InstructionsController inGameInstructionsController;
 	public CameraController cameraController;
 

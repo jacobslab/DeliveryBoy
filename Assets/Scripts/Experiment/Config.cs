@@ -44,7 +44,7 @@ public class Config : MonoBehaviour {
 	public static float randomJitterMax = 0.2f;
 
 	//DELIVERY VARIABLES
-	public static int numDeliveryStores = 13; //out of the total number of stores -- LAST STORE DOES NOT ACTUALLY GET DELIVERY
+	public static int numDeliveryStores = 4; //out of the total number of stores -- LAST STORE DOES NOT ACTUALLY GET DELIVERY
 	
 	public static bool isAudioDelivery = true;
 
@@ -79,7 +79,8 @@ public class Config : MonoBehaviour {
 	// 0 - free recall
 	// 1 - cued recall
 	// 2 - both free and cued
-	public static RecallType[] RecallTypesAcrossTrials = { RecallType.FreeItemRecall, RecallType.FreeStoreRecall, RecallType.CuedRecall, RecallType.FreeItemRecall, RecallType.FreeStoreRecall, RecallType.CuedRecall, RecallType.FreeItemRecall, RecallType.FreeStoreRecall };
+	public static RecallType[] RecallTypesAcrossTrials = { RecallType.FreeItemRecall, RecallType.FreeStoreRecall, RecallType.CuedRecall, RecallType.FreeItemRecall, 
+															RecallType.FreeStoreRecall, RecallType.CuedRecall, RecallType.FreeItemRecall, RecallType.FreeStoreRecall };
 
 
 	public static bool shouldUseWaypoints = true;

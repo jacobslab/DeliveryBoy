@@ -156,7 +156,7 @@ public class TrialController : MonoBehaviour {
 			}
 
 			if(Config.doFinalStoreRecall){
-				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, Config.numTestTrials));
+				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, Config.numTestTrials + 1));
 			}
 
 
@@ -344,16 +344,13 @@ public class TrialController : MonoBehaviour {
 	}
 
 	IEnumerator DoRecallPhase(Config.RecallType recallType, int numRecallPhase){
+		Debug.Log ("DOING RECALL PHASE: " + recallType.ToString ());
+
 		currentState = TrialState.recall;
 
 		exp.eventLogger.LogRecallPhaseStarted (recallType, true);
 
 		RecallUI.alpha = 1.0f;
-
-		recallBeep.Play ();
-		while (recallBeep.isPlaying) {
-			yield return 0;
-		}
 
 		exp.player.controls.ShouldLockControls = true;
 
@@ -365,28 +362,39 @@ public class TrialController : MonoBehaviour {
 		switch(recallType){
 			case Config.RecallType.FreeItemRecall:
 				recallTime = Config.freeRecallTime;
-			StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Free recall as many delivered items as you can.", true, false, false, recallTime));
+				exp.recallInstructionsController.DisplayText ("Free recall DELIVERED ITEMS");
 				break;
 			case Config.RecallType.FreeStoreRecall:
 				recallTime = Config.freeRecallTime;
-			StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Free recall as many stores that you delivered to as you can.", true, false, false, recallTime));
+				exp.recallInstructionsController.DisplayText ("Free recall STORES DELIVERED TO");
 				break;
 			case Config.RecallType.CuedRecall:
 				yield return StartCoroutine( DoCuedRecall (fileName));
 			break;
 			case Config.RecallType.FinalItemRecall:
 				recallTime = Config.finalRecallTime;
-			StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Free recall as many delivered items as you can from the entire session.", true, false, false, recallTime));
+				exp.recallInstructionsController.DisplayText ("Free recall ALL DELIVERED ITEMS");
 				break;
 			case Config.RecallType.FinalStoreRecall:
 				recallTime = Config.finalRecallTime;
-				StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Free recall as many stores as you can that you delivered to across the entire sesion.", true, false, false, recallTime));
+				exp.recallInstructionsController.DisplayText ("Free recall ALL STORES");
 				break;
 		}
 
 		//only record here if free recall! cued recall recording handled within DoCuedRecall()
-		if (ExperimentSettings.isLogging && recallType != Config.RecallType.CuedRecall) {
-			yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, recallTime));
+		if(recallType != Config.RecallType.CuedRecall){
+
+			recallBeep.Play ();
+			while (recallBeep.isPlaying) {
+				yield return 0;
+			}
+
+			if (ExperimentSettings.isLogging) {
+				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, recallTime));
+			}
+			else{
+				yield return new WaitForSeconds(recallTime);
+			}
 		}
 
 		exp.player.controls.ShouldLockControls = false;
@@ -402,34 +410,46 @@ public class TrialController : MonoBehaviour {
 		//go through all item-store pairs, and cue half with the store and half with the item
 
 		//randomize order of indices
-		//there shouldbe the same # of ordered stores and ordered items
-		List<int> randomIndexOrder = UsefulFunctions.GetRandomIndexOrder(orderedStores.Count);
+		// want to use number of items delivered, because we don't deliver to the last store
+		List<int> randomIndexOrder = UsefulFunctions.GetRandomIndexOrder(orderedItemsDelivered.Count);
 
-		for(int i = 0; i < orderedStores.Count; i++){
+		string cueName = "";
+
+		for(int i = 0; i < orderedItemsDelivered.Count; i++){
 			int index = randomIndexOrder[i];
 
 			//if divisible by 2, make it store cued
 			if(index % 2 == 0){
-				Store storeCue = orderedStores[i];
+				cueName = orderedStores[i].name;
 
-				exp.eventLogger.LogRecallStorePresentation(storeCue.name, true, true);
+				exp.eventLogger.LogRecallStorePresentation(cueName, true, true);
 
-				StartCoroutine (exp.instructionsController.ShowSingleInstruction ("What did you deliver to the " + storeCue.name + "?", true, false, false, Config.cuedRecallTime));
+				exp.recallInstructionsController.DisplayText ("What did you deliver to the " + cueName + "?");
 
-				exp.eventLogger.LogRecallStorePresentation(storeCue.name, true, false);
+				exp.eventLogger.LogRecallStorePresentation(cueName, true, false);
 			}
 			else{	//item cued
-				string itemCue = orderedItemsDelivered[index];
+				cueName = orderedItemsDelivered[index];
 
-				exp.eventLogger.LogRecallItemPresentation(itemCue, true, true);
+				cueName.Replace("-", " ");
 
-				StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Where did you deliver the " + itemCue + "?", true, false, false, Config.cuedRecallTime));
+				exp.eventLogger.LogRecallItemPresentation(cueName, true, true);
 
-				exp.eventLogger.LogRecallItemPresentation(itemCue, true, false);
+				exp.recallInstructionsController.DisplayText ("Where did you deliver the " + cueName + "?");
+
+				exp.eventLogger.LogRecallItemPresentation(cueName, true, false);
+			}
+
+			recallBeep.Play ();
+			while (recallBeep.isPlaying) {
+				yield return 0;
 			}
 
 			if (ExperimentSettings.isLogging) {
-				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", recordFileName, Config.cuedRecallTime));
+				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", recordFileName + "_" + cueName, Config.cuedRecallTime));
+			}
+			else{
+				yield return new WaitForSeconds(Config.cuedRecallTime);
 			}
 		}
 
