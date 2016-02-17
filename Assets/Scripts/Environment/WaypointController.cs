@@ -176,6 +176,17 @@ public class WaypointController : MonoBehaviour {
 			currNode = currNode.neighbors[smallestDistIndex];
 		}
 
+		//decide whether or not to add the start point:
+			//if the start point is between the player(start position) and the next point, add it.
+		Vector3 nextPointPosition = endPosition;
+		if (waypointPath.Count > 0) {
+			nextPointPosition = waypointPath[waypointPath.Count - 1].transform.position;
+		}
+		if(!CheckBetweenPoints(startPosition, startPoint.transform.position, nextPointPosition)){
+			waypointPath.Add(startPoint);
+		}
+
+
 		//since the current order is from the end point to the start point, reverse the list
 		waypointPath.Reverse ();
 
@@ -183,4 +194,87 @@ public class WaypointController : MonoBehaviour {
 
 		return waypointPath;
 	}
+
+	//THIS FUNCTION IS MERELY CHECKING IF THE BETWEEN POINT IS BETWEEN THE COORDINATES OF THE OTHER TWO POINTS.
+	//WE ARE *NOT* CHECKING IF THE BETWEEN POINT LIES PERFECTLY ON THE LINE A-B.
+	bool CheckBetweenPoints(Vector3 betweenPoint, Vector3 endPtA, Vector3 endPtB){
+		//CASE 1: if points are the same, return true
+		if (endPtA.x == endPtB.x && endPtA.z == endPtB.z) {
+			return true;
+		}
+
+		//CASES 2&3: both endpoints share an x coord
+		if (endPtA.x == endPtB.x) {
+			if (endPtA.z < endPtB.z) {
+				if (betweenPoint.z < endPtB.z && betweenPoint.z > endPtA.z) {
+					return true;
+				}
+			} else if (endPtA.z > endPtB.z) {
+				if (betweenPoint.z > endPtB.z && betweenPoint.z < endPtA.z) {
+					return true;
+				}
+			} else {
+				return false;
+			}
+		}
+		//CASES 2&3: both endpoints share z coord
+		else if (endPtA.z == endPtB.z) {
+			if (endPtA.x < endPtB.x) {
+				if (betweenPoint.x < endPtB.x && betweenPoint.x > endPtA.x) {
+					return true;
+				}
+			} else if (endPtA.x > endPtB.x) {
+				if (betweenPoint.x > endPtB.x && betweenPoint.x < endPtA.x) {
+					return true;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		//CASES 3&4: endpoints to not share either coordinate, A.x < B.x
+		else if (endPtA.x < endPtB.x) {
+			if (betweenPoint.x > endPtA.x && betweenPoint.x < endPtB.x) {
+				//A.z < B.z
+				if (endPtA.z < endPtB.z) {
+					if (betweenPoint.z > endPtA.z && betweenPoint.z < endPtB.z) {
+						return true;
+					}
+				}
+				//A.z > B.z
+				else if (endPtA.z > endPtB.z) {
+					if (betweenPoint.z < endPtA.z && betweenPoint.z > endPtB.z) {
+						return true;
+					}
+				}
+			} else {
+				return false;
+			}
+		}
+
+		//CASES 5&6: endpoints to not share either coordinate, A.x > B.x
+		else if (endPtA.x > endPtB.x) {
+			if (betweenPoint.x < endPtA.x && betweenPoint.x > endPtB.x) {
+				//A.z < B.z
+				if (endPtA.z < endPtB.z) {
+					if (betweenPoint.z > endPtA.z && betweenPoint.z < endPtB.z) {
+						return true;
+					}
+				}
+				//A.z > B.z
+				else if (endPtA.z > endPtB.z) {
+					if (betweenPoint.z < endPtA.z && betweenPoint.z > endPtB.z) {
+						return true;
+					}
+				}
+			} else {
+				return false;
+			}
+		}
+
+		return false;
+
+	}
+	
+
 }
