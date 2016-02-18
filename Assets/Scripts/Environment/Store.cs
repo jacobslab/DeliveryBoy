@@ -21,18 +21,20 @@ public class Store : MonoBehaviour {
 		}
 		origPosition = transform.position;
 		origRotation = transform.rotation;
-		
+
+		myAudioPlayer = GetComponent<AudioSource> ();
 		InitAudio();
 	}
 	
 	void InitAudio(){
-		myAudioPlayer = GetComponent<AudioSource>();
+		if (Config.isStoreCorrelatedDelivery) {
 		
-		audioLeftToUse = new List<AudioClip>();
-		string folder = "StoreAudio/" + gameObject.name;
-		AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip>(folder);
-		for(int i = 0; i < storeAudioClips.Length; i++){
-			audioLeftToUse.Add(storeAudioClips[i]);
+			audioLeftToUse = new List<AudioClip> ();
+			string folder = "StoreAudio/" + gameObject.name;
+			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
+			for (int i = 0; i < storeAudioClips.Length; i++) {
+				audioLeftToUse.Add (storeAudioClips [i]);
+			}
 		}
 	}
 	
@@ -43,15 +45,17 @@ public class Store : MonoBehaviour {
 	
 	public IEnumerator PlayDeliveryAudio(int deliverySerialPosition){
 		Debug.Log ("Should play delivery audio! " + gameObject.name);
-		if(audioLeftToUse.Count == 0){
-			InitAudio();
+
+		AudioClip audioDeliveryClip;
+		if (!Config.isStoreCorrelatedDelivery) {
+			audioDeliveryClip = ChooseDeliveryAudio (exp.storeController.allStoreAudioLeftToUse);
+		} else {
+			audioDeliveryClip = ChooseDeliveryAudio (audioLeftToUse);
 		}
-		if(audioLeftToUse.Count != 0){
-			int randomAudioIndex = Random.Range(0, audioLeftToUse.Count);
-			AudioClip audioToPlay = audioLeftToUse[randomAudioIndex];
-			myAudioPlayer.clip = audioToPlay;
+
+		if(audioDeliveryClip != null){
+			myAudioPlayer.clip = audioDeliveryClip;
 			myAudioPlayer.Play ();
-			audioLeftToUse.RemoveAt(randomAudioIndex);
 
 			exp.eventLogger.LogItemDelivery(myAudioPlayer.clip.name, this, deliverySerialPosition, true, true); //TODO: move into trial controller if possible.
 
@@ -65,6 +69,25 @@ public class Store : MonoBehaviour {
 			Debug.Log("No audio for this store!" + gameObject.name);
 			yield return 0;
 		}
+	}
+
+	AudioClip ChooseDeliveryAudio(List<AudioClip> audioList){
+
+		if (audioList.Count == 0) {
+			if(audioList == audioLeftToUse){
+				InitAudio ();
+			}
+			else if (audioList == exp.storeController.allStoreAudioLeftToUse){
+				exp.storeController.InitAudio();
+			}
+		}
+
+		if (audioList.Count != 0) {
+			int randomAudioIndex = Random.Range (0, audioList.Count);
+			return audioList [randomAudioIndex];
+		}
+
+		return null;
 	}
 	
 	public void ResetStore(){

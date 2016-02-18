@@ -47,6 +47,7 @@ public class Config : MonoBehaviour {
 	public static int numDeliveryStores = 13; //out of the total number of stores -- LAST STORE DOES NOT ACTUALLY GET DELIVERY
 	
 	public static bool isAudioDelivery = true;
+	public static bool isStoreCorrelatedDelivery = false;
 
 	public static int numLearningIterations = 1;
 	public static bool doLearningPhase = false;

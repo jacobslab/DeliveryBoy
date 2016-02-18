@@ -5,13 +5,33 @@ using System.Collections.Generic;
 public class StoreController : MonoBehaviour {
 
 	public Store[] stores;
+	public List<AudioClip> allStoreAudioLeftToUse;
 
 	// Use this for initialization
 	void Awake () {
 		stores = GetStores ();
+
+		if (!Config.isStoreCorrelatedDelivery) {
+			InitAudio();
+		}
 	}
 
+	public void InitAudio(){
+		allStoreAudioLeftToUse = new List<AudioClip> ();
 
+		for(int i = 0; i < stores.Length; i++){
+
+			string folder = "StoreAudio/" + stores[i].name;
+
+			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
+			for (int j = 0; j < storeAudioClips.Length; j++) {
+				allStoreAudioLeftToUse.Add (storeAudioClips [j]);
+			}
+
+		}
+	}
+	
+	
 	Store[] GetStores(){
 		return GetComponentsInChildren<Store> ();
 	}
