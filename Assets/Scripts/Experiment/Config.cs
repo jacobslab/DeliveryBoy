@@ -28,20 +28,17 @@ public class Config : MonoBehaviour {
 	public static int stimFrequency;	//TODO
 	public static float stimDuration;	//TODO
 	public static bool shouldDoBreak;	//TODO
-	
-	//test session variables
-	//doTestSession (not implemented in the panda3d version )
-
-	public static int numTestTrials = 8;
-	
-	//practice settings
-	public static int numTrialsPract = 1;
-	public static bool doPracticeTrial = false;
 
 
 	//SPECIFIC TASK VARIABLES:
 	public static float randomJitterMin = 0.0f;
 	public static float randomJitterMax = 0.2f;
+	
+	public static int numTestTrials = 8;
+	
+	//practice settings
+	public static int numTrialsPract = 1;
+	public static bool doPracticeTrial = false;
 
 	//DELIVERY VARIABLES
 	public static int numDeliveryStores = 13; //out of the total number of stores -- LAST STORE DOES NOT ACTUALLY GET DELIVERY
@@ -50,8 +47,8 @@ public class Config : MonoBehaviour {
 	public static bool isStoreCorrelatedDelivery = false;
 
 	public static int numLearningIterations = 1;
-	public static bool doLearningPhase = false;
-	public static bool doRotationPhase = false;
+	public static bool doLearningPhase = true;
+	public static bool doRotationPhase = true;
 
 	public static bool doFinalItemRecall = true;
 	public static bool doFinalStoreRecall = true;
@@ -63,9 +60,10 @@ public class Config : MonoBehaviour {
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
-	public static int freeRecallTime = 5;
-	public static int cuedRecallTime = 5;
-	public static int finalRecallTime = 10;
+	public static int freeRecallTime = 90;
+	public static int cuedRecallTime = 20;
+	public static int finalFreeRecallTime = 360;
+	public static int finalStoreRecallTime = 120;
 
 	public enum RecallType
 	{

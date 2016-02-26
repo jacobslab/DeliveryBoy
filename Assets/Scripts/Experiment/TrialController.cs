@@ -227,6 +227,7 @@ public class TrialController : MonoBehaviour {
 			exp.eventLogger.LogStoreRotationPresented(currStore, true);
 
 			//move store
+			currStore.SetVisualsForRotation();
 			currStore.transform.position = storeRotationTransform.position;
 			currStore.transform.rotation = storeRotationTransform.rotation;
 
@@ -374,11 +375,11 @@ public class TrialController : MonoBehaviour {
 				yield return StartCoroutine( DoCuedRecall (fileName));
 			break;
 			case Config.RecallType.FinalItemRecall:
-				recallTime = Config.finalRecallTime;
+				recallTime = Config.finalFreeRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall ALL DELIVERED ITEMS");
 				break;
 			case Config.RecallType.FinalStoreRecall:
-				recallTime = Config.finalRecallTime;
+				recallTime = Config.finalFreeRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall ALL STORES");
 				break;
 		}

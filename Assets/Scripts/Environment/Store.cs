@@ -7,6 +7,10 @@ public class Store : MonoBehaviour {
 
 	Experiment exp { get { return Experiment.Instance; } }
 
+	public bool hasRotationVisuals = false;
+	public EnableChildrenLogTrack rotationVisualsParent;
+	public EnableChildrenLogTrack regularVisualsParent;
+
 	public TextMesh myLabel;
 	Vector3 origPosition;
 	Quaternion origRotation;
@@ -89,10 +93,28 @@ public class Store : MonoBehaviour {
 
 		return null;
 	}
+
+	public void SetVisualsForRotation(){
+		if (hasRotationVisuals) {
+			UsefulFunctions.EnableChildren(regularVisualsParent.transform, false);
+			regularVisualsParent.LogChildrenEnabled(false);
+
+			UsefulFunctions.EnableChildren(rotationVisualsParent.transform, true);
+			rotationVisualsParent.LogChildrenEnabled(true);
+		}
+	}
 	
 	public void ResetStore(){
 		transform.position = origPosition;
 		transform.rotation = origRotation;
+
+		if (hasRotationVisuals) {
+			UsefulFunctions.EnableChildren (regularVisualsParent.transform, true);
+			regularVisualsParent.LogChildrenEnabled (true);
+		
+			UsefulFunctions.EnableChildren (rotationVisualsParent.transform, false);
+			rotationVisualsParent.LogChildrenEnabled (false);
+		}
 	}
 }
 
