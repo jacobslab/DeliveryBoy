@@ -44,7 +44,7 @@ public class AudioRecorder : MonoBehaviour {
 		}
 	}
 
-	bool CheckForRecordingDevice(){
+	public static bool CheckForRecordingDevice(){
 		if (Microphone.devices.Length > 0) {
 			return true;
 		}

@@ -43,6 +43,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public Text endScoreText;
 	public Text endSessionText;
 
+	public Image micTestIndicator;
 
 	public GameObject nonPilotOptions;
 	public bool isPilot { get { return GetIsPilot (); } }
@@ -75,6 +76,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 
 		InitLoggingPath ();
 		InitMainMenuLabels ();
+		DoMicTest ();
 	}
 
 	void ResetDefaultLoggingPath(){
@@ -117,6 +119,13 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		}
 	}
 
+	void DoMicTest(){
+		if (AudioRecorder.CheckForRecordingDevice ()) {
+			micTestIndicator.color = Color.green;
+		} else {
+			micTestIndicator.color = Color.red;
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
