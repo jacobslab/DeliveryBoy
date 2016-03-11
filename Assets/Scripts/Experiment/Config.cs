@@ -61,7 +61,7 @@ public class Config : MonoBehaviour {
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
 	public static int freeRecallTime = 90;
-	public static int cuedRecallTime = 20;
+	public static int cuedRecallTime = 5;
 	public static int finalFreeRecallTime = 360;
 	public static int finalStoreRecallTime = 120;
 

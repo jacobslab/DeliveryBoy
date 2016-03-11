@@ -406,7 +406,7 @@ public class TrialController : MonoBehaviour {
 
 		exp.eventLogger.LogRecallPhaseStarted (recallType, false);
 	}
-
+	
 	IEnumerator DoCuedRecall(string recordFileName){
 		//go through all item-store pairs, and cue half with the store and half with the item
 
@@ -416,16 +416,25 @@ public class TrialController : MonoBehaviour {
 
 		string cueName = "";
 
-		for(int i = 0; i < orderedItemsDelivered.Count; i++){
+		for(int i = 0; i < randomIndexOrder.Count; i++){
 			int index = randomIndexOrder[i];
+
+			GameObject storeImage = null;
 
 			//if divisible by 2, make it store cued
 			if(index % 2 == 0){
-				cueName = orderedStores[i].name;
+				cueName = orderedStores[index].name;
 
 				exp.eventLogger.LogRecallStorePresentation(cueName, true, true);
 
 				exp.recallInstructionsController.DisplayText ("What did you deliver to the " + cueName + "?");
+
+				//show image
+				//storeImage = exp.objectController.SpawnStoreImage(Vector3.zero, cueName);
+				storeImage = exp.objectController.GetStoreImage(cueName);
+				if(storeImage != null){
+					storeImage.SetActive(true);
+				}
 
 				exp.eventLogger.LogRecallStorePresentation(cueName, true, false);
 			}
@@ -437,6 +446,9 @@ public class TrialController : MonoBehaviour {
 				exp.eventLogger.LogRecallItemPresentation(cueName, true, true);
 
 				exp.recallInstructionsController.DisplayText ("Where did you deliver the " + cueName + "?");
+
+				//play audio
+				orderedStores[index].PlayCurrentAudio();
 
 				exp.eventLogger.LogRecallItemPresentation(cueName, true, false);
 			}
@@ -451,6 +463,11 @@ public class TrialController : MonoBehaviour {
 			}
 			else{
 				yield return new WaitForSeconds(Config.cuedRecallTime);
+			}
+
+			if(storeImage != null){
+				storeImage.SetActive(false);
+				//Destroy(storeImage);
 			}
 		}
 

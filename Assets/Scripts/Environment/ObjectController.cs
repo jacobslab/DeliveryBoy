@@ -11,7 +11,10 @@ public class ObjectController : MonoBehaviour {
 	List<GameObject> deliverableObjects;
 	public Dictionary<string, string> deliverableTextMap;
 
+	List<GameObject> storeImages;
+
 	public Transform deliverableParent;
+	public Transform storeImageParent;
 
 	//experiment singleton
 	Experiment exp { get { return Experiment.Instance; } }
@@ -22,6 +25,8 @@ public class ObjectController : MonoBehaviour {
 	void Start () {
 		GetDeliverables ();
 		CreateDeliverablesMap ();
+
+		GetStoreImages ();
 	}
 	
 	// Update is called once per frame
@@ -123,6 +128,28 @@ public class ObjectController : MonoBehaviour {
 		return chosenItem;
 	}
 
+	//STORE IMAGES
+	void GetStoreImages(){
+		storeImages = new List<GameObject> ();
+		
+		/*Object[] storeImageArray = Resources.LoadAll("StoreImages");
+		for(int i = 0; i < storeImageArray.Length; i++){
+			storeImages.Add( (GameObject)storeImageArray[i] ) ;
+		}*/
+		foreach (Transform child in storeImageParent) {
+			storeImages.Add(child.gameObject);
+		}
+	}
+	
+	public GameObject GetStoreImage(string storeName){
+		for(int i = 0; i < storeImages.Count; i++){
+			if(storeName == storeImages[i].name){
+				return storeImages[i];
+			}
+		}
+		return null;
+	}
+
 
 	public float GenerateRandomRotationY(){
 		float randomRotY = Random.Range (0, 360);
@@ -157,7 +184,22 @@ public class ObjectController : MonoBehaviour {
 		}
 	}
 
-
+	/*public GameObject SpawnStoreImage (Vector3 storeImagePos, string storeName){
+		GameObject imageToSpawn = GetStoreImage (storeName);
+		if (imageToSpawn != null) {
+			
+			GameObject newItem = Instantiate(imageToSpawn, storeImagePos, Quaternion.identity) as GameObject;
+			
+			newItem.transform.SetParent(storeImageParent, false);
+			//CurrentTrialSpecialObjects.Add(newObject);
+			
+			return newItem;
+		}
+		else{
+			Debug.Log("No store image of this name!");
+			return null;
+		}
+	}*/
 
 	List<Vector2> SortByNextClosest(List<Vector2> positions, Vector2 distancePos){
 

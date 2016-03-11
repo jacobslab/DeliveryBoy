@@ -46,6 +46,12 @@ public class Store : MonoBehaviour {
 	void Update () {
 		
 	}
+
+	public void PlayCurrentAudio(){
+		if (myAudioPlayer.clip != null) {
+			myAudioPlayer.Play();
+		}
+	}
 	
 	public IEnumerator PlayDeliveryAudio(int deliverySerialPosition){
 		Debug.Log ("Should play delivery audio! " + gameObject.name);
