@@ -51,7 +51,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 
 	//LOGGING
 	public static string defaultLoggingPath = ""; //SET IN RESETDEFAULTLOGGINGPATH();
-	string DB3Folder = "/DB3/";
+	string DB3Folder = "/" + Config.BuildVersion.ToString() + "/";
 	public Text defaultLoggingPathDisplay;
 	public InputField loggingPathInputField;
 
