@@ -62,7 +62,7 @@ public class SyncboxControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if(ExperimentSettings.isSyncbox){
+		if(Config.isSyncbox){
 			//Debug.Log(AddTwoFloats(2.5F,4F));
 			//Debug.Log ("OH HAYYYY");
 			//Debug.Log(PrintANumber());
@@ -88,7 +88,7 @@ public class SyncboxControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(ExperimentSettings.isSyncbox){
+		if(Config.isSyncbox){
 			if (!ShouldPulse) {
 				GetInput ();
 			}

@@ -48,7 +48,7 @@ public class TCPServer : MonoBehaviour {
 	}
 
 	void Start(){
-		if(ExperimentSettings.isSystem2){
+		if(Config.isSystem2){
 			RunServer ();
 
 			StartCoroutine(AlignClocks());

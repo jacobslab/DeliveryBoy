@@ -12,7 +12,7 @@ public class Config : MonoBehaviour {
 	public static string VersionNumber = "3.0";
 	
 	public static bool isSyncbox = false;
-	public static bool isSystem2 = true;
+	public static bool isSystem2 = false;
 
 
 	//REPLAY
