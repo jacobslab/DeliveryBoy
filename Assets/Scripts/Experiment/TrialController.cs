@@ -85,12 +85,12 @@ public class TrialController : MonoBehaviour {
 			//exp.player.controls.Pause(true);
 			PauseUI.alpha = 1.0f;
 			Time.timeScale = 0.0f;
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.PAUSED, true);
 		} 
 		else {
 			Time.timeScale = 1.0f;
-			//exp.player.controls.Pause(false);
-			//exp.player.controls.ShouldLockControls = false;
 			PauseUI.alpha = 0.0f;
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.PAUSED, false);
 		}
 	}
 
@@ -192,6 +192,7 @@ public class TrialController : MonoBehaviour {
 	IEnumerator DoLearningPhase(){
 
 		currentState = TrialState.navigationLearning;
+		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, true);
 
 		yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 
@@ -211,10 +212,12 @@ public class TrialController : MonoBehaviour {
 		}
 
 		exp.eventLogger.LogLearningPhaseStarted (false);
+		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, false);
 	}
 
 	IEnumerator DoStoreRotationPhase(){
 		currentState = TrialState.rotationLearning;
+		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_ROTATION_PHASE, true);
 
 		exp.eventLogger.LogRotationPhase (true);
 
@@ -254,10 +257,12 @@ public class TrialController : MonoBehaviour {
 		rotationBackgroundCube.TurnVisible (false);
 
 		exp.eventLogger.LogRotationPhase (false);
+		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_ROTATION_PHASE, false);
 	}
 
 	IEnumerator DoVisitStoreCommand(Store storeToVisit, bool isLearning, int numDeliveryToday){ //if it's not learning, it's a delivery!
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, true, numDeliveryToday);
+		SetServerStoreTarget(numDeliveryToday, true); //indexed at 1
 
 		exp.player.controls.ShouldLockControls = false;
 
@@ -267,6 +272,7 @@ public class TrialController : MonoBehaviour {
 		yield return StartCoroutine (exp.player.WaitForStoreCollision (storeToVisit.gameObject));
 
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, false, numDeliveryToday);
+		SetServerStoreTarget(numDeliveryToday, false); //indexed at 1
 	}
 
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
@@ -274,6 +280,7 @@ public class TrialController : MonoBehaviour {
 		currentState = TrialState.delivery;
 
 		exp.eventLogger.LogDeliveryDay (deliveryDay, true);
+		TCPServer.Instance.SetState (TCP_Config.DefineStates.DELIVERY_NAVIGATION, true);
 
 		List<Store> deliveryStores = exp.storeController.GetRandomDeliveryStores();
 
@@ -305,6 +312,7 @@ public class TrialController : MonoBehaviour {
 		}
 
 		exp.eventLogger.LogDeliveryDay (deliveryDay, false);
+		TCPServer.Instance.SetState (TCP_Config.DefineStates.DELIVERY_NAVIGATION, false);
 	}
 
 	IEnumerator DeliverItemVisible(Store toStore, int numDelivery){
@@ -314,10 +322,12 @@ public class TrialController : MonoBehaviour {
 
 		string itemName = itemDelivered.GetComponent<SpawnableObject> ().GetName ();
 		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, true);
+		SetServerItemDelivered(numDelivery, true); //indexed at 1
 
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toStore.name, true, false, false, Config.deliveryCompleteInstructionsTime));
 
 		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, false);
+		SetServerItemDelivered(numDelivery, false); //indexed at 1
 
 		Destroy(itemDelivered);
 
@@ -335,7 +345,10 @@ public class TrialController : MonoBehaviour {
 				Store collisionStore = playerCollisionObject.GetComponent<Store>();
 
 				//TRIAL LOGGER LOGS THIS IN PLAYDELIVERYAUDIO() COROUTINE
+				SetServerItemDelivered(numDelivery, true); //indexed at 1
 				yield return StartCoroutine(collisionStore.PlayDeliveryAudio(numDelivery));
+				SetServerItemDelivered(numDelivery, true); //indexed at 1
+
 				string item = collisionStore.GetComponent<AudioSource>().clip.name;
 
 				orderedStores.Add(collisionStore);
@@ -351,8 +364,6 @@ public class TrialController : MonoBehaviour {
 
 		currentState = TrialState.recall;
 
-		exp.eventLogger.LogRecallPhaseStarted (recallType, true);
-
 		RecallUI.alpha = 1.0f;
 
 		exp.player.controls.ShouldLockControls = true;
@@ -362,12 +373,16 @@ public class TrialController : MonoBehaviour {
 
 		int recallTime = 0;
 
+		TCP_Config.DefineStates recallState = TCP_Config.DefineStates.RECALL_CUED;
+
 		switch(recallType){
 			case Config.RecallType.FreeItemRecall:
+				recallState = TCP_Config.DefineStates.RECALL_FREE_ITEM;
 				recallTime = Config.freeRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall DELIVERED ITEMS");
 				break;
 			case Config.RecallType.FreeStoreRecall:
+				recallState = TCP_Config.DefineStates.RECALL_FREE_STORE;
 				recallTime = Config.freeRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall STORES DELIVERED TO");
 				break;
@@ -375,14 +390,19 @@ public class TrialController : MonoBehaviour {
 				yield return StartCoroutine( DoCuedRecall (fileName));
 			break;
 			case Config.RecallType.FinalItemRecall:
+				recallState = TCP_Config.DefineStates.FINALRECALL_ITEM;
 				recallTime = Config.finalFreeRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall ALL DELIVERED ITEMS");
 				break;
 			case Config.RecallType.FinalStoreRecall:
+				recallState = TCP_Config.DefineStates.FINALRECALL_STORE;
 				recallTime = Config.finalFreeRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall ALL STORES");
 				break;
 		}
+
+		exp.eventLogger.LogRecallPhaseStarted (recallType, true);
+		TCPServer.Instance.SetState(recallState, true);
 
 		//only record here if free recall! cued recall recording handled within DoCuedRecall()
 		if(recallType != Config.RecallType.CuedRecall){
@@ -405,6 +425,7 @@ public class TrialController : MonoBehaviour {
 		RecallUI.alpha = 0.0f;
 
 		exp.eventLogger.LogRecallPhaseStarted (recallType, false);
+		TCPServer.Instance.SetState(recallState, true);
 	}
 	
 	IEnumerator DoCuedRecall(string recordFileName){
@@ -437,8 +458,10 @@ public class TrialController : MonoBehaviour {
 				}
 
 				exp.eventLogger.LogRecallStorePresentation(cueName, true, false);
+				SetServerStoreCueState(index, true);
 			}
 			else{	//item cued
+
 				cueName = orderedItemsDelivered[index];
 
 				cueName.Replace("-", " ");
@@ -451,6 +474,7 @@ public class TrialController : MonoBehaviour {
 				orderedStores[index].PlayCurrentAudio();
 
 				exp.eventLogger.LogRecallItemPresentation(cueName, true, false);
+				SetServerItemCueState(index, true);
 			}
 
 			recallBeep.Play ();
@@ -467,11 +491,183 @@ public class TrialController : MonoBehaviour {
 
 			if(storeImage != null){
 				storeImage.SetActive(false);
+				SetServerStoreCueState(index, false);
 				//Destroy(storeImage);
+			}
+			else{
+				SetServerItemCueState(index, false);
 			}
 		}
 
 		yield return 0;
+	}
+
+	void SetServerStoreCueState(int numStore, bool isTrue){
+		switch (numStore){
+		case 0:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_0, isTrue);
+			break;
+		case 1:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_1, isTrue);
+			break;
+		case 2:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_2, isTrue);
+			break;
+		case 3:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_3, isTrue);
+			break;
+		case 4:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_4, isTrue);
+			break;
+		case 5:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_5, isTrue);
+			break;
+		case 6:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_6, isTrue);
+			break;
+		case 7:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_7, isTrue);
+			break;
+		case 8:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_8, isTrue);
+			break;
+		case 9:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_9, isTrue);
+			break;
+		case 10:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_10, isTrue);
+			break;
+		case 11:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_CUE_11, isTrue);
+			break;
+		}
+
+	}
+
+	void SetServerItemCueState(int numItem, bool isTrue){
+		switch (numItem){
+		case 0:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_0, isTrue);
+			break;
+		case 1:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_1, isTrue);
+			break;
+		case 2:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_2, isTrue);
+			break;
+		case 3:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_3, isTrue);
+			break;
+		case 4:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_4, isTrue);
+			break;
+		case 5:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_5, isTrue);
+			break;
+		case 6:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_6, isTrue);
+			break;
+		case 7:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_7, isTrue);
+			break;
+		case 8:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_8, isTrue);
+			break;
+		case 9:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_9, isTrue);
+			break;
+		case 10:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_10, isTrue);
+			break;
+		case 11:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_CUE_11, isTrue);
+			break;
+		}
+	}
+
+	void SetServerStoreTarget(int numStore, bool isTrue){
+		switch (numStore){
+		case 0:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_0, isTrue);
+			break;
+		case 1:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_1, isTrue);
+			break;
+		case 2:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_2, isTrue);
+			break;
+		case 3:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_3, isTrue);
+			break;
+		case 4:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_4, isTrue);
+			break;
+		case 5:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_5, isTrue);
+			break;
+		case 6:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_6, isTrue);
+			break;
+		case 7:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_7, isTrue);
+			break;
+		case 8:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_8, isTrue);
+			break;
+		case 9:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_9, isTrue);
+			break;
+		case 10:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_10, isTrue);
+			break;
+		case 11:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_11, isTrue);
+			break;
+		case 12:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.STORE_TARGET_12, isTrue);
+			break;
+		}
+	}
+
+	void SetServerItemDelivered(int numItem, bool isTrue){
+		switch (numItem){
+		case 0:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_0, isTrue);
+			break;
+		case 1:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_1, isTrue);
+			break;
+		case 2:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_2, isTrue);
+			break;
+		case 3:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_3, isTrue);
+			break;
+		case 4:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_4, isTrue);
+			break;
+		case 5:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_5, isTrue);
+			break;
+		case 6:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_6, isTrue);
+			break;
+		case 7:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_7, isTrue);
+			break;
+		case 8:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_8, isTrue);
+			break;
+		case 9:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_9, isTrue);
+			break;
+		case 10:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_10, isTrue);
+			break;
+		case 11:
+			TCPServer.Instance.SetState (TCP_Config.DefineStates.ITEM_DELIVERY_11, isTrue);
+			break;
+		}
 	}
 
 	void DestroyGameObjectList(List<GameObject> listOfGameObjects){

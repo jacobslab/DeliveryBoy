@@ -87,7 +87,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		ResetDefaultLoggingPath ();
 		
 		if(Directory.Exists(defaultLoggingPath)){
-			if (Config.BuildVersion == Config.Version.DBoy3) {
+			if (Config.BuildVersion == Config.Version.DBoy3_1) {
 				defaultLoggingPath += DB3Folder;
 			} 
 			

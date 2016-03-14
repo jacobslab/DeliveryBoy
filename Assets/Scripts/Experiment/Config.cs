@@ -5,10 +5,12 @@ public class Config : MonoBehaviour {
 
 	public enum Version
 	{
-		DBoy3	
+		DBoy3_1,
+		DBoy3_2,
+		DBoy3_3
 	}
 	
-	public static Version BuildVersion = Version.DBoy3;
+	public static Version BuildVersion = Version.DBoy3_1;
 	public static string VersionNumber = "3.0";
 	
 	public static bool isSyncbox = false;
