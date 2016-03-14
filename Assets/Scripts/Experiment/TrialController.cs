@@ -221,6 +221,8 @@ public class TrialController : MonoBehaviour {
 
 		exp.eventLogger.LogRotationPhase (true);
 
+		yield return StartCoroutine(exp.instructionsController.PlayRotationInstructions());
+
 		rotationBackgroundCube.TurnVisible (true);
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 0.0f;
 		//for each store, move it to the rotation location, rotate it for x seconds, return it to its original location
