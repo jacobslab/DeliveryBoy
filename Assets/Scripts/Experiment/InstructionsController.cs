@@ -38,25 +38,26 @@ public class InstructionsController : MonoBehaviour {
 			"\n\nAt this point your job is to verbally recall all of the delivered items that you can remember, in any order." +
 			"\n\nAfter the recall period you'll have a chance for a short break, and then the next set of deliveries will start." +
 			"\n\n\n\nPress [X] to continue!";
-	
-	public static string initialInstructions3 = "Before you start the full task, you'll have a chance to explore the town, to get your bearings." +
+
+	public static string initialInstructions3Learning = "Before you start the full task, you'll have a chance to explore the town, to get your bearings." +
 		"\n\nWe will describe this practice period next." +
-			"\n\nPlease tell the investigator when you have finished reading these instructions.";// +
-	//"\n\n\n\nPress [X] to continue.";
+			"\n\nPlease tell the investigator when you have finished reading these instructions.";
 	
 
 	//LEARNING PHASE INSTRUCTIONS
 	public static string learningInstructions1 = "Before you start making deliveries, we want to make sure you know your way around the city." +
-		"You'll be asked to go from store to store without delivering items." +
+		" You'll be asked to go from store to store without delivering items." +
 		"\n\nThe city will be exactly the same during the practice as during the later delivery trials, so you can use this time to figure out the fastest way to get from place to place." +
 			"\n\nTo help you out, we will often send you from one store to another store that is nearby in the town." +
 			"\n\n\n\nPress [X] to continue.";
 	
 	public static string learningInstructions2 = "Don't worry if it takes a little while to learn the city!" +
-		"Your bonus is not affected by how long the practice period takes." +
+		" Your bonus is not affected by how long the practice period takes." +
 			"\n\nFinding the correct stores will be difficult at first, but it will get easier when you become more familiar with the city." +
 			"\n\nPlease tell the investigator when you have finished reading.";
 
+	//ROTATION PHASE INSTRUCTIONS
+	public static string rotationInstructions1 = "We will now show you each of the buildings that you may encounter.";
 	// Use this for initialization
 	void Start () {
 		if (background != null) {
@@ -73,7 +74,13 @@ public class InstructionsController : MonoBehaviour {
 	public IEnumerator PlayStartInstructions(){
 		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions1, true, true, false, Config.minInitialInstructionsTime));
 		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions2, true, true, false, Config.minInitialInstructionsTime));
-		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions3, true, true, false, Config.minInitialInstructionsTime));
+		if (Config.doLearningPhase) {
+			yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions3Learning, true, true, false, Config.minInitialInstructionsTime));
+		} 
+	}
+
+	public IEnumerator PlayRotationInstructions(){
+		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.rotationInstructions1, true, true, false, Config.minInitialInstructionsTime));;
 	}
 
 	public IEnumerator PlayLearningInstructions(){
