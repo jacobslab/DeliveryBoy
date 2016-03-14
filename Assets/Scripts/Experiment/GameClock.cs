@@ -33,24 +33,34 @@ public class GameClock : MonoBehaviour {
 	}
 	
 	static long GetSystemClockMilliseconds(){
-		long ticks = DateTime.Now.Ticks;
+		//long ticks = DateTime.Now.Ticks;
 		//Debug.Log (DateTime.Now.Ticks);
 		//Debug.Log (DateTime.Now);
 		
 		//long seconds = tick / TimeSpan.TicksPerSecond;
-		long milliseconds = ticks / TimeSpan.TicksPerMillisecond;
+		long milliseconds = 0;// = ticks / TimeSpan.TicksPerMillisecond;
+		
+		
+		
+		
+		
+		DateTime e = DateTime.UtcNow;//new DateTime(2011, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+		DateTime s = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+		TimeSpan t = (e - s);
+		milliseconds = (long)t.TotalMilliseconds;
 		
 		return milliseconds;
 	}
 	
 	static long GetSystemClockMicroseconds(){
 		//Convenience method to return the system time.
-		//return GameClock.SystemTime_Milliseconds * 1000; //TODO: this isn't really gonna work.l
 		
-		long ticks = DateTime.Now.Ticks;
+		//long ticks = DateTime.Now.Ticks;
 		
-		//string microseconds = DateTime.Now.ToString("HH:mm:ss.ffffff");
-		long microseconds = ticks / (TimeSpan.TicksPerMillisecond / 1000);
+		long microseconds;// = ticks / (TimeSpan.TicksPerMillisecond / 1000);
+		
+		microseconds = GetSystemClockMilliseconds () * 1000; //NOTE: TECHNICALLY JUST MILLISECONDS, NOT ACCURATE MICROSECONDS.
+		
 		return microseconds;
 	}
 	
