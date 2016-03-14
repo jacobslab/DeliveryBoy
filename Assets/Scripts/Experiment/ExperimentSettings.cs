@@ -32,11 +32,11 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public Toggle loggingToggle; //only exists in main menu -- make sure to null check
 
 	//EEG, STIM/SYNC TOGGLES
-	public static bool isSystem2;
-	public static bool isSyncbox;
+	//public static bool isSystem2 = false;
+	//public static bool isSyncbox = false;
 
-	public Toggle system2Toggle;
-	public Toggle syncboxToggle;
+	//public Toggle system2Toggle;
+	//public Toggle syncboxToggle;
 
 
 	public Text endCongratsText;
@@ -80,7 +80,11 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	}
 
 	void ResetDefaultLoggingPath(){
-		defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data";
+		if (Config.isSystem2) {
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data";
+		} else {
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM/data";
+		}	
 	}
 	
 	void InitLoggingPath(){
@@ -130,8 +134,8 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	// Use this for initialization
 	void Start () {
 		SetOculus();
-		SetSystem2();
-		SetSyncBox();
+		//SetSystem2();
+		//SetSyncBox();
 		if(Application.loadedLevelName == "EndMenu"){
 			if(currentSubject != null){
 				endCongratsText.text = "Congratulations " + currentSubject.name + "!";
@@ -182,7 +186,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		}
 	}
 
-	public void SetSystem2(){
+	/*public void SetSystem2(){
 		if(system2Toggle){
 			isSystem2 = system2Toggle.isOn;
 		}
@@ -192,6 +196,6 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		if(syncboxToggle){
 			isSyncbox = syncboxToggle.isOn;
 		}
-	}
+	}*/
 	
 }
