@@ -11,7 +11,7 @@ public class StoreController : MonoBehaviour {
 	void Awake () {
 		stores = GetStores ();
 
-		if (!Config.isStoreCorrelatedDelivery) {
+		if (!Config.isStoreCorrelatedDelivery || ExperimentSettings.isReplay) { //if it's replay, we draw from here to replay the audio
 			InitAudio();
 		}
 	}
@@ -29,6 +29,16 @@ public class StoreController : MonoBehaviour {
 			}
 
 		}
+	}
+
+	public AudioClip GetAudioClipByName(string audioName){
+		for (int i = 0; i < allStoreAudioLeftToUse.Count; i++) {
+			if(allStoreAudioLeftToUse[i].name == audioName){
+				return allStoreAudioLeftToUse[i];
+			}
+		}
+
+		return null;
 	}
 	
 	

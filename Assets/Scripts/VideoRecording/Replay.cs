@@ -497,13 +497,24 @@ public class Replay : MonoBehaviour {
 								//AUDIO
 								else if (loggedProperty == "AUDIO_PLAYING"){
 									string audioSourceName = splitLine [i+2];
+									string audioClipName = splitLine [i+3];
 									AudioSource audio = objInScene.GetComponent<AudioSource>();
 									if(audio == null){
 										audio = objInScene.transform.FindChild( audioSourceName ).GetComponent<AudioSource>();
 									}
-									
-									
-									audio.Play();
+
+									if(objInScene.tag == "Store"){ //stores have changing audio over the course of the session
+										if(audio.clip == null){
+											audio.clip = exp.storeController.GetAudioClipByName(audioClipName);
+										}
+										else if(audio.clip.name != audioClipName){
+											audio.clip = exp.storeController.GetAudioClipByName(audioClipName);
+										}
+									}
+
+									if(audio.clip != null){
+										audio.Play();
+									}
 									
 								}
 								else if (loggedProperty == "AUDIO_STOPPED"){

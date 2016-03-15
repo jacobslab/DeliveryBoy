@@ -26,13 +26,11 @@ public class Player : MonoBehaviour {
 	}
 
 	GameObject waitForCollisionObject;
-	bool isLookingForStore = false;
 	public IEnumerator WaitForStoreCollision(GameObject store){
 		bool areWayPointsEnabled = false;
 
 		float timeWaiting = 0.0f;
 
-		isLookingForStore = true;
 		Debug.Log("WAITING FOR COLLISION WITH: " + store.name);
 		
 		string lastCollisionName = "";
@@ -57,8 +55,6 @@ public class Player : MonoBehaviour {
 		}
 
 		Debug.Log ("FOUND STORE");
-		
-		isLookingForStore = false;
 
 	}
 

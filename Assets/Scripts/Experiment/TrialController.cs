@@ -41,7 +41,6 @@ public class TrialController : MonoBehaviour {
 	public VisibilityToggler rotationBackgroundCube;
 
 	int numRealTrials = 0; //used for logging trial ID's
-	int numStoresVisited = 0;
 
 
 	[HideInInspector] public GameObject currentDefaultObject; //current treasure chest we're looking for. assuming a one-by-one reveal.
@@ -131,7 +130,7 @@ public class TrialController : MonoBehaviour {
 				exp.player.controls.ShouldLockControls = true;
 
 				if(i != 0){
-					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Welcome to Delivery Day " + i + "/" + Config.numTestTrials + "!" + "\n\nPress [X] to continue.", true, true, false, Config.minDefaultInstructionTime));
+					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Welcome to Delivery Day " + (i+1) + "/" + Config.numTestTrials + "!" + "\n\nPress [X] to continue.", true, true, false, Config.minDefaultInstructionTime));
 				}
 
 				exp.player.controls.ShouldLockControls = false;
@@ -159,7 +158,7 @@ public class TrialController : MonoBehaviour {
 			}
 
 			if(Config.doFinalStoreRecall){
-				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, Config.numTestTrials + 1));
+				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, Config.numTestTrials + 1)); //fo
 			}
 
 
@@ -448,7 +447,7 @@ public class TrialController : MonoBehaviour {
 			if(index % 2 == 0){
 				cueName = orderedStores[index].name;
 
-				exp.eventLogger.LogRecallStorePresentation(cueName, true, true);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, false, false, true);
 
 				exp.recallInstructionsController.DisplayText ("What did you deliver to the " + cueName + "?");
 
@@ -456,10 +455,10 @@ public class TrialController : MonoBehaviour {
 				//storeImage = exp.objectController.SpawnStoreImage(Vector3.zero, cueName);
 				storeImage = exp.objectController.GetStoreImage(cueName);
 				if(storeImage != null){
-					storeImage.SetActive(true);
+					storeImage.GetComponent<VisibilityToggler>().TurnVisible(true);
 				}
 
-				exp.eventLogger.LogRecallStorePresentation(cueName, true, false);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, false, false, false);
 				SetServerStoreCueState(index, true);
 			}
 			else{	//item cued
@@ -468,14 +467,14 @@ public class TrialController : MonoBehaviour {
 
 				cueName.Replace("-", " ");
 
-				exp.eventLogger.LogRecallItemPresentation(cueName, true, true);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, true, true, true);
 
 				exp.recallInstructionsController.DisplayText ("Where did you deliver the " + cueName + "?");
 
 				//play audio
 				orderedStores[index].PlayCurrentAudio();
 
-				exp.eventLogger.LogRecallItemPresentation(cueName, true, false);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, true, true, false);
 				SetServerItemCueState(index, true);
 			}
 
@@ -492,7 +491,7 @@ public class TrialController : MonoBehaviour {
 			}
 
 			if(storeImage != null){
-				storeImage.SetActive(false);
+				storeImage.GetComponent<VisibilityToggler>().TurnVisible(false);
 				SetServerStoreCueState(index, false);
 				//Destroy(storeImage);
 			}

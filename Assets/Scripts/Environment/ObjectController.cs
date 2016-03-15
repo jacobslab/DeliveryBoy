@@ -142,6 +142,7 @@ public class ObjectController : MonoBehaviour {
 	}
 	
 	public GameObject GetStoreImage(string storeName){
+		storeName = storeName + " image";
 		for(int i = 0; i < storeImages.Count; i++){
 			if(storeName == storeImages[i].name){
 				return storeImages[i];

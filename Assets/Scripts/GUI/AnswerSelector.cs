@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class AnswerSelector : MonoBehaviour {
@@ -112,7 +112,7 @@ public class AnswerSelector : MonoBehaviour {
 
 		//play audio if the selector moved
 		if (isMoved) {
-			AudioController.PlayAudio(selectionSwitchAudio);
+			SoundtrackController.PlayAudio(selectionSwitchAudio);
 		}
 
 		//TODO: make nice smooth movement with a coroutine.

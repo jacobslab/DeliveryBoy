@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class VisibilityToggler : MonoBehaviour {
 
 	public bool isVisibleAtStart = true;
+	public bool isImage = false;
 
 	bool isVisible = true;
 	float currentAlpha = 1.0f;
@@ -27,13 +29,18 @@ public class VisibilityToggler : MonoBehaviour {
 	//function to turn off (or on) the object without setting it inactive -- because we want to keep logging on
 	public void TurnVisible(bool shouldBeVisible){ 
 
-		if(GetComponent<Renderer>() != null){
-			GetComponent<Renderer>().enabled = shouldBeVisible;
-		}
+		if (isImage) {
+			GetComponent<Image>().enabled = shouldBeVisible;
+		} 
+		else {
+			if (GetComponent<Renderer> () != null) {
+				GetComponent<Renderer> ().enabled = shouldBeVisible;
+			}
 		
-		Renderer[] renderers = GetComponentsInChildren<Renderer>();
-		for(int i = 0; i < renderers.Length; i++){
-			renderers[i].enabled = shouldBeVisible;
+			Renderer[] renderers = GetComponentsInChildren<Renderer> ();
+			for (int i = 0; i < renderers.Length; i++) {
+				renderers [i].enabled = shouldBeVisible;
+			}
 		}
 		
 		

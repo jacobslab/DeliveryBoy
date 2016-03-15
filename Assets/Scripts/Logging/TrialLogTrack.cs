@@ -223,37 +223,24 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	
-	public void LogRecallItemPresentation (string itemPresented, bool isAudio, bool isStarting){
+	public void LogCuedRecallPresentation (string presentatedObject, bool isItem, bool isAudio, bool isStarting){
 		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
 		if (!isAudio) {
 			audioOrVisual = "visual";
 		}
-		
-		if (ExperimentSettings.isLogging) {
-			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_PRESENTATION_STARTED" + separator + itemPresented + separator + audioOrVisual);
-				Debug.Log ("Logged item presentation started event.");
-			}
-			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_PRESENTATION_ENDED" + separator + itemPresented + separator + audioOrVisual);
-				Debug.Log ("Logged item presentation ended event.");
-			}
-		}
-	}
 
-	public void LogRecallStorePresentation (string storePresented, bool isAudio, bool isStarting){
-		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
-		if (!isAudio) {
-			audioOrVisual = "visual";
+		string itemOrStore = "store";
+		if (isItem) {
+			itemOrStore = "item";
 		}
 		
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_PRESENTATION_STARTED" + separator + storePresented + separator + audioOrVisual);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_STARTED" + separator + itemOrStore + separator + presentatedObject + separator + audioOrVisual);
 				Debug.Log ("Logged item presentation started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_PRESENTATION_ENDED" + separator + storePresented + separator + audioOrVisual);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_ENDED" + separator + itemOrStore + separator + presentatedObject + separator + audioOrVisual);
 				Debug.Log ("Logged item presentation ended event.");
 			}
 		}
@@ -266,21 +253,21 @@ public class TrialLogTrack : LogTrack {
 
 		switch (recallType) {
 		case Config.RecallType.FreeItemRecall:
-			eventString = "FREE_RECALL";
+			eventString = "free";
 			break;
 		case Config.RecallType.FreeStoreRecall:
-			eventString = "FREE_RECALL";
+			eventString = "free";
 			itemOrStore = "store";
 			break;
 		case Config.RecallType.CuedRecall:
-			eventString = "CUED_RECALL";
+			eventString = "cued";
 			itemOrStore = "item_and_store";
 			break;
 		case Config.RecallType.FinalItemRecall:
-			eventString = "FINAL_RECALL";
+			eventString = "final";
 			break;
 		case Config.RecallType.FinalStoreRecall:
-			eventString = "FINAL_RECALL";
+			eventString = "final";
 			itemOrStore = "store";
 			break;
 		}
@@ -294,15 +281,13 @@ public class TrialLogTrack : LogTrack {
 
 		if (ExperimentSettings.isLogging) {
 			if(isStarted){
-				subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_STARTED");
+				subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_STARTED" + separator + eventString + separator + itemOrStore);
 
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + eventString + separator + itemOrStore);
 				Debug.Log ("Logged recall started event.");
 			}
 			else{
-				subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_ENDED");
+				subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "RECALL_PHASE_ENDED" + separator + eventString + separator + itemOrStore);
 
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + eventString + separator + itemOrStore);
 				Debug.Log ("Logged recall ended event.");
 			}
 		}

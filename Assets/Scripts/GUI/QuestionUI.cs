@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class QuestionUI : MonoBehaviour {
@@ -67,7 +67,7 @@ public class QuestionUI : MonoBehaviour {
 
 	void PlayObjectJuice(){
 		JuiceController.PlayParticles (ObjectParticles);
-		AudioController.PlayAudio (ObjectSound);
+		SoundtrackController.PlayAudio (ObjectSound);
 	}
 
 	public void Stop(){

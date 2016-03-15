@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class AudioController : MonoBehaviour {
+public class SoundtrackController : MonoBehaviour {
 
 	public AudioSource[] MainGameSongs;
 	AudioSource currentSong;
