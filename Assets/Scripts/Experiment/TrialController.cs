@@ -367,7 +367,7 @@ public class TrialController : MonoBehaviour {
 				//TRIAL LOGGER LOGS THIS IN PLAYDELIVERYAUDIO() COROUTINE
 				SetServerItemDelivered(numDelivery, true); //indexed at 1
 				yield return StartCoroutine(collisionStore.PlayDeliveryAudio(numDelivery));
-				SetServerItemDelivered(numDelivery, true); //indexed at 1
+				SetServerItemDelivered(numDelivery, false); //indexed at 1
 
 				string item = collisionStore.GetComponent<AudioSource>().clip.name;
 
@@ -402,6 +402,8 @@ public class TrialController : MonoBehaviour {
 				exp.recallInstructionsController.DisplayText ("Free recall DELIVERED ITEMS");
 				break;
 			case Config.RecallType.CuedRecall:
+				exp.eventLogger.LogRecallPhaseStarted (recallType, true);
+				TCPServer.Instance.SetState(recallState, true);
 				yield return StartCoroutine( DoCuedRecall (fileName));
 			break;
 			case Config.RecallType.FreeThenCued:
@@ -422,11 +424,11 @@ public class TrialController : MonoBehaviour {
 				break;
 		}
 
-		exp.eventLogger.LogRecallPhaseStarted (recallType, true);
-		TCPServer.Instance.SetState(recallState, true);
-
 		//only record here if free recall! cued recall recording handled within DoCuedRecall()
 		if(recallType != Config.RecallType.CuedRecall){
+
+			exp.eventLogger.LogRecallPhaseStarted (recallType, true);
+			TCPServer.Instance.SetState(recallState, true);
 
 			recallBeep.Play ();
 			while (recallBeep.isPlaying) {
@@ -446,7 +448,7 @@ public class TrialController : MonoBehaviour {
 		RecallUI.alpha = 0.0f;
 
 		exp.eventLogger.LogRecallPhaseStarted (recallType, false);
-		TCPServer.Instance.SetState(recallState, true);
+		TCPServer.Instance.SetState(recallState, false);
 	}
 	
 	IEnumerator DoCuedRecall(string recordFileName){
