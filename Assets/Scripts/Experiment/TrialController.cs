@@ -55,7 +55,7 @@ public class TrialController : MonoBehaviour {
 
 	
 	void Update(){
-		if(!isConnectingToHardware){
+		if(!isConnectingToHardware && currentState != TrialState.recall){
 			GetPauseInput ();
 		}
 	}
@@ -261,7 +261,10 @@ public class TrialController : MonoBehaviour {
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_ROTATION_PHASE, false);
 	}
 
+	Store lastStore;	
 	IEnumerator DoVisitStoreCommand(Store storeToVisit, bool isLearning, int numDeliveryToday){ //if it's not learning, it's a delivery!
+		lastStore = storeToVisit;
+
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, true, numDeliveryToday);
 		SetServerStoreTarget(numDeliveryToday, true); //indexed at 1
 
@@ -275,7 +278,7 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, false, numDeliveryToday);
 		SetServerStoreTarget(numDeliveryToday, false); //indexed at 1
 	}
-
+	
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
 
 		currentState = TrialState.delivery;
@@ -284,6 +287,16 @@ public class TrialController : MonoBehaviour {
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.DELIVERY_NAVIGATION, true);
 
 		List<Store> deliveryStores = exp.storeController.GetRandomDeliveryStores();
+
+		//if the first delivery store in this list is the same as the last one in the last list...
+			//swap it with another one so that they're not consecutive!
+		if (deliveryStores [0] == lastStore) {
+			int randomSwapIndex = Random.Range(1, deliveryStores.Count);
+			Store temp = deliveryStores[0];
+			deliveryStores[0] = deliveryStores[randomSwapIndex];
+			deliveryStores[randomSwapIndex] = temp;
+		}
+
 
 		for (int numDelivery = 0; numDelivery < deliveryStores.Count; numDelivery++) {
 			//start delivery timer
