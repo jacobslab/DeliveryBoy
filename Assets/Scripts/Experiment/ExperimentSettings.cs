@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System.IO;
+using System.Collections.Generic;
 
 public class ExperimentSettings : MonoBehaviour { //should be in main menu AND experiment
 
@@ -30,6 +31,8 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 
 	public Toggle oculusToggle; //only exists in main menu -- make sure to null check
 	public Toggle loggingToggle; //only exists in main menu -- make sure to null check
+
+	public Transform RecallTypeInputParent;
 
 	//EEG, STIM/SYNC TOGGLES
 	//public static bool isSystem2 = false;
@@ -77,6 +80,8 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		InitLoggingPath ();
 		InitMainMenuLabels ();
 		DoMicTest ();
+
+		QualitySettings.vSyncCount = 1; //max framerate now = refresh rate of screen! mac = 60hz
 	}
 
 	void ResetDefaultLoggingPath(){
@@ -184,6 +189,20 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		if(oculusToggle){
 			isOculus = oculusToggle.isOn;
 		}
+	}
+
+	public void SetTrialRecallTypes(){
+		NumericInputTextLimiter[] recallTextInputs = RecallTypeInputParent.GetComponentsInChildren<NumericInputTextLimiter> ();
+		for (int i = 0; i < recallTextInputs.Length; i++) {
+			if(i < Config.numTestTrials){
+				recallTextInputs[i].UpdateText();
+				int recallTextTypeInt = int.Parse (recallTextInputs[i].myNumericTextField.text);
+
+				Config.RecallTypesAcrossTrials[i] = (Config.RecallType)recallTextTypeInt;
+				
+			}
+		}
+
 	}
 
 	/*public void SetSystem2(){

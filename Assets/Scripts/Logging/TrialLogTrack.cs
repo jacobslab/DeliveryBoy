@@ -193,11 +193,11 @@ public class TrialLogTrack : LogTrack {
 				learningOrDelivery = "delivery";
 			}
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_PROMPTED_STARTED" + separator + store.name + separator + learningOrDelivery + separator + serialIndex);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_TARGET_STARTED" + separator + store.name + separator + learningOrDelivery + separator + serialIndex);
 				Debug.Log ("Logged store started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_PROMPTED_ENDED" + separator + store.name + separator + learningOrDelivery + separator + serialIndex);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "STORE_TARGET_ENDED" + separator + store.name + separator + learningOrDelivery + separator + serialIndex);
 				Debug.Log ("Logged store ended event.");
 			}
 		}
@@ -255,10 +255,10 @@ public class TrialLogTrack : LogTrack {
 		case Config.RecallType.FreeItemRecall:
 			eventString = "free";
 			break;
-		case Config.RecallType.FreeStoreRecall:
+		/*case Config.RecallType.FreeStoreRecall:
 			eventString = "free";
 			itemOrStore = "store";
-			break;
+			break;*/
 		case Config.RecallType.CuedRecall:
 			eventString = "cued";
 			itemOrStore = "item_and_store";

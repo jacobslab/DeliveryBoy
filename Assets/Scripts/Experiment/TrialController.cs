@@ -144,13 +144,19 @@ public class TrialController : MonoBehaviour {
 				//RECALL
 				//TODO: implement different kinds of recall phases
 				Config.RecallType recallType = Config.RecallTypesAcrossTrials[i];
-				yield return StartCoroutine(DoRecallPhase( recallType, i));
+				if(recallType == Config.RecallType.FreeThenCued){
+					yield return StartCoroutine(DoRecallPhase( Config.RecallType.FreeItemRecall, i));
+					yield return StartCoroutine(DoRecallPhase( Config.RecallType.CuedRecall, i));
+				}
+				else{
+					yield return StartCoroutine(DoRecallPhase( recallType, i));
+				}
 
 			}
 
+			exp.player.controls.ShouldLockControls = true;
 
 			yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You have finished your deliveries! \n\n Please press (X) to continue on to final recall.", true, true, false, Config.minDefaultInstructionTime));
-
 
 			//FINAL RECALL
 			if(Config.doFinalItemRecall){
@@ -304,8 +310,8 @@ public class TrialController : MonoBehaviour {
 			//visit store
 			yield return StartCoroutine(DoVisitStoreCommand(deliveryStores[numDelivery], false, numDelivery));
 
-			//calculate score, reset the delivery timer
-			exp.scoreController.CalculateTimeBonus(deliveryTimer.GetSecondsInt());
+			//calculate score
+			//exp.scoreController.CalculateTimeBonus(deliveryTimer.GetSecondsInt());
 
 			//if not the last delivery, deliver an item.
 			if(numDelivery < deliveryStores.Count - 1){
@@ -395,14 +401,15 @@ public class TrialController : MonoBehaviour {
 				recallTime = Config.freeRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall DELIVERED ITEMS");
 				break;
-			case Config.RecallType.FreeStoreRecall:
-				recallState = TCP_Config.DefineStates.RECALL_FREE_STORE;
-				recallTime = Config.freeRecallTime;
-				exp.recallInstructionsController.DisplayText ("Free recall STORES DELIVERED TO");
-				break;
 			case Config.RecallType.CuedRecall:
 				yield return StartCoroutine( DoCuedRecall (fileName));
 			break;
+			case Config.RecallType.FreeThenCued:
+			/*recallState = TCP_Config.DefineStates.RECALL_FREE_AND_CUED;
+				recallTime = Config.freeRecallTime;
+				exp.recallInstructionsController.DisplayText ("Free recall STORES DELIVERED TO");*/
+				Debug.Log("FREE THEN CUED SHOULD JUST RUN FREE, THEN CUED. NOT BOTH AT ONCE.");
+				break;
 			case Config.RecallType.FinalItemRecall:
 				recallState = TCP_Config.DefineStates.FINALRECALL_ITEM;
 				recallTime = Config.finalFreeRecallTime;
@@ -462,7 +469,7 @@ public class TrialController : MonoBehaviour {
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, false, false, true);
 
-				exp.recallInstructionsController.DisplayText ("What did you deliver to the " + cueName + "?");
+				exp.recallInstructionsController.DisplayText ("What did you deliver here?"); //to the " + cueName + "?");
 
 				//show image
 				//storeImage = exp.objectController.SpawnStoreImage(Vector3.zero, cueName);
@@ -482,7 +489,7 @@ public class TrialController : MonoBehaviour {
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, true, true, true);
 
-				exp.recallInstructionsController.DisplayText ("Where did you deliver the " + cueName + "?");
+				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item?");// the " + cueName + "?");
 
 				//play audio
 				orderedStores[index].PlayCurrentAudio();

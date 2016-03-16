@@ -36,7 +36,7 @@ public class Config : MonoBehaviour {
 	public static float randomJitterMin = 0.0f;
 	public static float randomJitterMax = 0.2f;
 	
-	public static int numTestTrials = 8;
+	public static int numTestTrials = 8; //number of delivery days
 	
 	//practice settings
 	public static int numTrialsPract = 1;
@@ -49,8 +49,8 @@ public class Config : MonoBehaviour {
 	public static bool isStoreCorrelatedDelivery = true;
 
 	public static int numLearningIterations = 1;
-	public static bool doLearningPhase = true;
-	public static bool doRotationPhase = true;
+	public static bool doLearningPhase = false;
+	public static bool doRotationPhase = false;
 
 	public static bool doFinalItemRecall = true;
 	public static bool doFinalStoreRecall = true;
@@ -70,8 +70,9 @@ public class Config : MonoBehaviour {
 	public enum RecallType
 	{
 		FreeItemRecall,
-		FreeStoreRecall,
+		//FreeStoreRecall,
 		CuedRecall,
+		FreeThenCued,
 		FinalItemRecall,	
 		FinalStoreRecall,
 	}
@@ -80,12 +81,13 @@ public class Config : MonoBehaviour {
 	// 0 - free recall
 	// 1 - cued recall
 	// 2 - both free and cued
-	public static RecallType[] RecallTypesAcrossTrials = { RecallType.FreeItemRecall, RecallType.FreeStoreRecall, RecallType.CuedRecall, RecallType.FreeItemRecall, 
-															RecallType.FreeStoreRecall, RecallType.CuedRecall, RecallType.FreeItemRecall, RecallType.FreeStoreRecall };
+	//NOTE THESE MAY BE CONFIGURED DIFFERENTLY IN MAIN MENU.
+	public static RecallType[] RecallTypesAcrossTrials = { RecallType.FreeThenCued, RecallType.FreeThenCued, RecallType.FreeThenCued, RecallType.FreeThenCued, 
+								RecallType.FreeThenCued, RecallType.FreeThenCued, RecallType.FreeThenCued, RecallType.FreeThenCued };
 
 
 	public static bool shouldUseWaypoints = true;
-	public static float timeUntilWaypoints = 10.0f;
+	public static float timeUntilWaypoints = 360.0f; //6 minutes
 
 	//tilt variables
 	public static bool isAvatarTilting = true;
