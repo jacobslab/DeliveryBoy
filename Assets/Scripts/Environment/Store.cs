@@ -47,6 +47,14 @@ public class Store : MonoBehaviour {
 		
 	}
 
+	public bool GetIsAudioPlaying(){
+		if (myAudioPlayer.isPlaying) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public void PlayCurrentAudio(){
 		if (myAudioPlayer.clip != null) {
 			myAudioPlayer.Play();

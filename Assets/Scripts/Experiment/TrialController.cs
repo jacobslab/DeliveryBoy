@@ -414,12 +414,12 @@ public class TrialController : MonoBehaviour {
 				break;
 			case Config.RecallType.FinalItemRecall:
 				recallState = TCP_Config.DefineStates.FINALRECALL_ITEM;
-				recallTime = Config.finalFreeRecallTime;
+				recallTime = Config.finalFreeItemRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall ALL DELIVERED ITEMS");
 				break;
 			case Config.RecallType.FinalStoreRecall:
 				recallState = TCP_Config.DefineStates.FINALRECALL_STORE;
-				recallTime = Config.finalFreeRecallTime;
+				recallTime = Config.finalStoreRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall ALL STORES");
 				break;
 		}
@@ -495,6 +495,9 @@ public class TrialController : MonoBehaviour {
 
 				//play audio
 				orderedStores[index].PlayCurrentAudio();
+				while(orderedStores[index].GetIsAudioPlaying()){ //wait for audio to finish playing before proceeding
+					yield return 0;
+				}
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, true, true, false);
 				SetServerItemCueState(index, true);

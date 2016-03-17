@@ -64,7 +64,7 @@ public class Config : MonoBehaviour {
 
 	public static int freeRecallTime = 90;
 	public static int cuedRecallTime = 5;
-	public static int finalFreeRecallTime = 360;
+	public static int finalFreeItemRecallTime = 360;
 	public static int finalStoreRecallTime = 120;
 
 	public enum RecallType
