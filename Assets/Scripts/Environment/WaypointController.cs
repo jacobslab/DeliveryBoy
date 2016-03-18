@@ -182,9 +182,9 @@ public class WaypointController : MonoBehaviour {
 		if (waypointPath.Count > 0) {
 			nextPointPosition = waypointPath[waypointPath.Count - 1].transform.position;
 		}
-		if(!CheckBetweenPoints(startPosition, startPoint.transform.position, nextPointPosition)){
+		//if(!CheckBetweenPoints(startPosition, startPoint.transform.position, nextPointPosition)){
 			waypointPath.Add(startPoint);
-		}
+		//}
 
 
 		//since the current order is from the end point to the start point, reverse the list
