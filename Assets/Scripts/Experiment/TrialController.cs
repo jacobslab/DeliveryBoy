@@ -399,7 +399,7 @@ public class TrialController : MonoBehaviour {
 			case Config.RecallType.FreeItemRecall:
 				recallState = TCP_Config.DefineStates.RECALL_FREE_ITEM;
 				recallTime = Config.freeRecallTime;
-				exp.recallInstructionsController.DisplayText ("Free recall DELIVERED ITEMS");
+				exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember from this delivery day.");
 				break;
 			case Config.RecallType.CuedRecall:
 				exp.eventLogger.LogRecallPhaseStarted (recallType, true);
@@ -415,12 +415,12 @@ public class TrialController : MonoBehaviour {
 			case Config.RecallType.FinalItemRecall:
 				recallState = TCP_Config.DefineStates.FINALRECALL_ITEM;
 				recallTime = Config.finalFreeItemRecallTime;
-				exp.recallInstructionsController.DisplayText ("Free recall ALL DELIVERED ITEMS");
+				exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember.");
 				break;
 			case Config.RecallType.FinalStoreRecall:
 				recallState = TCP_Config.DefineStates.FINALRECALL_STORE;
 				recallTime = Config.finalStoreRecallTime;
-				exp.recallInstructionsController.DisplayText ("Free recall ALL STORES");
+				exp.recallInstructionsController.DisplayText ("Speak aloud all stores that you remember.");
 				break;
 		}
 

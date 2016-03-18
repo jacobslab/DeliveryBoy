@@ -52,7 +52,7 @@ public class InstructionsController : MonoBehaviour {
 			"\n\n\n\nPress [X] to continue.";
 	
 	public static string learningInstructions2 = "Don't worry if it takes a little while to learn the city!" +
-		" Your bonus is not affected by how long the practice period takes." +
+		/*" Your bonus is not affected by how long the practice period takes." +*/
 			"\n\nFinding the correct stores will be difficult at first, but it will get easier when you become more familiar with the city." +
 			"\n\nPlease tell the investigator when you have finished reading.";
 
