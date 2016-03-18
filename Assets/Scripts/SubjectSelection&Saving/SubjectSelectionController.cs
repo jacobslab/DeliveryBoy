@@ -49,38 +49,45 @@ public class SubjectSelectionController : MonoBehaviour {
 	
 	void AddNewSubject() {
 		if(SubjectInputField.text != ""){ //the subject must have a name!
-
+			
+			string newSubjName = SubjectInputField.text.Replace("\n", "");
+			newSubjName = newSubjName.Replace("\r", "");
+			
 			//don't want a duplicate subject
-			bool isDuplicateSubject = SubjectReaderWriter.subjectDict.ContainsKey( SubjectInputField.text );
-			if(!isDuplicateSubject || ExperimentSettings.Instance.isPilot){
-
+			bool isDuplicateSubject = SubjectReaderWriter.subjectDict.ContainsKey( newSubjName );
+			if(!isDuplicateSubject || ExperimentSettings.Instance.isRelease){
+				
 				//make and add a new subject
-				Subject newSubject = new Subject( SubjectInputField.text, 0, 0 ); //should subject be its own class?
-																					//or a monobehavior to tie to the button?
-																					//or does each subject button just have a public subject variable?
-
+				Subject newSubject = new Subject( newSubjName, 0, 0 ); //should subject be its own class?
+				//or a monobehavior to tie to the button?
+				//or does each subject button just have a public subject variable?
+				
 				if(!isDuplicateSubject){
 					SubjectReaderWriter.subjectDict.Add( newSubject.name, newSubject );
 				}
-
-				if(!ExperimentSettings.Instance.isPilot){
-
+				
+				if(!ExperimentSettings.Instance.isRelease){
+					
 					subjectReaderWriter.WriteNewSubject( newSubject.name );
-
+					
 					//now get rid of input text
 					SubjectInputField.text = "";
-
-					/*GameObject newSubjectButton =*/ AddSubjectButton(newSubject.name);
+					
+					//GameObject newSubjectButton = AddSubjectButton(newSubject.name);
+					AddSubjectButton(newSubject.name);
 				}
-
+				
 				ChooseSubject(newSubject.name);
-
+				
+			}
+			else{
+				ChooseSubject(newSubjName);
 			}
 		}
 	}
 
 	void GenerateSubjectButtons(){
-		if (!ExperimentSettings.Instance.isPilot) {
+		if (!ExperimentSettings.Instance.isRelease) {
 			subjectButtonObjList = new List<GameObject> ();
 
 			//float distanceBetweenButtons = subjectButtonPrefab.GetComponent<RectTransform>().rect.width;

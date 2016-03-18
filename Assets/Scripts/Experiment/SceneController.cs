@@ -57,7 +57,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 			Debug.Log ("loading experiment!");
 			Application.LoadLevel (1);
 		}
-		else if (ExperimentSettings.Instance.isPilot){ //no subject, not replay, is pilot
+		else if (ExperimentSettings.Instance.isRelease){ //no subject, not replay, is pilot
 			if(ExperimentSettings.currentSubject == null){
 				ExperimentSettings.Instance.subjectSelectionController.SendMessage("AddNewSubject");
 				if(ExperimentSettings.currentSubject != null){

@@ -49,7 +49,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public Image micTestIndicator;
 
 	public GameObject nonPilotOptions;
-	public bool isPilot { get { return GetIsPilot (); } }
+	public bool isRelease { get { return GetIsRelease (); } }
 
 
 	//LOGGING
@@ -153,7 +153,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		}
 	}
 
-	bool GetIsPilot(){
+	bool GetIsRelease(){
 		if (nonPilotOptions.activeSelf) {
 			return false;
 		}
