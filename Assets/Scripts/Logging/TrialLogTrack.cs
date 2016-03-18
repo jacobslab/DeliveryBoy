@@ -293,4 +293,17 @@ public class TrialLogTrack : LogTrack {
 		}
 	}
 
+	public void LogRecording(bool isStarted){
+		if (isStarted) {
+			subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "AUDIO_RECORDING_STARTED");
+			
+			Debug.Log ("Logged .wav recording started.");
+		} 
+		else {
+			subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "AUDIO_RECORDING_ENDED");
+			
+			Debug.Log ("Logged .wav recording ended.");
+		}
+	}
+
 }

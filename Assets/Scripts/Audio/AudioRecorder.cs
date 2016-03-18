@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class AudioRecorder : MonoBehaviour {
-	
+
+	Experiment exp { get { return Experiment.Instance; } }
+
 	public enum micActivation {
 		HoldToSpeak,
 		PushToSpeak,
@@ -76,10 +78,12 @@ public class AudioRecorder : MonoBehaviour {
 			Color origTextColor = recordText.color;
 			recordText.color = Color.red;
 
+			exp.eventLogger.LogRecording(true);
 			StartMicrophone (duration);
 			yield return new WaitForSeconds (duration);
 
 			StopMicrophone ();
+			exp.eventLogger.LogRecording(false);
 			recordText.color = Color.white;
 
 			SavWav.Save (filePath, fileName, audio.clip);
