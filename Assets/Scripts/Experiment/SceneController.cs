@@ -68,7 +68,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 	}
 
 	void LoadExperimentLevel(){
-		if (ExperimentSettings.currentSubject.trials < Config.GetTotalNumTrials ()) {
+		if (ExperimentSettings.currentSubject.trials < ExperimentSettings.numDelivDays) {
 			Debug.Log ("loading experiment!");
 			Application.LoadLevel (1);
 		} else {

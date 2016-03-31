@@ -127,11 +127,11 @@ public class TrialController : MonoBehaviour {
 			exp.player.controls.ShouldLockControls = true;
 			yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You will now begin delivering items! Press [X] to start your first delivery day.", true, true, false, Config.minDefaultInstructionTime));
 
-			for(int i = 0; i < Config.numTestTrials; i++){
+			for(int i = 0; i < ExperimentSettings.numDelivDays; i++){
 				exp.player.controls.ShouldLockControls = true;
 
 				if(i != 0){
-					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Welcome to Delivery Day " + (i+1) + "/" + Config.numTestTrials + "!" + "\n\nPress [X] to continue.", true, true, false, Config.minDefaultInstructionTime));
+					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Welcome to Delivery Day " + (i+1) + "/" + ExperimentSettings.numDelivDays + "!" + "\n\nPress [X] to continue.", true, true, false, Config.minDefaultInstructionTime));
 				}
 
 				exp.player.controls.ShouldLockControls = false;
@@ -161,11 +161,11 @@ public class TrialController : MonoBehaviour {
 
 			//FINAL RECALL
 			if(Config.doFinalItemRecall){
-				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, Config.numTestTrials));
+				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, ExperimentSettings.numDelivDays));
 			}
 
 			if(Config.doFinalStoreRecall){
-				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, Config.numTestTrials + 1)); //fo
+				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, ExperimentSettings.numDelivDays + 1)); //it's an extra recall phase! +1
 			}
 
 			exp.player.controls.ShouldLockControls = true;

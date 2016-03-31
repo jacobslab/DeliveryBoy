@@ -35,12 +35,6 @@ public class Config : MonoBehaviour {
 	//SPECIFIC TASK VARIABLES:
 	public static float randomJitterMin = 0.0f;
 	public static float randomJitterMax = 0.2f;
-	
-	public static int numTestTrials = 8; //number of delivery days
-	
-	//practice settings
-	public static int numTrialsPract = 1;
-	public static bool doPracticeTrial = false;
 
 	//DELIVERY VARIABLES
 	public static int numDeliveryStores = 13; //out of the total number of stores -- LAST STORE DOES NOT ACTUALLY GET DELIVERY
@@ -104,15 +98,6 @@ public class Config : MonoBehaviour {
 
 	void Start(){
 
-	}
-
-	public static int GetTotalNumTrials(){
-		if (!doPracticeTrial) {
-			return numTestTrials;
-		} 
-		else {
-			return numTestTrials + numTrialsPract;
-		}
 	}
 
 }

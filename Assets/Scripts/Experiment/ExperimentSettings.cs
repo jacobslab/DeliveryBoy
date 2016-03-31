@@ -42,6 +42,12 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	//public Toggle syncboxToggle;
 
 
+	public static int numDelivDays = 1;
+	public Toggle sixDayToggle;
+	public Toggle eightDayToggle;
+	public Toggle oneDayToggle;
+
+
 	public Text endCongratsText;
 	public Text endScoreText;
 	public Text endSessionText;
@@ -193,10 +199,40 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		}
 	}
 
+	public void SetDeliveryDayNum(int num){
+
+		switch (num) {
+		case 1:
+			if(oneDayToggle.isOn){ //only set things if this toggle was just turned on!
+				numDelivDays = num;
+				oneDayToggle.isOn = true;
+				sixDayToggle.isOn = false;
+				eightDayToggle.isOn = false;
+			}
+			break;
+		case 6:
+			if(sixDayToggle.isOn){
+				numDelivDays = num;
+				oneDayToggle.isOn = false;
+				sixDayToggle.isOn = true;
+				eightDayToggle.isOn = false;
+			}
+			break;
+		case 8:
+			if(eightDayToggle.isOn){
+				numDelivDays = num;
+				oneDayToggle.isOn = false;
+				sixDayToggle.isOn = false;
+				eightDayToggle.isOn = true;
+			}
+			break;
+		}
+	}
+
 	public void SetTrialRecallTypes(){
 		NumericInputTextLimiter[] recallTextInputs = RecallTypeInputParent.GetComponentsInChildren<NumericInputTextLimiter> ();
 		for (int i = 0; i < recallTextInputs.Length; i++) {
-			if(i < Config.numTestTrials){
+			if(i < numDelivDays){
 				recallTextInputs[i].UpdateText();
 				int recallTextTypeInt = int.Parse (recallTextInputs[i].myNumericTextField.text);
 
