@@ -289,6 +289,8 @@ public class TrialController : MonoBehaviour {
 
 		currentState = TrialState.delivery;
 
+		exp.player.controls.GoToStartPosition ();
+
 		exp.eventLogger.LogDeliveryDay (deliveryDay, true);
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.DELIVERY_NAVIGATION, true);
 

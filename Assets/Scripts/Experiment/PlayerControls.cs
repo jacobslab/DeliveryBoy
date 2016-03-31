@@ -10,7 +10,6 @@ public class PlayerControls : MonoBehaviour{
 
 	public Transform TiltableTransform;
 	public Transform startPositionTransform1;
-	public Transform startPositionTransform2;
 
 	float RotationSpeed = 50.0f;
 	
@@ -119,6 +118,11 @@ public class PlayerControls : MonoBehaviour{
 		}
 	}
 
+	//will set start position and rotation
+	public void GoToStartPosition(){
+		transform.position = startPositionTransform1.position;
+		transform.rotation = startPositionTransform1.rotation;
+	}
 
 	public IEnumerator SmoothMoveTo(Vector3 targetPosition, Quaternion targetRotation, float timeToTravel){
 

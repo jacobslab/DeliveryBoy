@@ -10,18 +10,8 @@ public class Trial {
 	public Quaternion avatarStartRot;
 
 	public Trial(){
-
-		int fiftyFiftyChance = Random.Range (0, 2); //will pick 1 or 0
-		if (fiftyFiftyChance == 0) {
-			avatarStartPos = exp.player.controls.startPositionTransform1.position;//new Vector3 (exp.player.controls.startPositionTransform1.position.x, exp.player.transform.position.y, exp.player.controls.startPositionTransform1.z);
-			avatarStartRot = exp.player.controls.startPositionTransform1.rotation;//Quaternion.Euler (0, exp.player.controls.startPositionTransform1.rotation, 0);
-		}
-		else {
-			avatarStartPos = exp.player.controls.startPositionTransform2.position;
-			avatarStartRot = exp.player.controls.startPositionTransform2.rotation;
-		}
-
-
+		avatarStartPos = exp.player.controls.startPositionTransform1.position;//new Vector3 (exp.player.controls.startPositionTransform1.position.x, exp.player.transform.position.y, exp.player.controls.startPositionTransform1.z);
+		avatarStartRot = exp.player.controls.startPositionTransform1.rotation;//Quaternion.Euler (0, exp.player.controls.startPositionTransform1.rotation, 0);
 	}
 
 	//get reflected rotation
@@ -50,15 +40,8 @@ public class Trial {
 	public Trial GetCounterSelf(){
 		Trial counterTrial = new Trial ();
 
-		//counter the avatar
-		if (avatarStartPos == exp.player.controls.startPositionTransform1.position) {
-			counterTrial.avatarStartPos = exp.player.controls.startPositionTransform2.position;
-			counterTrial.avatarStartRot = exp.player.controls.startPositionTransform2.rotation;
-		} 
-		else {
-			counterTrial.avatarStartPos = exp.player.controls.startPositionTransform1.position;
-			counterTrial.avatarStartRot = exp.player.controls.startPositionTransform1.rotation;
-		}
+		counterTrial.avatarStartPos = exp.player.controls.startPositionTransform1.position;
+		counterTrial.avatarStartRot = exp.player.controls.startPositionTransform1.rotation;
 
 		
 		return counterTrial;
