@@ -129,10 +129,12 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	}
 
 	void DoMicTest(){
-		if (AudioRecorder.CheckForRecordingDevice ()) {
-			micTestIndicator.color = Color.green;
-		} else {
-			micTestIndicator.color = Color.red;
+		if (micTestIndicator != null) {
+			if (AudioRecorder.CheckForRecordingDevice ()) {
+				micTestIndicator.color = Color.green;
+			} else {
+				micTestIndicator.color = Color.red;
+			}
 		}
 	}
 

@@ -31,7 +31,8 @@ public class TrialController : MonoBehaviour {
 	public CanvasGroup RecallUI;
 
 	//audio
-	public AudioSource recallBeep;
+	public AudioSource recallStartBeep;
+	public AudioSource recallEndBeep;
 
 	//delivery timer
 	public SimpleTimer deliveryTimer;
@@ -167,9 +168,8 @@ public class TrialController : MonoBehaviour {
 				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, Config.numTestTrials + 1)); //fo
 			}
 
-
-
-			yield return 0;
+			exp.player.controls.ShouldLockControls = true;
+			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("You have finished your trials! \nPress the button to proceed.", true, true, false, 0.0f));
 		}
 		
 	}
@@ -382,6 +382,20 @@ public class TrialController : MonoBehaviour {
 		yield return 0;
 	}
 
+	IEnumerator StartRecall(){
+		recallStartBeep.Play ();
+		while (recallStartBeep.isPlaying) {
+			yield return 0;
+		}
+	}
+	
+	IEnumerator EndRecall(){
+		recallEndBeep.Play ();
+		while(recallEndBeep.isPlaying){
+			yield return 0;
+		}
+	}
+
 	IEnumerator DoRecallPhase(Config.RecallType recallType, int numRecallPhase){
 
 		currentState = TrialState.recall;
@@ -432,10 +446,7 @@ public class TrialController : MonoBehaviour {
 			exp.eventLogger.LogRecallPhaseStarted (recallType, true);
 			TCPServer.Instance.SetState(recallState, true);
 
-			recallBeep.Play ();
-			while (recallBeep.isPlaying) {
-				yield return 0;
-			}
+			yield return StartCoroutine(StartRecall());
 
 			if (ExperimentSettings.isLogging) {
 				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", fileName, recallTime));
@@ -443,6 +454,8 @@ public class TrialController : MonoBehaviour {
 			else{
 				yield return new WaitForSeconds(recallTime);
 			}
+
+			yield return StartCoroutine(EndRecall());
 		}
 
 		exp.player.controls.ShouldLockControls = false;
@@ -452,7 +465,7 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogRecallPhaseStarted (recallType, false);
 		TCPServer.Instance.SetState(recallState, false);
 	}
-	
+
 	IEnumerator DoCuedRecall(string recordFileName){
 		//go through all item-store pairs, and cue half with the store and half with the item
 
@@ -505,10 +518,7 @@ public class TrialController : MonoBehaviour {
 				SetServerItemCueState(index, true);
 			}
 
-			recallBeep.Play ();
-			while (recallBeep.isPlaying) {
-				yield return 0;
-			}
+			yield return StartCoroutine (StartRecall());
 
 			if (ExperimentSettings.isLogging) {
 				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", recordFileName + "_" + cueName, Config.cuedRecallTime));
@@ -516,6 +526,8 @@ public class TrialController : MonoBehaviour {
 			else{
 				yield return new WaitForSeconds(Config.cuedRecallTime);
 			}
+
+			yield return StartCoroutine(EndRecall());
 
 			if(storeImage != null){
 				storeImage.GetComponent<VisibilityToggler>().TurnVisible(false);

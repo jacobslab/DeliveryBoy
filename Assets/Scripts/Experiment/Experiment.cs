@@ -151,8 +151,6 @@ public class Experiment : MonoBehaviour {
 	}
 
 	public IEnumerator RunOutOfTrials(){
-		player.controls.ShouldLockControls = true;
-		yield return StartCoroutine(instructionsController.ShowSingleInstruction("You have finished your trials! \nPress the button to proceed.", true, true, false, 0.0f));
 		instructionsController.SetInstructionsColorful(); //want to keep a dark screen before transitioning to the end!
 		instructionsController.DisplayText("...loading end screen...");
 		EndExperiment();
