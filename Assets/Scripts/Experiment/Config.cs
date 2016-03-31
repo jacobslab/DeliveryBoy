@@ -55,7 +55,7 @@ public class Config : MonoBehaviour {
 	public static bool doFinalItemRecall = true;
 	public static bool doFinalStoreRecall = true;
 
-	public static float storeRotateTime = 8.0f;
+	public static float storeRotateTime = 12.0f;
 	public static float numStoreRotations = 1.3f;
 	
 	public static float minInitialInstructionsTime = 0.0f;
