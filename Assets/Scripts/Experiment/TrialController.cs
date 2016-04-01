@@ -111,7 +111,7 @@ public class TrialController : MonoBehaviour {
 
 			//show instructions for exploring, wait for the action button
 			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
-
+			yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 
 			//ROTATION PHASE
 			if(Config.doRotationPhase){
@@ -199,7 +199,7 @@ public class TrialController : MonoBehaviour {
 		currentState = TrialState.navigationLearning;
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, true);
 
-		yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
+		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
 
 		exp.eventLogger.LogLearningPhaseStarted (true);
 
