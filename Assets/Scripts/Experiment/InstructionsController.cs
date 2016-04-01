@@ -56,6 +56,16 @@ public class InstructionsController : MonoBehaviour {
 			"\n\nFinding the correct stores will be difficult at first, but it will get easier when you become more familiar with the city." +
 			"\n\nPlease tell the investigator when you have finished reading.";
 
+
+	public static string finalItemRecallInstructions = "In this next period, please recall as many ITEMS as you can remember from the entire session, in any order." +
+		"You will be given several minutes to do this; please keep trying for the whole period, as you may find that words keep springing up in your memory." +
+		"\n\n* Press (X) to begin the recall period *";
+
+	public static string finalStoreRecallInstructions = "In this next period, please recall as many STORE NAMES as you can remember from the entire session, in any order." +
+		"You will be given several minutes to do this; please keep trying for the whole period, as you may find that words keep springing up in your memory." +
+		"\n\n* Press (X) to begin the recall period *";
+
+
 	//ROTATION PHASE INSTRUCTIONS
 	public static string rotationInstructions1 = "We will now show you each of the buildings that you may encounter.";
 	// Use this for initialization

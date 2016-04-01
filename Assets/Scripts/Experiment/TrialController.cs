@@ -157,19 +157,17 @@ public class TrialController : MonoBehaviour {
 
 			exp.player.controls.ShouldLockControls = true;
 
-			yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You have finished your deliveries! \n\n Please press (X) to continue on to final recall.", true, true, false, Config.minDefaultInstructionTime));
-
 			//FINAL RECALL
-			if(Config.doFinalItemRecall){
-				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, ExperimentSettings.numDelivDays));
-			}
-
 			if(Config.doFinalStoreRecall){
 				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, ExperimentSettings.numDelivDays + 1)); //it's an extra recall phase! +1
 			}
 
+			if(Config.doFinalItemRecall){
+				yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, ExperimentSettings.numDelivDays));
+			}
+
 			exp.player.controls.ShouldLockControls = true;
-			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("You have finished your trials! \nPress the button to proceed.", true, true, false, 0.0f));
+			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("You have completed the session! \nPress (X) to proceed.", true, true, false, 0.0f));
 		}
 		
 	}
@@ -431,12 +429,20 @@ public class TrialController : MonoBehaviour {
 			case Config.RecallType.FinalItemRecall:
 				recallState = TCP_Config.DefineStates.FINALRECALL_ITEM;
 				recallTime = Config.finalFreeItemRecallTime;
-				exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember.");
+				RecallUI.alpha = 0.0f;
+				exp.recallInstructionsController.DisplayText("");
+				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalItemRecallInstructions, true, true, false, 0.0f));
+				RecallUI.alpha = 1.0f;
+				//exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember.");
 				break;
 			case Config.RecallType.FinalStoreRecall:
 				recallState = TCP_Config.DefineStates.FINALRECALL_STORE;
 				recallTime = Config.finalStoreRecallTime;
-				exp.recallInstructionsController.DisplayText ("Speak aloud all stores that you remember.");
+				RecallUI.alpha = 0.0f;
+				exp.recallInstructionsController.DisplayText("");
+				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalStoreRecallInstructions, true, true, false, 0.0f));
+				RecallUI.alpha = 1.0f;
+				//exp.recallInstructionsController.DisplayText ("Speak aloud all stores that you remember.");
 				break;
 		}
 
