@@ -37,14 +37,14 @@ public class Config : MonoBehaviour {
 	public static float randomJitterMax = 0.2f;
 
 	//DELIVERY VARIABLES
-	public static int numDeliveryStores = 2;//13; //out of the total number of stores -- LAST STORE DOES NOT ACTUALLY GET DELIVERY
+	public static int numDeliveryStores = 13; //out of the total number of stores -- LAST STORE DOES NOT ACTUALLY GET DELIVERY
 	
 	public static bool isAudioDelivery = true;
 	public static bool isStoreCorrelatedDelivery = true;
 
 	public static int numLearningIterations = 1;
-	public static bool doLearningPhase = false;
-	public static bool doRotationPhase = false;
+	public static bool doLearningPhase = true;
+	public static bool doRotationPhase = true;
 
 	public static bool doFinalItemRecall = true;
 	public static bool doFinalStoreRecall = true;
@@ -56,10 +56,10 @@ public class Config : MonoBehaviour {
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
-	public static int freeRecallTime = 5;//90;
+	public static int freeRecallTime = 90;
 	public static int cuedRecallTime = 5;
-	public static int finalFreeItemRecallTime = 5;//360;
-	public static int finalStoreRecallTime = 5;//120;
+	public static int finalFreeItemRecallTime = 360;
+	public static int finalStoreRecallTime = 120;
 
 	public enum RecallType
 	{

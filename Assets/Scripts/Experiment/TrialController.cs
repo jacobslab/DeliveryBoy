@@ -30,6 +30,8 @@ public class TrialController : MonoBehaviour {
 	public CanvasGroup ConnectionUI;
 	public UIScreen DeliveryUI; 
 	public CanvasGroup RecallUI;
+	public CanvasGroup InitialDeliveryInstructionGroup;
+	public Text InitialDeliveryInstructionText;
 	public Text DeliveryInstructionText;
 
 	//audio
@@ -126,14 +128,11 @@ public class TrialController : MonoBehaviour {
 
 			exp.eventLogger.LogSessionStarted(Experiment.sessionID);
 
-			exp.player.controls.ShouldLockControls = true;
-			yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You will now begin delivering items! Press [X] to start your first delivery day.", true, true, false, Config.minDefaultInstructionTime));
-
 			for(int i = 0; i < ExperimentSettings.numDelivDays; i++){
 				exp.player.controls.ShouldLockControls = true;
 
 				if(i != 0){
-					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Welcome to Delivery Day " + (i+1) + "/" + ExperimentSettings.numDelivDays + "!" + "\n\nPress [X] to continue.", true, true, false, Config.minDefaultInstructionTime));
+					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
 				}
 
 				exp.player.controls.ShouldLockControls = false;
@@ -274,10 +273,17 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, true, numDeliveryToday);
 		SetServerStoreTarget(numDeliveryToday, true); //indexed at 1
 
+		exp.player.controls.ShouldLockControls = true;
+
+		//show initial delivery command instruction
+		InitialDeliveryInstructionGroup.alpha = 1.0f;
+		InitialDeliveryInstructionText.text = "Please find the " + storeToVisit.name + " Press (X) to continue.";
+		yield return StartCoroutine (UsefulFunctions.WaitForActionButton ());
+		InitialDeliveryInstructionGroup.alpha = 0.0f;
+
 		exp.player.controls.ShouldLockControls = false;
 
 		//show instruction at top of screen, don't wait for button, wait for collision
-		
 		DeliveryInstructionText.text = "Go to the " + storeToVisit.name;
 		yield return StartCoroutine (exp.player.WaitForStoreCollision (storeToVisit.gameObject));
 		DeliveryInstructionText.text = " ";
@@ -299,12 +305,12 @@ public class TrialController : MonoBehaviour {
 
 		//if the first delivery store in this list is the same as the last one in the last list...
 			//swap it with another one so that they're not consecutive!
-		if (deliveryStores [0] == lastStore) {
+		/*if (deliveryStores [0] == lastStore) {
 			int randomSwapIndex = Random.Range(1, deliveryStores.Count);
 			Store temp = deliveryStores[0];
 			deliveryStores[0] = deliveryStores[randomSwapIndex];
 			deliveryStores[randomSwapIndex] = temp;
-		}
+		}*/
 
 
 		for (int numDelivery = 0; numDelivery < deliveryStores.Count; numDelivery++) {
