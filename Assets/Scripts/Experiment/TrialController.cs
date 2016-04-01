@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class TrialController : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
@@ -29,6 +30,7 @@ public class TrialController : MonoBehaviour {
 	public CanvasGroup ConnectionUI;
 	public UIScreen DeliveryUI; 
 	public CanvasGroup RecallUI;
+	public Text DeliveryInstructionText;
 
 	//audio
 	public AudioSource recallStartBeep;
@@ -276,8 +278,9 @@ public class TrialController : MonoBehaviour {
 
 		//show instruction at top of screen, don't wait for button, wait for collision
 		
-		exp.instructionsController.SetSingleInstruction ("Go to the " + storeToVisit.name, false);
+		DeliveryInstructionText.text = "Go to the " + storeToVisit.name;
 		yield return StartCoroutine (exp.player.WaitForStoreCollision (storeToVisit.gameObject));
+		DeliveryInstructionText.text = " ";
 
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, false, numDeliveryToday);
 		SetServerStoreTarget(numDeliveryToday, false); //indexed at 1

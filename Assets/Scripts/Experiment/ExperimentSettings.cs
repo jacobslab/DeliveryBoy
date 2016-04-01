@@ -42,7 +42,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	//public Toggle syncboxToggle;
 
 
-	public static int numDelivDays = 1;
+	public static int numDelivDays = 6; //in main menu, it's 6 by default!
 	public Toggle sixDayToggle;
 	public Toggle eightDayToggle;
 	public Toggle oneDayToggle;
