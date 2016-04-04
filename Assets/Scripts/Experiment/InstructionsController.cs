@@ -39,7 +39,7 @@ public class InstructionsController : MonoBehaviour {
 	public static string initialInstructions2 = "\n\nOn the final delivery of a given trial, no item will be said. " +
 		"Rather, the screen will go blank, and you'll see a row of asterisks (*******), and hear a tone. " +
 		"At this point your job is to verbally recall all of the delivered items that you can remember, in any order." +
-		"\n\nAfter the recall period you'll have a chance for a short break, and then the next set of deliveries will start.";
+		"\n\nAfter the recall period you'll have a chance for a short break, and then the next set of deliveries will start. ";
 
 	public static string initialInstructions3Learning = "Before you start the full task, you'll have a chance to explore the town, to get your bearings." +
 		"\n\nWe will describe this practice period next." +

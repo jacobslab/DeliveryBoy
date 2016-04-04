@@ -131,9 +131,8 @@ public class TrialController : MonoBehaviour {
 			for(int i = 0; i < ExperimentSettings.numDelivDays; i++){
 				exp.player.controls.ShouldLockControls = true;
 
-				if(i != 0){
-					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
-				}
+				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
+			
 
 				exp.player.controls.ShouldLockControls = false;
 
@@ -390,6 +389,7 @@ public class TrialController : MonoBehaviour {
 	}
 
 	IEnumerator StartRecall(){
+		Debug.Log ("START BEEP");
 		recallStartBeep.Play ();
 		while (recallStartBeep.isPlaying) {
 			yield return 0;
@@ -397,6 +397,7 @@ public class TrialController : MonoBehaviour {
 	}
 	
 	IEnumerator EndRecall(){
+		Debug.Log ("END BEEP");
 		recallEndBeep.Play ();
 		while(recallEndBeep.isPlaying){
 			yield return 0;
