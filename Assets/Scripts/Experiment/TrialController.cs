@@ -404,7 +404,7 @@ public class TrialController : MonoBehaviour {
 		}
 	}
 
-	IEnumerator DoRecallPhase(Config.RecallType recallType, int numRecallPhase){
+	IEnumerator DoRecallPhase(Config.RecallType recallType, int numDeliveryDay){ //numDelivery is only used in CUED recall
 
 		currentState = TrialState.recall;
 
@@ -413,7 +413,7 @@ public class TrialController : MonoBehaviour {
 		exp.player.controls.ShouldLockControls = true;
 
 		//record audio to a file in the session directory for the duration of the recall period
-		string fileName = ExperimentSettings.currentSubject.name + "_" + numRecallPhase;
+		string fileName = numDeliveryDay.ToString();
 
 		int recallTime = 0;
 
@@ -428,19 +428,21 @@ public class TrialController : MonoBehaviour {
 			case Config.RecallType.CuedRecall:
 				exp.eventLogger.LogRecallPhaseStarted (recallType, true);
 				TCPServer.Instance.SetState(recallState, true);
+				fileName += "_";
 				yield return StartCoroutine( DoCuedRecall (fileName));
 			break;
 			case Config.RecallType.FreeThenCued:
 			/*recallState = TCP_Config.DefineStates.RECALL_FREE_AND_CUED;
 				recallTime = Config.freeRecallTime;
 				exp.recallInstructionsController.DisplayText ("Free recall STORES DELIVERED TO");*/
-				Debug.Log("FREE THEN CUED SHOULD JUST RUN FREE, THEN CUED. NOT BOTH AT ONCE.");
+				Debug.Log("SHOULD JUST BE RUNNING FREE, THEN CUED. NOT BOTH AT ONCE.");
 				break;
 			case Config.RecallType.FinalItemRecall:
 				recallState = TCP_Config.DefineStates.FINALRECALL_ITEM;
 				recallTime = Config.finalFreeItemRecallTime;
 				RecallUI.alpha = 0.0f;
 				exp.recallInstructionsController.DisplayText("");
+				fileName = "ffr";
 				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalItemRecallInstructions, true, true, false, 0.0f));
 				RecallUI.alpha = 1.0f;
 				//exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember.");
@@ -450,6 +452,7 @@ public class TrialController : MonoBehaviour {
 				recallTime = Config.finalStoreRecallTime;
 				RecallUI.alpha = 0.0f;
 				exp.recallInstructionsController.DisplayText("");
+				fileName = "sr";
 				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalStoreRecallInstructions, true, true, false, 0.0f));
 				RecallUI.alpha = 1.0f;
 				//exp.recallInstructionsController.DisplayText ("Speak aloud all stores that you remember.");
@@ -482,7 +485,7 @@ public class TrialController : MonoBehaviour {
 		TCPServer.Instance.SetState(recallState, false);
 	}
 
-	IEnumerator DoCuedRecall(string recordFileName){
+	IEnumerator DoCuedRecall(string origFileName){
 		//go through all item-store pairs, and cue half with the store and half with the item
 
 		//randomize order of indices
@@ -492,6 +495,8 @@ public class TrialController : MonoBehaviour {
 		string cueName = "";
 		string shouldRecallName = "";
 
+		string recordFileName = origFileName;
+
 		for(int i = 0; i < randomIndexOrder.Count; i++){
 			int index = randomIndexOrder[i];
 
@@ -499,6 +504,8 @@ public class TrialController : MonoBehaviour {
 
 			//if divisible by 2, make it store cued
 			if(index % 2 == 0){
+				recordFileName = origFileName + i + "s";
+
 				cueName = orderedStores[index].name;
 				shouldRecallName = orderedItemsDelivered[index];
 
@@ -517,6 +524,7 @@ public class TrialController : MonoBehaviour {
 				SetServerStoreCueState(index, true);
 			}
 			else{	//item cued
+				recordFileName = origFileName + i + "i";
 
 				cueName = orderedItemsDelivered[index];
 				shouldRecallName = orderedStores[index].name;
@@ -538,7 +546,7 @@ public class TrialController : MonoBehaviour {
 			yield return StartCoroutine (StartRecall());
 
 			if (ExperimentSettings.isLogging) {
-				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", recordFileName + "_" + cueName, Config.cuedRecallTime));
+				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", recordFileName, Config.cuedRecallTime));
 			}
 			else{
 				yield return new WaitForSeconds(Config.cuedRecallTime);
