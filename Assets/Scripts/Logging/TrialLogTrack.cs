@@ -237,11 +237,11 @@ public class TrialLogTrack : LogTrack {
 		
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_STARTED" + separator + itemOrStore + separator + "CUE" + separator + cue + separator + "SHOULD_RECALL"+ shouldRecall + separator + audioOrVisual);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_STARTED" + separator + itemOrStore + separator + "CUE" + separator + cue + separator + "SHOULD_RECALL" + separator + shouldRecall + separator + audioOrVisual);
 				Debug.Log ("Logged item presentation started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_ENDED" + separator + itemOrStore + separator + "CUE" + separator + cue + separator + "SHOULD_RECALL"+ shouldRecall + separator + audioOrVisual);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_ENDED" + separator + itemOrStore + separator + "CUE" + separator + cue + separator + "SHOULD_RECALL" + separator + shouldRecall + separator + audioOrVisual);
 				Debug.Log ("Logged item presentation ended event.");
 			}
 		}
