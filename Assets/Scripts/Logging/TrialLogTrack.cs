@@ -202,6 +202,7 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	public void LogItemDelivery(string itemDelivered, Store storeDeliveredTo, int serialIndex, bool isAudio, bool isStarting){
+
 		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
 		if (!isAudio) {
 			audioOrVisual = "visual";
@@ -222,7 +223,8 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	
-	public void LogCuedRecallPresentation (string presentatedObject, bool isItem, bool isAudio, bool isStarting){
+	public void LogCuedRecallPresentation (string cue, string shouldRecall, bool isItem, bool isAudio, bool isStarting){
+
 		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
 		if (!isAudio) {
 			audioOrVisual = "visual";
@@ -235,11 +237,11 @@ public class TrialLogTrack : LogTrack {
 		
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_STARTED" + separator + itemOrStore + separator + presentatedObject + separator + audioOrVisual);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_STARTED" + separator + itemOrStore + separator + "CUE" + separator + cue + separator + "SHOULD_RECALL"+ shouldRecall + separator + audioOrVisual);
 				Debug.Log ("Logged item presentation started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_ENDED" + separator + itemOrStore + separator + presentatedObject + separator + audioOrVisual);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_ENDED" + separator + itemOrStore + separator + "CUE" + separator + cue + separator + "SHOULD_RECALL"+ shouldRecall + separator + audioOrVisual);
 				Debug.Log ("Logged item presentation ended event.");
 			}
 		}

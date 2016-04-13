@@ -276,14 +276,14 @@ public class TrialController : MonoBehaviour {
 
 		//show initial delivery command instruction
 		InitialDeliveryInstructionGroup.alpha = 1.0f;
-		InitialDeliveryInstructionText.text = "Please find the " + storeToVisit.name + ".\nPress (X) to continue.";
+		InitialDeliveryInstructionText.text = "Please find the " + storeToVisit.GetDisplayName() + ".\nPress (X) to continue.";
 		yield return StartCoroutine (UsefulFunctions.WaitForActionButton ());
 		InitialDeliveryInstructionGroup.alpha = 0.0f;
 
 		exp.player.controls.ShouldLockControls = false;
 
 		//show instruction at top of screen, don't wait for button, wait for collision
-		DeliveryInstructionText.text = "Go to the " + storeToVisit.name;
+		DeliveryInstructionText.text = "Go to the " + storeToVisit.GetDisplayName();
 		yield return StartCoroutine (exp.player.WaitForStoreCollision (storeToVisit.gameObject));
 		DeliveryInstructionText.text = " ";
 
@@ -352,7 +352,7 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, true);
 		SetServerItemDelivered(numDelivery, true);
 
-		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toStore.name, true, false, false, Config.deliveryCompleteInstructionsTime));
+		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toStore.GetDisplayName(), true, false, false, Config.deliveryCompleteInstructionsTime));
 
 		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, false);
 		SetServerItemDelivered(numDelivery, false);
@@ -490,6 +490,7 @@ public class TrialController : MonoBehaviour {
 		List<int> randomIndexOrder = UsefulFunctions.GetRandomIndexOrder(orderedItemsDelivered.Count);
 
 		string cueName = "";
+		string shouldRecallName = "";
 
 		for(int i = 0; i < randomIndexOrder.Count; i++){
 			int index = randomIndexOrder[i];
@@ -499,10 +500,11 @@ public class TrialController : MonoBehaviour {
 			//if divisible by 2, make it store cued
 			if(index % 2 == 0){
 				cueName = orderedStores[index].name;
+				shouldRecallName = orderedItemsDelivered[index];
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, false, false, true);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, false, true);
 
-				exp.recallInstructionsController.DisplayText ("What did you deliver here?"); //to the " + cueName + "?");
+				exp.recallInstructionsController.DisplayText ("What did you deliver here?");
 
 				//show image
 				//storeImage = exp.objectController.SpawnStoreImage(Vector3.zero, cueName);
@@ -511,18 +513,17 @@ public class TrialController : MonoBehaviour {
 					storeImage.GetComponent<VisibilityToggler>().TurnVisible(true);
 				}
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, false, false, false);
+				exp.eventLogger.LogCuedRecallPresentation(cueName,shouldRecallName, false, false, false);
 				SetServerStoreCueState(index, true);
 			}
 			else{	//item cued
 
 				cueName = orderedItemsDelivered[index];
+				shouldRecallName = orderedStores[index].name;
 
-				cueName.Replace("-", " ");
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, true, true);
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, true, true, true);
-
-				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item?");// the " + cueName + "?");
+				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item?");
 
 				//play audio
 				orderedStores[index].PlayCurrentAudio();
@@ -530,7 +531,7 @@ public class TrialController : MonoBehaviour {
 					yield return 0;
 				}
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, true, true, false);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, true, false);
 				SetServerItemCueState(index, true);
 			}
 

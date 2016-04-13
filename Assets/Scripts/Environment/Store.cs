@@ -34,7 +34,7 @@ public class Store : MonoBehaviour {
 		if (Config.isStoreCorrelatedDelivery) {
 		
 			audioLeftToUse = new List<AudioClip> ();
-			string folder = "StoreAudio/" + gameObject.name;
+			string folder = "StoreAudio/" + GetDisplayName(); //just happens to be organized with the display name...
 			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
 			for (int i = 0; i < storeAudioClips.Length; i++) {
 				audioLeftToUse.Add (storeAudioClips [i]);
@@ -129,6 +129,13 @@ public class Store : MonoBehaviour {
 			UsefulFunctions.EnableChildren (rotationVisualsParent.transform, false);
 			rotationVisualsParent.LogChildrenEnabled (false);
 		}
+	}
+
+	public string GetDisplayName(){
+		string displayName = gameObject.name;
+		displayName = displayName.Replace ("_", " ");
+
+		return displayName;
 	}
 }
 
