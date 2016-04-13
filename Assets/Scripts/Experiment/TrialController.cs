@@ -276,7 +276,7 @@ public class TrialController : MonoBehaviour {
 
 		//show initial delivery command instruction
 		InitialDeliveryInstructionGroup.alpha = 1.0f;
-		InitialDeliveryInstructionText.text = "Please find the " + storeToVisit.name + " Press (X) to continue.";
+		InitialDeliveryInstructionText.text = "Please find the " + storeToVisit.name + ".\nPress (X) to continue.";
 		yield return StartCoroutine (UsefulFunctions.WaitForActionButton ());
 		InitialDeliveryInstructionGroup.alpha = 0.0f;
 
