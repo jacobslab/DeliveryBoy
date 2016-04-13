@@ -209,11 +209,13 @@ public class TrialLogTrack : LogTrack {
 
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_STARTED" + separator + itemDelivered + separator + storeDeliveredTo.name + separator + serialIndex + separator + audioOrVisual);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_STARTED" + separator + itemDelivered + separator + storeDeliveredTo.name + separator + serialIndex + separator + audioOrVisual
+				                + separator + "PLAYER_POSITION" + separator + exp.player.transform.position.x + separator + exp.player.transform.position.y + separator + exp.player.transform.position.z);
 				Debug.Log ("Logged item delivered started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_ENDED" + separator + itemDelivered + separator + storeDeliveredTo.name + separator + serialIndex + separator + audioOrVisual);
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ITEM_DELIVERY_ENDED" + separator + itemDelivered + separator + storeDeliveredTo.name + separator + serialIndex + separator + audioOrVisual
+				                + separator + "PLAYER_POSITION" + separator + exp.player.transform.position.x + separator + exp.player.transform.position.y + separator + exp.player.transform.position.z);
 				Debug.Log ("Logged item delivered ended event.");
 			}
 		}
