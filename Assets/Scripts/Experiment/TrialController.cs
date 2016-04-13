@@ -270,7 +270,7 @@ public class TrialController : MonoBehaviour {
 		lastStore = storeToVisit;
 
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, true, numDeliveryToday);
-		SetServerStoreTarget(numDeliveryToday, true); //indexed at 1
+		SetServerStoreTarget(numDeliveryToday, true);
 
 		exp.player.controls.ShouldLockControls = true;
 
@@ -288,7 +288,7 @@ public class TrialController : MonoBehaviour {
 		DeliveryInstructionText.text = " ";
 
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, false, numDeliveryToday);
-		SetServerStoreTarget(numDeliveryToday, false); //indexed at 1
+		SetServerStoreTarget(numDeliveryToday, false);
 	}
 	
 	IEnumerator DoStoreDeliveryPhase(int deliveryDay){
@@ -350,12 +350,12 @@ public class TrialController : MonoBehaviour {
 
 		string itemName = itemDelivered.GetComponent<SpawnableObject> ().GetName ();
 		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, true);
-		SetServerItemDelivered(numDelivery, true); //indexed at 1
+		SetServerItemDelivered(numDelivery, true);
 
 		yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("You delivered " + itemDisplayText + " to the " + toStore.name, true, false, false, Config.deliveryCompleteInstructionsTime));
 
 		exp.eventLogger.LogItemDelivery(itemName, toStore, numDelivery, false, false);
-		SetServerItemDelivered(numDelivery, false); //indexed at 1
+		SetServerItemDelivered(numDelivery, false);
 
 		Destroy(itemDelivered);
 
@@ -373,9 +373,9 @@ public class TrialController : MonoBehaviour {
 				Store collisionStore = playerCollisionObject.GetComponent<Store>();
 
 				//TRIAL LOGGER LOGS THIS IN PLAYDELIVERYAUDIO() COROUTINE
-				SetServerItemDelivered(numDelivery, true); //indexed at 1
+				SetServerItemDelivered(numDelivery, true);
 				yield return StartCoroutine(collisionStore.PlayDeliveryAudio(numDelivery));
-				SetServerItemDelivered(numDelivery, false); //indexed at 1
+				SetServerItemDelivered(numDelivery, false);
 
 				string item = collisionStore.GetComponent<AudioSource>().clip.name;
 

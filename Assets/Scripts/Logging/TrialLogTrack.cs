@@ -172,7 +172,6 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	public void LogDeliveryDay(int deliveryDayIndex, bool isStarting){
-		deliveryDayIndex++; //want to log starting at index 1
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
 				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "DELIVERY_DAY_STARTED" + separator + deliveryDayIndex);
@@ -186,7 +185,6 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	public void LogStoreStarted(Store store, bool isLearning, bool isStarting, int serialIndex){ //if it's not learning, it's a delivery!
-		serialIndex++; //INDEX IS FROM 0-n, SHOULD LOG from 1-n
 		if (ExperimentSettings.isLogging) {
 			string learningOrDelivery = "learning";
 			if(!isLearning){
@@ -204,7 +202,6 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	public void LogItemDelivery(string itemDelivered, Store storeDeliveredTo, int serialIndex, bool isAudio, bool isStarting){
-		serialIndex++; //INDEX IS FROM 0-n, SHOULD LOG from 1-n
 		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
 		if (!isAudio) {
 			audioOrVisual = "visual";
