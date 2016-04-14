@@ -81,7 +81,7 @@ public class Config : MonoBehaviour {
 								RecallType.FreeThenCued, RecallType.FreeThenCued, RecallType.FreeThenCued, RecallType.FreeThenCued };
 
 
-	public static bool shouldUseWaypoints = true;
+	public static bool shouldUseWaypoints = false;
 	public static float timeUntilWaypoints = 360.0f; //6 minutes
 
 	//tilt variables
