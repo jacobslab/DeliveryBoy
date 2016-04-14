@@ -11,12 +11,12 @@ public class TrialController : MonoBehaviour {
 	List<string> orderedItemsDelivered;
 
 	public enum TrialState{
-		rotationLearning,
+		presentationLearning,
 		navigationLearning,
 		delivery,
 		recall
 	}
-	public TrialState currentState = TrialState.rotationLearning;
+	public TrialState currentState = TrialState.presentationLearning;
 
 
 	//hardware connection
@@ -42,8 +42,8 @@ public class TrialController : MonoBehaviour {
 	public SimpleTimer deliveryTimer;
 
 	//store rotation phase
-	public Transform storeRotationTransform;
-	public VisibilityToggler rotationBackgroundCube;
+	public Transform storePresentationTransform;
+	public VisibilityToggler presentationBackgroundCube;
 
 	int numRealTrials = 0; //used for logging trial ID's
 
@@ -52,7 +52,7 @@ public class TrialController : MonoBehaviour {
 	
 
 	void Start(){
-		rotationBackgroundCube.TurnVisible (false);
+		presentationBackgroundCube.TurnVisible (false);
 		orderedStores = new List<Store>();
 		orderedItemsDelivered = new List<string>();
 	}
@@ -116,8 +116,8 @@ public class TrialController : MonoBehaviour {
 			yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 
 			//ROTATION PHASE
-			if(Config.doRotationPhase){
-				yield return StartCoroutine(DoStoreRotationPhase());
+			if(Config.doPresentationPhase){
+				yield return StartCoroutine(DoStorePresentationPhase());
 			}
 
 			//LEARNING PHASE
@@ -218,28 +218,42 @@ public class TrialController : MonoBehaviour {
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, false);
 	}
 
-	IEnumerator DoStoreRotationPhase(){
-		currentState = TrialState.rotationLearning;
-		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_ROTATION_PHASE, true);
+	IEnumerator DoStorePresentationPhase(){
+		currentState = TrialState.presentationLearning;
+		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_PRESENTATION_PHASE, true);
 
-		exp.eventLogger.LogRotationPhase (true);
+		exp.eventLogger.LogPresentationPhase (true);
 
 		yield return StartCoroutine(exp.instructionsController.PlayRotationInstructions());
 
-		rotationBackgroundCube.TurnVisible (true);
+		presentationBackgroundCube.TurnVisible (true);
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 0.0f;
+		//exp.instructionsController.SetInstructionsColorful ();
 		//for each store, move it to the rotation location, rotate it for x seconds, return it to its original location
 		for (int i = 0; i < exp.storeController.stores.Length; i++) {
 			Store currStore = exp.storeController.stores[i];
 
-			exp.eventLogger.LogStoreRotationPresented(currStore, true);
+			exp.eventLogger.LogStoreLearningPresentation(currStore, true);
 
 			//move store
-			currStore.SetVisualsForRotation();
-			currStore.transform.position = storeRotationTransform.position;
-			currStore.transform.rotation = storeRotationTransform.rotation;
+			currStore.SetVisualsForPresentation();
+			currStore.transform.position = storePresentationTransform.position;
+			//GameObject storeImage = TurnOnStoreImage(currStore.name);
 
-			//rotate store
+			//presentation timing
+			yield return new WaitForSeconds(Config.storePresentationTime);
+
+			//put store back
+			currStore.ResetStore();
+			//if(storeImage != null){
+			//	storeImage.GetComponent<VisibilityToggler>().TurnVisible(false);
+			//}
+
+			//jitter blank screen
+			yield return StartCoroutine(UsefulFunctions.WaitForJitter(Config.betweenStoreBlankScreenTimeMin, Config.betweenStoreBlankScreenTimeMax));
+
+
+			/*//rotate store
 			float currTime = 0.0f;
 
 			float totalDegreesToRotate = Config.numStoreRotations * 360.0f;
@@ -255,14 +269,14 @@ public class TrialController : MonoBehaviour {
 
 			//put store back
 			currStore.ResetStore();
-
-			exp.eventLogger.LogStoreRotationPresented(currStore, false);
+			*/
+			exp.eventLogger.LogStoreLearningPresentation(currStore, false);
 		}
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 1.0f;
-		rotationBackgroundCube.TurnVisible (false);
+		presentationBackgroundCube.TurnVisible (false);
 
-		exp.eventLogger.LogRotationPhase (false);
-		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_ROTATION_PHASE, false);
+		exp.eventLogger.LogPresentationPhase (false);
+		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_PRESENTATION_PHASE, false);
 	}
 
 	Store lastStore;	
@@ -535,11 +549,7 @@ public class TrialController : MonoBehaviour {
 				exp.recallInstructionsController.DisplayText ("What did you deliver here?");
 
 				//show image
-				//storeImage = exp.objectController.SpawnStoreImage(Vector3.zero, cueName);
-				storeImage = exp.objectController.GetStoreImage(cueName);
-				if(storeImage != null){
-					storeImage.GetComponent<VisibilityToggler>().TurnVisible(true);
-				}
+				storeImage = TurnOnStoreImage(cueName);
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName,shouldRecallName, false, false, false);
 				SetServerStoreCueState(index, true);
@@ -588,6 +598,15 @@ public class TrialController : MonoBehaviour {
 		}
 
 		yield return 0;
+	}
+
+	GameObject TurnOnStoreImage(string storeName){
+		GameObject storeImage = exp.objectController.GetStoreImage(storeName);
+		if(storeImage != null){
+			storeImage.GetComponent<VisibilityToggler>().TurnVisible(true);
+		}
+
+		return storeImage;
 	}
 
 	void SetServerStoreCueState(int numStore, bool isTrue){

@@ -105,28 +105,28 @@ public class TrialLogTrack : LogTrack {
 	}
 
 
-	public void LogRotationPhase(bool isStarting){
+	public void LogPresentationPhase(bool isStarting){
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_PHASE_STARTED");
-				Debug.Log ("Logged rotation phase started event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PRESENTATION_PHASE_STARTED");
+				Debug.Log ("Logged presentation phase started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_PHASE_ENDED");
-				Debug.Log ("Logged rotation phase ended event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PRESENTATION_PHASE_ENDED");
+				Debug.Log ("Logged presentation phase ended event.");
 			}
 		}
 	}
 
-	public void LogStoreRotationPresented(Store store, bool isStarting){
+	public void LogStoreLearningPresentation(Store store, bool isStarting){
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_STORE_STARTED" + separator + store.name);
-				Debug.Log ("Logged rotation store started event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PRESENTATION_STORE_STARTED" + separator + store.name);
+				Debug.Log ("Logged learning presentation store started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "ROTATION_STORE_ENDED" + separator + store.name);
-				Debug.Log ("Logged rotation store ended event.");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PRESENTATION_STORE_ENDED" + separator + store.name);
+				Debug.Log ("Logged learning presentation store ended event.");
 			}
 		}
 	}

@@ -8,6 +8,7 @@ public class Store : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
 	public bool hasRotationVisuals = false;
+	public Vector3 presentationRotation;
 	public EnableChildrenLogTrack rotationVisualsParent;
 	public EnableChildrenLogTrack regularVisualsParent;
 
@@ -108,7 +109,9 @@ public class Store : MonoBehaviour {
 		return null;
 	}
 
-	public void SetVisualsForRotation(){
+	public void SetVisualsForPresentation(){
+		transform.rotation = Quaternion.Euler(presentationRotation);
+
 		if (hasRotationVisuals) {
 			UsefulFunctions.EnableChildren(regularVisualsParent.transform, false);
 			regularVisualsParent.LogChildrenEnabled(false);

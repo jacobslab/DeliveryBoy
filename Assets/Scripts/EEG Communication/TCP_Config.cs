@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -74,7 +74,7 @@ public class TCP_Config : MonoBehaviour {
 	//fill in how you see fit!
 	public enum DefineStates
 	{
-		LEARNING_ROTATION_PHASE,
+		LEARNING_PRESENTATION_PHASE,
 		LEARNING_NAVIGATION_PHASE,
 		STORE_TARGET_0,
 		STORE_TARGET_1,
