@@ -57,9 +57,10 @@ public class Config : MonoBehaviour {
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
 	public static int freeRecallTime = 60;
-	public static int cuedRecallTime = 5;
+	public static int cuedRecallTime = 6;
 	public static int finalFreeItemRecallTime = 300;
 	public static int finalStoreRecallTime = 90;
+	public static float cuedEndBeepTimeBeforeEnd = 0.5f; //if the recall time is 6s, end beep should play this much time before the end of 6s. ie; 6 - endBeepTime
 
 	public enum RecallType
 	{

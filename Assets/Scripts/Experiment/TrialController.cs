@@ -396,11 +396,17 @@ public class TrialController : MonoBehaviour {
 		}
 	}
 	
-	IEnumerator EndRecall(){
+	IEnumerator EndRecall(float minEndTime){
 		Debug.Log ("END BEEP");
+		float currTime = 0.0f;
 		recallEndBeep.Play ();
-		while(recallEndBeep.isPlaying){
+		while(recallEndBeep.isPlaying){ //wait for the beep to finish first
 			yield return 0;
+			currTime += Time.deltaTime;
+		}
+
+		if (currTime < minEndTime) { //wait for the rest of the end time if necessary
+			yield return new WaitForSeconds(minEndTime - currTime);
 		}
 	}
 
@@ -474,7 +480,7 @@ public class TrialController : MonoBehaviour {
 				yield return new WaitForSeconds(recallTime);
 			}
 
-			yield return StartCoroutine(EndRecall());
+			yield return StartCoroutine(EndRecall(0.0f));
 		}
 
 		exp.player.controls.ShouldLockControls = false;
@@ -560,14 +566,16 @@ public class TrialController : MonoBehaviour {
 
 			yield return StartCoroutine (StartRecall());
 
+			float timeBeforeEndBeep = Config.cuedRecallTime - Config.cuedEndBeepTimeBeforeEnd;
 			if (ExperimentSettings.isLogging) {
-				yield return StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", recordFileName, Config.cuedRecallTime));
+				StartCoroutine (exp.audioRecorder.Record (exp.SessionDirectory + "audio", recordFileName, Config.cuedRecallTime));
+				yield return new WaitForSeconds(timeBeforeEndBeep); //need to play end beep before the end of the rec. period
 			}
 			else{
-				yield return new WaitForSeconds(Config.cuedRecallTime);
+				yield return new WaitForSeconds(timeBeforeEndBeep);
 			}
 
-			yield return StartCoroutine(EndRecall());
+			yield return StartCoroutine(EndRecall(Config.cuedEndBeepTimeBeforeEnd)); //play end beep, wait for the rest of the recall recording time
 
 			if(storeImage != null){
 				storeImage.GetComponent<VisibilityToggler>().TurnVisible(false);
