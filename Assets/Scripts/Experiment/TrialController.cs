@@ -497,13 +497,28 @@ public class TrialController : MonoBehaviour {
 
 		string recordFileName = origFileName;
 
+		//make list of 0's and 1's for store vs. item cue
+		List<int> storeOrItemCue = new List<int> ();
+		for (int i = 0; i < orderedItemsDelivered.Count; i++) {
+			if (i%2 == 0){
+				storeOrItemCue.Add(0);
+			}
+			else{
+				storeOrItemCue.Add(1);
+			}
+		}
+
 		for(int i = 0; i < randomIndexOrder.Count; i++){
 			int index = randomIndexOrder[i];
 
 			GameObject storeImage = null;
 
+			int randomStoreOrItemIndex = Random.Range(0, storeOrItemCue.Count);
+			int isStoreOrItem = storeOrItemCue[randomStoreOrItemIndex];
+			storeOrItemCue.RemoveAt(randomStoreOrItemIndex);
+
 			//if divisible by 2, make it store cued
-			if(index % 2 == 0){
+			if(isStoreOrItem % 2 == 0){
 				recordFileName = origFileName + i + "s";
 
 				cueName = orderedStores[index].name;
