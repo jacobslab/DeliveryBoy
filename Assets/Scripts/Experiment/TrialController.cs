@@ -284,7 +284,7 @@ public class TrialController : MonoBehaviour {
 
 		//show instruction at top of screen, don't wait for button, wait for collision
 		DeliveryInstructionText.text = "Go to the " + storeToVisit.GetDisplayName();
-		yield return StartCoroutine (exp.player.WaitForStoreCollision (storeToVisit.gameObject));
+		yield return StartCoroutine (exp.player.WaitForStoreTrigger (storeToVisit));
 		DeliveryInstructionText.text = " ";
 
 		exp.eventLogger.LogStoreStarted (storeToVisit, isLearning, false, numDeliveryToday);

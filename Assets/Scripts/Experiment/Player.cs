@@ -26,20 +26,21 @@ public class Player : MonoBehaviour {
 	}
 
 	GameObject waitForCollisionObject;
-	public IEnumerator WaitForStoreCollision(GameObject store){
+	public IEnumerator WaitForStoreTrigger(Store store){
+
 		bool areWayPointsEnabled = false;
-
-		float timeWaiting = 0.0f;
-
-		Debug.Log("WAITING FOR COLLISION WITH: " + store.name);
 		
-		string lastCollisionName = "";
-		while (lastCollisionName != store.name) {
+		float timeWaiting = 0.0f;
+		
+		Debug.Log("WAITING FOR COLLISION/TRIGGER WITH: " + store.name);
+		
+		string lastTriggerName = "";
+		while (lastTriggerName != store.name + " trigger") {
 			if(waitForCollisionObject != null){
-				lastCollisionName = waitForCollisionObject.name;
+				lastTriggerName = waitForCollisionObject.name;
 			}
 			yield return 0;
-
+			
 			if(Config.shouldUseWaypoints){
 				timeWaiting += Time.deltaTime;
 				if(timeWaiting > Config.timeUntilWaypoints){
@@ -49,7 +50,7 @@ public class Player : MonoBehaviour {
 				}
 			}
 		}
-
+		
 		if (areWayPointsEnabled) {
 			exp.waypointController.DisableWaypoints ();
 		}
@@ -60,6 +61,15 @@ public class Player : MonoBehaviour {
 
 	public GameObject GetCollisionObject(){
 		return waitForCollisionObject;
+	}
+	
+	void OnTriggerEnter(Collider collider){
+		waitForCollisionObject = collider.gameObject;
+
+		//log store collision
+		if (collider.gameObject.tag == "StoreTrigger"){
+			objLogTrack.LogCollision (collider.gameObject.name);
+		}
 	}
 
 	void OnCollisionEnter(Collision collision){
