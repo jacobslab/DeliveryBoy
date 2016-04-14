@@ -44,7 +44,10 @@ public class Config : MonoBehaviour {
 
 	public static int numLearningIterations = 1;
 	public static bool doLearningPhase = true;
-	public static bool doRotationPhase = true;
+	public static bool doPresentationPhase = true;
+	public static float storePresentationTime = 1.5f;
+	public static float betweenStoreBlankScreenTimeMax = 0.6f;
+	public static float betweenStoreBlankScreenTimeMin = 0.4f;
 
 	public static bool doFinalItemRecall = true;
 	public static bool doFinalStoreRecall = true;
