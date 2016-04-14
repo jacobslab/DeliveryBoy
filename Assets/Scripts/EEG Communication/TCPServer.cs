@@ -564,8 +564,10 @@ public class ThreadedServer : ThreadedJob{
 		case "SYNCED":
 			//Control PC is done with clock alignment
 			isSynced = true;
-			//now align the neuroport
-			SendSimpleJSONEvent (GameClock.SystemTime_Milliseconds, TCP_Config.EventType.SYNCNP, "");
+			//now align the neuroport if we've received the start message
+			if(canStartGame){
+				SendSimpleJSONEvent (GameClock.SystemTime_Milliseconds, TCP_Config.EventType.SYNCNP, "");
+			}
 			break;
 			
 		case "EXIT":
