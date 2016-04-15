@@ -141,11 +141,11 @@ public class TrialLogTrack : LogTrack {
 	public void LogLearningPhaseStarted(bool isStarting){
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PHASE_STARTED");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_NAVIGATION_PHASE_STARTED");
 				Debug.Log ("Logged learning phase started event.");
 			}
 			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_PHASE_ENDED");
+				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "LEARNING_NAVIGATION_PHASE_ENDED");
 				Debug.Log ("Logged learning phase ended event.");
 			}
 		}
