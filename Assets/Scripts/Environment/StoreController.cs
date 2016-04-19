@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class StoreController : MonoBehaviour {
 
@@ -151,6 +152,33 @@ public class StoreController : MonoBehaviour {
 		}
 
 		return distances;
+	}
+
+	void RecordStoresAndItemsLeft(){
+
+		Debug.Log ("Recording stores & items left!");
+
+		string recordPath = Experiment.Instance.SessionDirectory + ExperimentSettings.currentSubject.name + "_" + Experiment.sessionID + ".txt";
+
+		StreamWriter sr = new StreamWriter (recordPath);
+
+		sr.WriteLine ("NAME\t" + ExperimentSettings.currentSubject.name);
+		sr.WriteLine ("SESSION\t" + Experiment.sessionID);
+
+		for (int storeIndex = 0; storeIndex < stores.Length; storeIndex++) {
+			Store currStore = stores[storeIndex];
+			sr.WriteLine ("BUILDING\t" + currStore.name);
+			for(int itemIndex = 0; itemIndex < currStore.audioLeftToUse.Count; itemIndex++){
+				sr.WriteLine ("ITEM\t" + currStore.audioLeftToUse[itemIndex].name);
+			}
+		}
+
+		sr.Flush ();
+		sr.Close ();
+	}
+
+	void OnDestroy(){ //should get called when scene changes (or application quits?)
+		RecordStoresAndItemsLeft ();
 	}
 
 }
