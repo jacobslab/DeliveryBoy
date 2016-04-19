@@ -383,18 +383,20 @@ public class TrialController : MonoBehaviour {
 		if (playerCollisionObject != null) {
 		
 			//play store audio! as long as it's not the last store.
-			if(playerCollisionObject.tag == "Store"){
-				Store collisionStore = playerCollisionObject.GetComponent<Store>();
+			if(playerCollisionObject.tag == "StoreTrigger"){
+				if(playerCollisionObject.transform.parent.tag == "Store"){
+					Store collisionStore = playerCollisionObject.transform.parent.GetComponent<Store>();
 
-				//TRIAL LOGGER LOGS THIS IN PLAYDELIVERYAUDIO() COROUTINE
-				SetServerItemDelivered(numDelivery, true);
-				yield return StartCoroutine(collisionStore.PlayDeliveryAudio(numDelivery));
-				SetServerItemDelivered(numDelivery, false);
+					//TRIAL LOGGER LOGS THIS IN PLAYDELIVERYAUDIO() COROUTINE
+					SetServerItemDelivered(numDelivery, true);
+					yield return StartCoroutine(collisionStore.PlayDeliveryAudio(numDelivery));
+					SetServerItemDelivered(numDelivery, false);
 
-				string item = collisionStore.GetComponent<AudioSource>().clip.name;
+					string item = collisionStore.GetComponent<AudioSource>().clip.name;
 
-				orderedStores.Add(collisionStore);
-				orderedItemsDelivered.Add(item);
+					orderedStores.Add(collisionStore);
+					orderedItemsDelivered.Add(item);
+				}
 			}
 		
 		}
