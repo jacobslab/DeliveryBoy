@@ -16,7 +16,7 @@ public class Store : MonoBehaviour {
 	Vector3 origPosition;
 	Quaternion origRotation;
 	
-	List<AudioClip> audioLeftToUse;
+	public List<AudioClip> audioLeftToUse;
 	AudioSource myAudioPlayer;
 	
 	// Use this for initialization
@@ -103,7 +103,9 @@ public class Store : MonoBehaviour {
 
 		if (audioList.Count != 0) {
 			int randomAudioIndex = Random.Range (0, audioList.Count);
-			return audioList [randomAudioIndex];
+			AudioClip audio = audioList [ randomAudioIndex ];
+			audioList.RemoveAt(randomAudioIndex);
+			return audio;
 		}
 
 		return null;
@@ -140,5 +142,6 @@ public class Store : MonoBehaviour {
 
 		return displayName;
 	}
+
 }
 
