@@ -89,6 +89,7 @@ public class AudioRecorder : MonoBehaviour {
 			SavWav.Save (filePath, fileName, audio.clip);
 		} else {
 			Debug.Log("No mic to record with!");
+			yield return new WaitForSeconds(duration);
 		}
 	}
 
