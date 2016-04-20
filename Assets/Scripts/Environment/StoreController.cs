@@ -50,41 +50,46 @@ public class StoreController : MonoBehaviour {
 
 	void ParseOutUsedItemAudio(){
 		if (Experiment.sessionID != 0) {
-			string readLastSessionPath = ExperimentSettings.Instance.GetStoreItemFilePath (false);
-			StreamReader sr = new StreamReader(readLastSessionPath);
+			string readLastSessionFilePath = ExperimentSettings.Instance.GetStoreItemFilePath (false);
+			if(File.Exists(readLastSessionFilePath)){
+				StreamReader sr = new StreamReader(readLastSessionFilePath);
 
-			string line = sr.ReadLine();
-			line = UsefulFunctions.ParseOutHiddenCharacters(line);
+				string line = sr.ReadLine();
+				line = UsefulFunctions.ParseOutHiddenCharacters(line);
 
-			Store currStore = null;
-			List<string> unusedAudioNames = new List<string>();
-			while(line != "" && line != null){
-				string[] lineArr = line.Split('\t');
+				Store currStore = null;
+				List<string> unusedAudioNames = new List<string>();
+				while(line != "" && line != null){
+					string[] lineArr = line.Split('\t');
 
-				if(lineArr.Length > 0){
-					if(lineArr[0] == "BUILDING"){
-						if(currStore != null){
-							currStore.CleanOutAudioLeft(unusedAudioNames);
+					if(lineArr.Length > 0){
+						if(lineArr[0] == "BUILDING"){
+							if(currStore != null){
+								currStore.CleanOutAudioLeft(unusedAudioNames);
+							}
+
+							currStore = GetStoreByName(lineArr[1]);
+							unusedAudioNames.Clear();
 						}
 
-						currStore = GetStoreByName(lineArr[1]);
-						unusedAudioNames.Clear();
-					}
-
-					if(lineArr[0] == "ITEM"){
-						if(currStore != null){
-							unusedAudioNames.Add(lineArr[1]);
+						if(lineArr[0] == "ITEM"){
+							if(currStore != null){
+								unusedAudioNames.Add(lineArr[1]);
+							}
 						}
 					}
+
+					line = sr.ReadLine();
+					line = UsefulFunctions.ParseOutHiddenCharacters(line);
 				}
 
-				line = sr.ReadLine();
-				line = UsefulFunctions.ParseOutHiddenCharacters(line);
+				//for the last store, make sure it gets cleaned.
+				if(currStore != null){
+					currStore.CleanOutAudioLeft(unusedAudioNames);
+				}
 			}
-
-			//for the last store, make sure it gets cleaned.
-			if(currStore != null){
-				currStore.CleanOutAudioLeft(unusedAudioNames);
+			else{
+				Debug.Log("NO LAST SESSION STORE ITEM FILE");
 			}
 		}
 	}
