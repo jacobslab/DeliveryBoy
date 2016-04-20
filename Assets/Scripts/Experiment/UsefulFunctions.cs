@@ -78,6 +78,14 @@ public class UsefulFunctions {
 		return (startPos - endPos).magnitude;
 	}
 
+	public static string ParseOutHiddenCharacters(string stringToParse){
+		if(stringToParse != null){
+			stringToParse = stringToParse.Replace("\n", "");
+			stringToParse = stringToParse.Replace("\r", "");
+		}
+		return stringToParse;
+	}
+
 	public static IEnumerator WaitForJitter(float minJitter, float maxJitter){
 		float randomJitter = Random.Range(minJitter, maxJitter);
 		Experiment.Instance.trialController.GetComponent<TrialLogTrack>().LogWaitForJitterStarted(randomJitter);

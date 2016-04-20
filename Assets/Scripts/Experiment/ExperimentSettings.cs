@@ -144,6 +144,24 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		}
 	}
 
+	public string GetStoreItemFilePath(bool isCurrentSession){
+		if (isCurrentSession) {
+			return Experiment.Instance.SessionDirectory + ExperimentSettings.currentSubject.name + "_STORE_AUDIO_LEFT_" + Experiment.sessionID + ".txt";
+		} 
+		else { //looking for a previous session!
+			int lastSessionID = Experiment.sessionID - 1;
+			if(lastSessionID >= 0){
+				//TODO: subtract 1 from the session directory
+				string oldSessionDirectory = Experiment.Instance.SessionDirectory.Replace ("_" + Experiment.sessionID, "_" + lastSessionID);
+				return oldSessionDirectory + ExperimentSettings.currentSubject.name + "_STORE_AUDIO_LEFT_" + lastSessionID + ".txt";
+			}
+			else{
+				Debug.Log("CAN'T ACCESS A NEGATIVE SESSION");
+				return null;
+			}
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		SetOculus();

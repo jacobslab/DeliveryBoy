@@ -9,26 +9,83 @@ public class StoreController : MonoBehaviour {
 	public List<AudioClip> allStoreAudioLeftToUse;
 
 	// Use this for initialization
+	bool isFirstInit = true;
 	void Awake () {
 		stores = GetStores ();
 
-		if (!Config.isStoreCorrelatedDelivery || ExperimentSettings.isReplay) { //if it's replay, we draw from here to replay the audio
-			InitAudio();
-		}
+		InitAudio();
+
 	}
 
 	public void InitAudio(){
-		allStoreAudioLeftToUse = new List<AudioClip> ();
+		if (!Config.isStoreCorrelatedDelivery || ExperimentSettings.isReplay) { //if it's replay, we draw from here to replay the audio
 
-		for(int i = 0; i < stores.Length; i++){
+			allStoreAudioLeftToUse = new List<AudioClip> ();
 
-			string folder = "StoreAudio/" + stores[i].name;
+			for (int i = 0; i < stores.Length; i++) {
 
-			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
-			for (int j = 0; j < storeAudioClips.Length; j++) {
-				allStoreAudioLeftToUse.Add (storeAudioClips [j]);
+				string folder = "StoreAudio/" + stores [i].name;
+
+				AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
+				for (int j = 0; j < storeAudioClips.Length; j++) {
+					allStoreAudioLeftToUse.Add (storeAudioClips [j]);
+				}
+
+			}
+		} 
+		else { // INDIVIDUAL STORE AUDIO
+			//init audio for each store
+			for(int i = 0; i < stores.Length; i++){
+				stores[i].InitAudio();
 			}
 
+			if(isFirstInit && Experiment.sessionID != 0){
+				//we should read in the last session's store & leftover item file and get rid of use items
+				ParseOutUsedItemAudio();	
+			}
+		}
+
+		isFirstInit = false;
+	}
+
+	void ParseOutUsedItemAudio(){
+		if (Experiment.sessionID != 0) {
+			string readLastSessionPath = ExperimentSettings.Instance.GetStoreItemFilePath (false);
+			StreamReader sr = new StreamReader(readLastSessionPath);
+
+			string line = sr.ReadLine();
+			line = UsefulFunctions.ParseOutHiddenCharacters(line);
+
+			Store currStore = null;
+			List<string> unusedAudioNames = new List<string>();
+			while(line != "" && line != null){
+				string[] lineArr = line.Split('\t');
+
+				if(lineArr.Length > 0){
+					if(lineArr[0] == "BUILDING"){
+						if(currStore != null){
+							currStore.CleanOutAudioLeft(unusedAudioNames);
+						}
+
+						currStore = GetStoreByName(lineArr[1]);
+						unusedAudioNames.Clear();
+					}
+
+					if(lineArr[0] == "ITEM"){
+						if(currStore != null){
+							unusedAudioNames.Add(lineArr[1]);
+						}
+					}
+				}
+
+				line = sr.ReadLine();
+				line = UsefulFunctions.ParseOutHiddenCharacters(line);
+			}
+
+			//for the last store, make sure it gets cleaned.
+			if(currStore != null){
+				currStore.CleanOutAudioLeft(unusedAudioNames);
+			}
 		}
 	}
 
@@ -41,7 +98,16 @@ public class StoreController : MonoBehaviour {
 
 		return null;
 	}
-	
+
+	Store GetStoreByName(string storeName){
+		for (int i = 0; i < stores.Length; i++) {
+			if(stores[i].name == storeName){
+				return stores[i];
+			}
+		}
+
+		return null;
+	}
 	
 	Store[] GetStores(){
 		return GetComponentsInChildren<Store> ();
@@ -158,7 +224,7 @@ public class StoreController : MonoBehaviour {
 
 		Debug.Log ("Recording stores & items left!");
 
-		string recordPath = Experiment.Instance.SessionDirectory + ExperimentSettings.currentSubject.name + "_" + Experiment.sessionID + ".txt";
+		string recordPath = ExperimentSettings.Instance.GetStoreItemFilePath (true);
 
 		StreamWriter sr = new StreamWriter (recordPath);
 

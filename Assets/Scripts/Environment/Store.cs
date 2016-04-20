@@ -27,18 +27,34 @@ public class Store : MonoBehaviour {
 		origPosition = transform.position;
 		origRotation = transform.rotation;
 
-		myAudioPlayer = GetComponent<AudioSource> ();
-		InitAudio();
 	}
-	
-	void InitAudio(){
+
+	//called in StoreController for each store, also called to refill audio
+	public void InitAudio(){
+		if (myAudioPlayer == null) {
+			myAudioPlayer = GetComponent<AudioSource> ();
+		}
+
 		if (Config.isStoreCorrelatedDelivery) {
-		
 			audioLeftToUse = new List<AudioClip> ();
 			string folder = "StoreAudio/" + GetDisplayName(); //just happens to be organized with the display name...
 			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
 			for (int i = 0; i < storeAudioClips.Length; i++) {
 				audioLeftToUse.Add (storeAudioClips [i]);
+			}
+		}
+	}
+
+	//used by StoreController for removing used audio.
+	public void CleanOutAudioLeft(List<string> audioNames){
+		int numAudioLeft = audioLeftToUse.Count;
+		int audioLeftIndex = 0;
+		for (int i = 0; i < numAudioLeft; i++) {
+			if(!audioNames.Contains(audioLeftToUse[audioLeftIndex].name)){
+				audioLeftToUse.RemoveAt(audioLeftIndex);
+			}
+			else{
+				audioLeftIndex++; //only increment the index if we didn't delete the item in that spot
 			}
 		}
 	}
@@ -95,9 +111,11 @@ public class Store : MonoBehaviour {
 		if (audioList.Count == 0) {
 			if(audioList == audioLeftToUse){
 				InitAudio ();
+				audioList = audioLeftToUse;
 			}
 			else if (audioList == exp.storeController.allStoreAudioLeftToUse){
 				exp.storeController.InitAudio();
+				audioList = exp.storeController.allStoreAudioLeftToUse;
 			}
 		}
 
