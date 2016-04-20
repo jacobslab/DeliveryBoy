@@ -92,14 +92,35 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 
 	void ResetDefaultLoggingPath(){
 		if (Config.isSystem2) {
-			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data";
-		} else {
-			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM/data";
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data/";
+		} else if(Config.isSyncbox) {
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM/data/";
+		}
+		else{
+			defaultLoggingPath = System.IO.Directory.GetCurrentDirectory() + "/TextFiles/";
 		}	
 	}
 	
 	void InitLoggingPath(){
 		ResetDefaultLoggingPath ();
+		
+		if(!Directory.Exists(defaultLoggingPath)) {
+			Directory.CreateDirectory(defaultLoggingPath);
+		}
+		
+		if(Config.isSyncbox || Config.isSystem2){ //only add the folder if it's not the demo version.
+			defaultLoggingPath += DB3Folder; //DB3Folder uses the build version!
+		}
+		
+		if(!Directory.Exists(defaultLoggingPath)){ //if that TH folder doesn't exist, make it!
+			Directory.CreateDirectory(defaultLoggingPath);
+		}
+		
+		if (defaultLoggingPathDisplay != null) {
+			defaultLoggingPathDisplay.text = defaultLoggingPath;
+		}
+
+		/*ResetDefaultLoggingPath ();
 		
 		if(Directory.Exists(defaultLoggingPath)){
 			if (Config.BuildVersion == Config.Version.DBoy3_1) {
@@ -116,7 +137,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		
 		if (defaultLoggingPathDisplay != null) {
 			defaultLoggingPathDisplay.text = defaultLoggingPath;
-		}
+		}*/
 	}
 
 	public Text ExpNameVersion;

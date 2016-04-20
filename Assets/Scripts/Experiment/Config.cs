@@ -5,9 +5,10 @@ public class Config : MonoBehaviour {
 
 	public enum Version
 	{
-		DBoy3_1,
-		DBoy3_2,
-		DBoy3_3
+		//syncbox can be 1, demo can be 1, system 2.0 can be 1,2,3
+		DBoy3_1, //no stim
+		DBoy3_2, //open stim
+		DBoy3_3 //closed stim
 	}
 	
 	public static Version BuildVersion = Version.DBoy3_1;
