@@ -541,28 +541,28 @@ public class TrialController : MonoBehaviour {
 
 			//if divisible by 2, make it store cued
 			if(isStoreOrItem % 2 == 0){
-				recordFileName = origFileName + i + "s";
+				recordFileName = origFileName + i + "i"; //i - items are being recalled! (stores are cues)
 
 				cueName = orderedStores[index].name;
 				shouldRecallName = orderedItemsDelivered[index];
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, false, true);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true);
 
 				exp.recallInstructionsController.DisplayText ("What did you deliver here?");
 
 				//show image
 				storeImage = TurnOnStoreImage(cueName);
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName,shouldRecallName, false, false, false);
+				exp.eventLogger.LogCuedRecallPresentation(cueName,shouldRecallName, true, false, false);
 				SetServerStoreCueState(index, true);
 			}
 			else{	//item cued
-				recordFileName = origFileName + i + "i";
+				recordFileName = origFileName + i + "s"; //s - stores are being recalled! (items are cues)
 
 				cueName = orderedItemsDelivered[index];
 				shouldRecallName = orderedStores[index].name;
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, true, true);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true);
 
 				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item?");
 
@@ -572,7 +572,7 @@ public class TrialController : MonoBehaviour {
 					yield return 0;
 				}
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, true, false);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, false);
 				SetServerItemCueState(index, true);
 			}
 
