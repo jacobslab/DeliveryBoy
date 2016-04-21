@@ -7,6 +7,9 @@ public class Store : MonoBehaviour {
 
 	Experiment exp { get { return Experiment.Instance; } }
 
+	public Transform StoreCenterTransform { get { return GetStoreCenterTransform(); } }
+	Transform storeCenterTransform;
+
 	public bool hasRotationVisuals = false;
 	public Vector3 presentationRotation;
 	public EnableChildrenLogTrack rotationVisualsParent;
@@ -27,6 +30,20 @@ public class Store : MonoBehaviour {
 		origPosition = transform.position;
 		origRotation = transform.rotation;
 
+	}
+
+	Transform GetStoreCenterTransform(){
+		if (storeCenterTransform != null) {
+			return storeCenterTransform;
+		} else {
+			foreach (Transform t in transform){
+				if(t.tag == "StoreCenter"){
+					storeCenterTransform = t;
+					return storeCenterTransform;
+				}
+			}
+		}
+		return null;
 	}
 
 	//called in StoreController for each store, also called to refill audio
