@@ -31,18 +31,20 @@ public class InstructionsController : MonoBehaviour {
 		"\n\nIn this game you will play a delivery person in a small city. " +
 		"Your task is to drive through the city delivering packages to the correct stores, as quickly as possible. " +
 		"\n\nYour current delivery goal will be shown in the top left of the screen.  Simply drive right up to the store, and the item you delivered will spoken out loud. " +
-		"On each trial you will make a series of deliveries to stores all over the town. " +
-		"\n\nYour current delivery goal will be shown in the top left of the screen. " + 
-		"Simply drive right up to the store, and the item you delivered will be spoken out loud. " +
 		"On each trial you will make a series of deliveries to stores all over the town. ";
 	
 	public static string initialInstructions2 = "\n\nOn the final delivery of a given trial, no item will be said. " +
 		"Rather, the screen will go blank, and you'll see a row of asterisks (*******), and hear a tone. " +
-		"At this point your job is to verbally recall all of the delivered items that you can remember, in any order." +
-		"\n\nAfter the recall period you'll have a chance for a short break, and then the next set of deliveries will start. ";
+		"When the tone has finished and the asterisks turn red, your job is to verbally recall all of the delivered items that you can remember, in any order. " +
+		"This free recall period will last for " + Config.freeRecallTime + " seconds. " +
+		"Once this free recall period has ended, you will either be shown a building and asked to recall the item you delivered, " +
+		"or you will hear an item that you delivered, and will be asked to recall the store to which you delivered it. " +
+		"You will have 6 seconds to recall the matching item or store." +
 
-	public static string initialInstructions3Learning = "Before you start the full task, you'll have a chance to explore the town, to get your bearings." +
-		"\n\nWe will describe this practice period next." +
+			"\n\nAfter this cued recall period, you'll have a chance for a short break, and then the next set of deliveries will start. ";
+
+	public static string initialInstructions3Learning = "\n\nBefore you start the full task, you'll have a chance to explore the town, to get your bearings." +
+		"We will describe this practice period next." +
 			"\n\nPlease tell the investigator when you have finished reading these instructions.";
 	
 
