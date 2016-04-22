@@ -5,6 +5,8 @@ using System.IO;
 
 public class StoreController : MonoBehaviour {
 
+	Experiment exp { get { return Experiment.Instance; } }
+
 	public Store[] stores;
 	public List<AudioClip> allStoreAudioLeftToUse;
 
@@ -39,9 +41,14 @@ public class StoreController : MonoBehaviour {
 				stores[i].InitAudio();
 			}
 
-			if(isFirstInit && Experiment.sessionID != 0){
-				//we should read in the last session's store & leftover item file and get rid of use items
-				ParseOutUsedItemAudio();	
+			if(isFirstInit){
+				if(Experiment.sessionID != 0){
+					//we should read in the last session's store & leftover item file and get rid of use items
+					ParseOutUsedItemAudio();	
+				}
+				else{ //trial num == 0
+					exp.eventLogger.LogUseLastSessionItemFile(false);
+				}
 			}
 		}
 
@@ -49,48 +56,50 @@ public class StoreController : MonoBehaviour {
 	}
 
 	void ParseOutUsedItemAudio(){
-		if (Experiment.sessionID != 0) {
-			string readLastSessionFilePath = ExperimentSettings.Instance.GetStoreItemFilePath (false);
-			if(File.Exists(readLastSessionFilePath)){
-				StreamReader sr = new StreamReader(readLastSessionFilePath);
+		Debug.Log ("parsing out used audio");
+		string readLastSessionFilePath = ExperimentSettings.Instance.GetStoreItemFilePath (false);
+		if(File.Exists(readLastSessionFilePath)){
+			Debug.Log ("found items left file");
+			exp.eventLogger.LogUseLastSessionItemFile(true);
+			StreamReader sr = new StreamReader(readLastSessionFilePath);
 
-				string line = sr.ReadLine();
-				line = UsefulFunctions.ParseOutHiddenCharacters(line);
+			string line = sr.ReadLine();
+			line = UsefulFunctions.ParseOutHiddenCharacters(line);
 
-				Store currStore = null;
-				List<string> unusedAudioNames = new List<string>();
-				while(line != "" && line != null){
-					string[] lineArr = line.Split('\t');
+			Store currStore = null;
+			List<string> unusedAudioNames = new List<string>();
+			while(line != "" && line != null){
+				string[] lineArr = line.Split('\t');
 
-					if(lineArr.Length > 0){
-						if(lineArr[0] == "BUILDING"){
-							if(currStore != null){
-								currStore.CleanOutAudioLeft(unusedAudioNames);
-							}
-
-							currStore = GetStoreByName(lineArr[1]);
-							unusedAudioNames.Clear();
+				if(lineArr.Length > 0){
+					if(lineArr[0] == "BUILDING"){
+						if(currStore != null){
+							currStore.CleanOutAudioLeft(unusedAudioNames);
 						}
 
-						if(lineArr[0] == "ITEM"){
-							if(currStore != null){
-								unusedAudioNames.Add(lineArr[1]);
-							}
-						}
+						currStore = GetStoreByName(lineArr[1]);
+						unusedAudioNames.Clear();
 					}
 
-					line = sr.ReadLine();
-					line = UsefulFunctions.ParseOutHiddenCharacters(line);
+					if(lineArr[0] == "ITEM"){
+						if(currStore != null){
+							unusedAudioNames.Add(lineArr[1]);
+						}
+					}
 				}
 
-				//for the last store, make sure it gets cleaned.
-				if(currStore != null){
-					currStore.CleanOutAudioLeft(unusedAudioNames);
-				}
+				line = sr.ReadLine();
+				line = UsefulFunctions.ParseOutHiddenCharacters(line);
 			}
-			else{
-				Debug.Log("NO LAST SESSION STORE ITEM FILE");
+
+			//for the last store, make sure it gets cleaned.
+			if(currStore != null){
+				currStore.CleanOutAudioLeft(unusedAudioNames);
 			}
+		}
+		else{
+			Debug.Log("NO LAST SESSION STORE ITEM FILE");
+			exp.eventLogger.LogUseLastSessionItemFile(false);
 		}
 	}
 

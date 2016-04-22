@@ -153,8 +153,16 @@ public class TrialLogTrack : LogTrack {
 
 	public void LogSessionStarted (int sessionNum){ //gets logged at the start of all delivery days
 		if (ExperimentSettings.isLogging) {
-			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "SESS_STARTED");
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "SESS_STARTED" + separator + sessionNum);
 			Debug.Log ("Logged session started event.");
+		}
+	}
+
+	//did this session use the LAST SESSION ITEMS LEFT TO USE FILE
+	public void LogUseLastSessionItemFile(bool didUseFile){
+		if (ExperimentSettings.isLogging) {
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "USED_LAST_SESSION_ITEM_FILE" + separator + didUseFile);
+			Debug.Log ("Logged used last session items left to use file.");
 		}
 	}
 

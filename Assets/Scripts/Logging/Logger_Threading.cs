@@ -113,7 +113,7 @@ public class Logger_Threading : MonoBehaviour{
 	
 	public string fileName;
 
-	void Start ()
+	void Awake ()
 	{
 		if (ExperimentSettings.isLogging) {
 			myLoggerQueue = new LoggerQueue ();
@@ -129,7 +129,7 @@ public class Logger_Threading : MonoBehaviour{
 		fileName = file;
 	}
 
-	//logging itself can happen in regular update. the rate at which ILoggable objects add to the log Queue should be in FixedUpdate for framerate independence.
+	//logging itself can happen in regular update. the rate at which ILoggable objects add to the log Queue
 	void Update()
 	{
 		frameCount++;
@@ -151,6 +151,8 @@ public class Logger_Threading : MonoBehaviour{
 	public void Log(long timeLogged, long frame, string newLogInfo){
 		if (myLoggerQueue != null) {
 			myLoggerQueue.AddToLogQueue (timeLogged + LogTextSeparator + frame + LogTextSeparator + newLogInfo);
+		} else {
+			Debug.Log("Logger queue is null!");
 		}
 	}
 
