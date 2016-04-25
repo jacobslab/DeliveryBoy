@@ -25,7 +25,7 @@ public class Player : MonoBehaviour {
 		visuals.SetActive (isVisible);
 	}
 
-	GameObject waitForCollisionObject;
+	GameObject waitForStoreTriggerObject;
 	public IEnumerator WaitForStoreTrigger(Store store){
 
 		bool areWayPointsEnabled = false;
@@ -36,8 +36,8 @@ public class Player : MonoBehaviour {
 		
 		string lastTriggerName = "";
 		while (lastTriggerName != store.name + " trigger") {
-			if(waitForCollisionObject != null){
-				lastTriggerName = waitForCollisionObject.name;
+			if(waitForStoreTriggerObject != null){
+				lastTriggerName = waitForStoreTriggerObject.name;
 			}
 			yield return 0;
 			
@@ -59,21 +59,20 @@ public class Player : MonoBehaviour {
 
 	}
 
-	public GameObject GetCollisionObject(){
-		return waitForCollisionObject;
+	public GameObject GetStoreTriggerObject(){
+		return waitForStoreTriggerObject;
 	}
 	
 	void OnTriggerEnter(Collider collider){
-		waitForCollisionObject = collider.gameObject;
-
 		//log store collision
 		if (collider.gameObject.tag == "StoreTrigger"){
+			waitForStoreTriggerObject = collider.gameObject;
 			objLogTrack.LogCollision (collider.gameObject.name);
 		}
 	}
 
 	void OnCollisionEnter(Collision collision){
-		waitForCollisionObject = collision.gameObject;
+		//waitForCollisionObject = collision.gameObject;
 
 		//log store collision
 		if (collision.gameObject.tag == "Store"){

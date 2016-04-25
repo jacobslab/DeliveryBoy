@@ -378,7 +378,9 @@ public class TrialController : MonoBehaviour {
 	}
 
 	IEnumerator DeliverItemAudio(int numDelivery){
-		GameObject playerCollisionObject = exp.player.GetCollisionObject ();
+		GameObject playerCollisionObject = exp.player.GetStoreTriggerObject ();
+
+		Debug.Log ("Deliver item audio to: " + playerCollisionObject.name);
 
 		if (playerCollisionObject != null) {
 		
