@@ -62,6 +62,10 @@ public class Player : MonoBehaviour {
 	public GameObject GetStoreTriggerObject(){
 		return waitForStoreTriggerObject;
 	}
+
+	public void ResetStoreTriggerObject(){
+		waitForStoreTriggerObject = null;
+	}
 	
 	void OnTriggerEnter(Collider collider){
 		//log store collision

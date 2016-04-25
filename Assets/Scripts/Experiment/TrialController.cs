@@ -325,6 +325,10 @@ public class TrialController : MonoBehaviour {
 			deliveryStores[randomSwapIndex] = temp;
 		}*/
 
+		//reset the trigger object to null so that IF the last store delivered to is the first store of the new day...
+			//...we won't automatically deliver to the store without actually going there!
+		exp.player.ResetStoreTriggerObject ();
+
 
 		for (int numDelivery = 0; numDelivery < deliveryStores.Count; numDelivery++) {
 			//start delivery timer
