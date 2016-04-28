@@ -178,10 +178,10 @@ public class WaypointController : MonoBehaviour {
 
 		//decide whether or not to add the start point:
 			//if the start point is between the player(start position) and the next point, add it.
-		Vector3 nextPointPosition = endPosition;
-		if (waypointPath.Count > 0) {
-			nextPointPosition = waypointPath[waypointPath.Count - 1].transform.position;
-		}
+		//Vector3 nextPointPosition = endPosition;
+		//if (waypointPath.Count > 0) {
+		//	nextPointPosition = waypointPath[waypointPath.Count - 1].transform.position;
+		//}
 		//if(!CheckBetweenPoints(startPosition, startPoint.transform.position, nextPointPosition)){
 			waypointPath.Add(startPoint);
 		//}

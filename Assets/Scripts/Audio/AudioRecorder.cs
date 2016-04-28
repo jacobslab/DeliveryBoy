@@ -25,7 +25,7 @@ public class AudioRecorder : MonoBehaviour {
 	public string selectedDevice { get; private set; }	
 	public float loudness { get; private set; } //dont touch
 	//
-	private bool micSelected = false;
+	//private bool micSelected = false;
 	private float ramFlushTimer;
 	private int amountSamples = 256; //increase to get better average, but will decrease performance. Best to leave it
 	private int minFreq, maxFreq; 
@@ -40,7 +40,7 @@ public class AudioRecorder : MonoBehaviour {
 			audio.loop = true; // Set the AudioClip to loop
 			audio.mute = false; // Mute the sound, we don't want the player to hear it
 			selectedDevice = Microphone.devices [0].ToString ();
-			micSelected = true;
+			//micSelected = true;
 			GetMicCaps ();
 
 		}
@@ -84,7 +84,7 @@ public class AudioRecorder : MonoBehaviour {
 
 			StopMicrophone ();
 			exp.eventLogger.LogRecording(false);
-			recordText.color = Color.white;
+			recordText.color = origTextColor;
 
 			SavWav.Save (filePath, fileName, audio.clip);
 		} else {

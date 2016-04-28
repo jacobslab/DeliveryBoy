@@ -171,14 +171,14 @@ public class StoreController : MonoBehaviour {
 			List<int> orderedStoreIndices = GetOrderedStoreIndicesByDistance(storeDistances);
 
 			/// HOW TO I USE THE WEIGHT DISTRIBUTION VECTOR EXACTLY?
-			float nextStoreDist = 0.0f;
+			//float nextStoreDist = 0.0f;
 
 			if(nextDistWeight > orderedStoreIndices.Count){
 				nextDistWeight = orderedStoreIndices.Count;
 			}
 
 			int nextStoreIndex = orderedStoreIndices[nextDistWeight - 1];
-			nextStoreDist = storeDistances[nextStoreIndex];
+			//nextStoreDist = storeDistances[nextStoreIndex];
 
 			//save store to order list
 			currStore = possibleNextStores[nextStoreIndex];
@@ -235,26 +235,27 @@ public class StoreController : MonoBehaviour {
 	}
 
 	void RecordStoresAndItemsLeft(){
+		if (ExperimentSettings.isLogging) {
+			Debug.Log ("Recording stores & items left!");
 
-		Debug.Log ("Recording stores & items left!");
+			string recordPath = ExperimentSettings.Instance.GetStoreItemFilePath (true);
 
-		string recordPath = ExperimentSettings.Instance.GetStoreItemFilePath (true);
+			StreamWriter sr = new StreamWriter (recordPath);
 
-		StreamWriter sr = new StreamWriter (recordPath);
+			sr.WriteLine ("NAME\t" + ExperimentSettings.currentSubject.name);
+			sr.WriteLine ("SESSION\t" + Experiment.sessionID);
 
-		sr.WriteLine ("NAME\t" + ExperimentSettings.currentSubject.name);
-		sr.WriteLine ("SESSION\t" + Experiment.sessionID);
-
-		for (int storeIndex = 0; storeIndex < stores.Length; storeIndex++) {
-			Store currStore = stores[storeIndex];
-			sr.WriteLine ("BUILDING\t" + currStore.name);
-			for(int itemIndex = 0; itemIndex < currStore.audioLeftToUse.Count; itemIndex++){
-				sr.WriteLine ("ITEM\t" + currStore.audioLeftToUse[itemIndex].name);
+			for (int storeIndex = 0; storeIndex < stores.Length; storeIndex++) {
+				Store currStore = stores [storeIndex];
+				sr.WriteLine ("BUILDING\t" + currStore.name);
+				for (int itemIndex = 0; itemIndex < currStore.audioLeftToUse.Count; itemIndex++) {
+					sr.WriteLine ("ITEM\t" + currStore.audioLeftToUse [itemIndex].name);
+				}
 			}
-		}
 
-		sr.Flush ();
-		sr.Close ();
+			sr.Flush ();
+			sr.Close ();
+		}
 	}
 
 	void OnDestroy(){ //should get called when scene changes (or application quits?)
