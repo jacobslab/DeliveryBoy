@@ -15,7 +15,13 @@ public class Store : MonoBehaviour {
 	public EnableChildrenLogTrack rotationVisualsParent;
 	public EnableChildrenLogTrack regularVisualsParent;
 
-	public TextMesh myLabel;
+	//public GameObject EnglishAwnings;
+	//public GameObject GermanAwnings;
+	//public TextMesh GermanAwningText;
+	public Transform Signs;
+	public string FullGermanName; //with article
+	string shortGermanName;
+	
 	Vector3 origPosition;
 	Quaternion origRotation;
 	
@@ -24,12 +30,33 @@ public class Store : MonoBehaviour {
 	
 	// Use this for initialization
 	void Awake () {
-		if (myLabel) {
-			myLabel.text = gameObject.name;
-		}
 		origPosition = transform.position;
 		origRotation = transform.rotation;
 
+		#if GERMAN
+		shortGermanName = FullGermanName.Replace("das ", "");
+		shortGermanName = shortGermanName.Replace("den ", ""); //next use the short german name, or we'll end up with the full german name most likely...
+		shortGermanName = shortGermanName.Replace("die ", "");
+
+		ChangeToGerman();
+		#endif
+	}
+
+	void ChangeToGerman(){
+		//EnglishAwnings.SetActive (false);
+		//GermanAwnings.SetActive (true);
+		if (gameObject.name == "bakery") {
+			int a = 0;
+		}
+		foreach (Transform sign in Signs){
+			TextMesh[] signTexts = sign.GetComponentsInChildren<TextMesh> ();
+			for( int i = 0 ; i < signTexts.Length; i++){
+				signTexts[i].text = shortGermanName.ToUpper();
+			}
+			if (Signs == null) {
+				int a = 0;
+			}
+		}
 	}
 
 	Transform GetStoreCenterTransform(){
@@ -54,7 +81,13 @@ public class Store : MonoBehaviour {
 
 		if (Config.isStoreCorrelatedDelivery) {
 			audioLeftToUse = new List<AudioClip> ();
-			string folder = "StoreAudio/" + GetDisplayName(); //just happens to be organized with the display name...
+
+		#if GERMAN
+			string folder = "StoreAudioGerman/" + FullGermanName; //just happens to be organized with the full name...
+		#elif
+			string folder = "StoreAudioEnglish/" + GetDisplayName(); //just happens to be organized with the display name...
+		#endif
+
 			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
 			for (int i = 0; i < storeAudioClips.Length; i++) {
 				audioLeftToUse.Add (storeAudioClips [i]);
@@ -146,7 +179,7 @@ public class Store : MonoBehaviour {
 		return null;
 	}
 
-	public void SetVisualsForPresentation(){
+	public void PresentSelf(Transform positionTransform){
 		transform.rotation = Quaternion.Euler(presentationRotation);
 
 		if (hasRotationVisuals) {
@@ -156,6 +189,8 @@ public class Store : MonoBehaviour {
 			UsefulFunctions.EnableChildren(rotationVisualsParent.transform, true);
 			rotationVisualsParent.LogChildrenEnabled(true);
 		}
+
+		transform.position = positionTransform.position;
 	}
 	
 	public void ResetStore(){

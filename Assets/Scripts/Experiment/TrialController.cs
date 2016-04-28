@@ -41,8 +41,9 @@ public class TrialController : MonoBehaviour {
 	//delivery timer
 	public SimpleTimer deliveryTimer;
 
-	//store rotation phase
+	//store presentation variables
 	public Transform storePresentationTransform;
+	public Transform recallStorePresentationTransform;
 	public VisibilityToggler presentationBackgroundCube;
 
 	int numRealTrials = 0; //used for logging trial ID's
@@ -236,8 +237,7 @@ public class TrialController : MonoBehaviour {
 			exp.eventLogger.LogStoreLearningPresentation(currStore, true);
 
 			//move store
-			currStore.SetVisualsForPresentation();
-			currStore.transform.position = storePresentationTransform.position;
+			currStore.PresentSelf(storePresentationTransform);
 			//GameObject storeImage = TurnOnStoreImage(currStore.name);
 
 			//presentation timing
@@ -447,6 +447,8 @@ public class TrialController : MonoBehaviour {
 
 		TCP_Config.DefineStates recallState = TCP_Config.DefineStates.RECALL_CUED;
 
+		//exp.recallInstructionsController.SetInstructionsColorful ();
+
 		switch(recallType){
 			case Config.RecallType.FreeItemRecall:
 				recallState = TCP_Config.DefineStates.RECALL_FREE_ITEM;
@@ -545,8 +547,12 @@ public class TrialController : MonoBehaviour {
 			int isStoreOrItem = storeOrItemCue[randomStoreOrItemIndex];
 			storeOrItemCue.RemoveAt(randomStoreOrItemIndex);
 
+			presentationBackgroundCube.TurnVisible (true);
+
 			//if divisible by 2, make it store cued
 			if(isStoreOrItem % 2 == 0){
+				exp.recallInstructionsController.background.color = new Color(0,0,0,0);
+
 				recordFileName = origFileName + i + "i"; //i - items are being recalled! (stores are cues)
 
 				cueName = orderedStores[index].name;
@@ -557,7 +563,8 @@ public class TrialController : MonoBehaviour {
 				exp.recallInstructionsController.DisplayText ("What did you deliver here?");
 
 				//show image
-				storeImage = TurnOnStoreImage(cueName);
+				//storeImage = TurnOnStoreImage(cueName);
+				orderedStores[index].PresentSelf(recallStorePresentationTransform);
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName,shouldRecallName, true, false, false);
 				SetServerStoreCueState(index, true);
@@ -595,6 +602,12 @@ public class TrialController : MonoBehaviour {
 
 			yield return StartCoroutine(EndRecall(Config.cuedEndBeepTimeBeforeEnd)); //play end beep, wait for the rest of the recall recording time
 
+			//if we're in store cued mode, reset the store now
+			if(isStoreOrItem %2 == 0){
+				exp.recallInstructionsController.SetInstructionsColorful ();
+				orderedStores[index].ResetStore();
+			}
+
 			if(storeImage != null){
 				storeImage.GetComponent<VisibilityToggler>().TurnVisible(false);
 				SetServerStoreCueState(index, false);
@@ -604,6 +617,7 @@ public class TrialController : MonoBehaviour {
 				SetServerItemCueState(index, false);
 			}
 		}
+		presentationBackgroundCube.TurnVisible (false);
 
 		yield return 0;
 	}
