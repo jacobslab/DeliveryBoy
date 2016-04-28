@@ -14,10 +14,7 @@ public class Store : MonoBehaviour {
 	public Vector3 presentationRotation;
 	public EnableChildrenLogTrack rotationVisualsParent;
 	public EnableChildrenLogTrack regularVisualsParent;
-
-	//public GameObject EnglishAwnings;
-	//public GameObject GermanAwnings;
-	//public TextMesh GermanAwningText;
+	
 	public Transform Signs;
 	public string FullGermanName; //with article
 	string shortGermanName;
@@ -43,18 +40,22 @@ public class Store : MonoBehaviour {
 	}
 
 	void ChangeToGerman(){
-		//EnglishAwnings.SetActive (false);
-		//GermanAwnings.SetActive (true);
-		if (gameObject.name == "bakery") {
-			int a = 0;
-		}
 		foreach (Transform sign in Signs){
 			TextMesh[] signTexts = sign.GetComponentsInChildren<TextMesh> ();
 			for( int i = 0 ; i < signTexts.Length; i++){
-				signTexts[i].text = shortGermanName.ToUpper();
-			}
-			if (Signs == null) {
-				int a = 0;
+				TextMesh currTextMesh = signTexts[i];
+
+				//resize text if bigger than original text & 
+				int minResizeLength = 9;
+				if( shortGermanName.Length > currTextMesh.text.Length && shortGermanName.Length > minResizeLength){
+					int lengthDiff = shortGermanName.Length - currTextMesh.text.Length;
+					if(currTextMesh.text.Length < minResizeLength){ //if currText length is too small, don't want to resize as much (EX: "GYM")
+						lengthDiff = shortGermanName.Length - minResizeLength;
+					}
+					currTextMesh.fontSize = currTextMesh.fontSize - (20*lengthDiff);
+				}
+
+				currTextMesh.text = shortGermanName.ToUpper();
 			}
 		}
 	}
