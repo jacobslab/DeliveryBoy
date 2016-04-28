@@ -290,14 +290,22 @@ public class TrialController : MonoBehaviour {
 
 		//show initial delivery command instruction
 		InitialDeliveryInstructionGroup.alpha = 1.0f;
+#if GERMAN
+		InitialDeliveryInstructionText.text = "Bitte finden Sie " + storeToVisit.FullGermanName + ".\nDrücken Sie (X) um fortzufahren.";
+#else
 		InitialDeliveryInstructionText.text = "Please find the " + storeToVisit.GetDisplayName() + ".\nPress (X) to continue.";
+#endif
 		yield return StartCoroutine (UsefulFunctions.WaitForActionButton ());
 		InitialDeliveryInstructionGroup.alpha = 0.0f;
 
 		exp.player.controls.ShouldLockControls = false;
 
 		//show instruction at top of screen, don't wait for button, wait for collision
-		DeliveryInstructionText.text = "Go to the " + storeToVisit.GetDisplayName();
+#if GERMAN
+		DeliveryInstructionText.text = "Hier finden Sie " + storeToVisit.FullGermanName + ".";
+#elif
+		DeliveryInstructionText.text = "Please find the " + storeToVisit.GetDisplayName() + ".";
+#endif
 		yield return StartCoroutine (exp.player.WaitForStoreTrigger (storeToVisit));
 		DeliveryInstructionText.text = " ";
 
