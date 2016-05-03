@@ -302,7 +302,7 @@ public class TrialController : MonoBehaviour {
 
 		//show instruction at top of screen, don't wait for button, wait for collision
 #if GERMAN
-		DeliveryInstructionText.text = "Hier finden Sie " + storeToVisit.FullGermanName + ".";
+		DeliveryInstructionText.text = "Bitte finden Sie " + storeToVisit.FullGermanName + ".";
 #elif
 		DeliveryInstructionText.text = "Please find the " + storeToVisit.GetDisplayName() + ".";
 #endif
@@ -461,7 +461,11 @@ public class TrialController : MonoBehaviour {
 			case Config.RecallType.FreeItemRecall:
 				recallState = TCP_Config.DefineStates.RECALL_FREE_ITEM;
 				recallTime = Config.freeRecallTime;
+#if GERMAN
+				exp.recallInstructionsController.DisplayText ("Sprechen Sie laut , alle Artikel, die Sie von diesem Liefertag erinnern.");
+#elif
 				exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember from this delivery day.");
+#endif
 				break;
 			case Config.RecallType.CuedRecall:
 				exp.eventLogger.LogRecallPhaseStarted (recallType, true);
@@ -567,8 +571,11 @@ public class TrialController : MonoBehaviour {
 				shouldRecallName = orderedItemsDelivered[index];
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true);
-
+#if GERMAN
+				exp.recallInstructionsController.DisplayText("Was hat liefern Sie hier?");
+#elif
 				exp.recallInstructionsController.DisplayText ("What did you deliver here?");
+#endif
 
 				//show image
 				//storeImage = TurnOnStoreImage(cueName);
@@ -585,8 +592,11 @@ public class TrialController : MonoBehaviour {
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true);
 
+#if GERMAN
+				exp.recallInstructionsController.DisplayText ("Wo haben Sie liefern das gesprochene Artikel?");
+#elif
 				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item?");
-
+#endif
 				//play audio
 				orderedStores[index].PlayCurrentAudio();
 				while(orderedStores[index].GetIsAudioPlaying()){ //wait for audio to finish playing before proceeding

@@ -121,9 +121,16 @@ public class InstructionsController : MonoBehaviour {
 		"\n\n* Bitte drücken Sie (X) wenn Sie bereit sind *";
 #endif
 
+
 	//ROTATION PHASE INSTRUCTIONS
+#if GERMAN
+	public static string rotationInstructions1 = "Sie werden jetzt Bilder von den Geschäften in der Stadt sehen damit Sie sie während des Spiels besser wieder erkennen können. " + 
+		"Bitte schauen Sie sich die Bilder sorgfältig an.";
+#elif
 	public static string rotationInstructions1 = "Now you will see images of the stores in the city so that you can better recognize them while doing the task. " +
 		"Please pay attention to them as they appear on the screen.";
+#endif
+
 	// Use this for initialization
 	void Start () {
 		if (background != null) {
