@@ -74,46 +74,45 @@ public class InstructionsController : MonoBehaviour {
 		"\n\nIn diesem Computerspiel übernehmen Sie die Aufgabe eines Kurierboten in einer kleinen Stadt. " +
 		"Ihre Aufgabe ist es durch die Stadt zu fahren und, so schnell wie möglich, Pakete an die richtigen Geschäfte zu liefern. " +
 
-		"\n\nDas Ziel jeder Lieferung wird oben links auf dem Bildschirm angezeigt. Wenn Sie am Ziel angekommen sind fahren Sie einfach direkt " +
-		"an das Geschäft heran und der Gegenstand den Sie geliefert haben wird angezeigt. Während des Spiels haben Sie die Gelegenheit eine Reihe " +
+		"\n\nDas Ziel jeder Lieferung wird oben links auf dem Bildschirm angezeigt. Wenn Sie am Ziel angekommen sind, fahren Sie einfach direkt " +
+		"an das Geschäft heran und der Gegenstand den Sie geliefert haben, wird angezeigt. Während des Spiels haben Sie die Gelegenheit, eine Reihe " +
 		"solcher Lieferungen in der ganzen Stadt zu tätigen." +
 
-		"\n\nAm Ende der letzten Lieferung einer solchen Serie werden Sie an Stelle eines Gegenstandes einen leeren Bildschirm mit einer Reihe von " +
-		"Sternchen (*******) sehen und einen Ton hören. Dies ist Ihr Signal um so viele der gelieferten Gegenstände wie möglich laut aufzuzählen (die " +
-		"Reihenfolge ist dabei unwichtig)." +
+		"\n\nAm Ende der letzten Lieferung einer solchen Serie werden Sie anstelle eines Gegenstandes einen leeren Bildschirm mit einer Reihe von " +
+			"Sternchen (*******) sehen und einen Ton hören. Sobald der Ton abbricht und die weißen Sternchen (*******) rot werden, " +
+			"haben Sie" + Config.freeRecallTime + "Sekunden Zeit, so viele der gelieferten Gegenstände wie möglich laut aufzuzählen (die Reihenfolge ist dabei unwichtig." +
+		
+			"\n\nDanach werden Sie entweder ein Gebäude sehen und nach dem Gegenstand gefragt, den Sie hierher geliefert haben oder einen Gegenstand" +
+			"sehen und nach dem Geschäft gefragt, an das Sie den Gegenstand geliefert haben." +
 
 	//TODO: TRANSLATE TO GERMAN
-		"When the tone has finished and the asterisks turn red, your job is to verbally recall all of the delivered items that you can remember, in any order. " +
-		"This free recall period will last for " + Config.freeRecallTime + " seconds. " +
-		"Once this free recall period has ended, you will either be shown a building and asked to recall the item you delivered, " +
-		"or you will hear an item that you delivered, and will be asked to recall the store to which you delivered it. " +
 		"You will have 6 seconds to recall the matching item or store." +
 
-		"Nach diesem Gedächtnis Test können Sie eine kurze Pause machen bevor eine neue Runde von Lieferungen beginnt.";
+		"Nach diesem Gedächtnis Test können Sie eine kurze Pause machen, bevor eine neue Runde von Lieferungen beginnt.";
 	
 	public static string initialInstructions2Learning = "\n\nBevor das eigentliche Spiel beginnt, lassen wir Sie erstmal die Stadt " +
-		"erkunden damit Sie sich orientieren können. Diese Übungsphase werden wir Ihnen als nächstes erklären." +
-		"\n\nBitte sagen Sie dem Versuchsleiter Bescheid wenn sie diese Anleitung zu Ende gelesen haben.";
+		"erkunden, damit Sie sich orientieren können. Diese Übungsphase werden wir Ihnen als nächstes erklären." +
+		"\n\nBitte sagen Sie dem Versuchsleiter Bescheid, wenn sie diese Anleitung zu Ende gelesen haben.";
 	
 	
 	//LEARNING PHASE INSTRUCTIONS
 	public static string learningInstructions = "ÜBUNGSPHASE" +
-		"\n\nBevor Sie mit den Lieferungen beginnen, möchten wir Sie mit der Stadt vertraut machen. Wir werden Sie bitten zu verschiedenen Geschäften " +
-		"zu fahren ohne Lieferungen vorzunehmen. Sie werden später in der gleichen Stadt Lieferungen vornehmen, daher ist es günstig wenn Sie " + 
-		"diese Übungsphase nutzen um die kürzesten Wege zwischen Geschäften herauszufinden. Als kleine Hilfe werde wir Sie in dieser Übungsphase " +
-		"oft bitten zu naheliegenden Geschäften zu fahren." +
+		"\n\nBevor Sie mit den Lieferungen beginnen, möchten wir Sie mit der Stadt vertraut machen. Wir werden Sie bitten, zu verschiedenen Geschäften " +
+		"zu fahren ohne Lieferungen vorzunehmen. Sie werden später in der gleichen Stadt Lieferungen vornehmen, daher ist es günstig, wenn Sie " + 
+		"diese Übungsphase nutzen, um die kürzesten Wege zwischen Geschäften herauszufinden. Als kleine Hilfe werden wir Sie in dieser Übungsphase " +
+		"oft bitten, zu naheliegenden Geschäften zu fahren." +
 	
 		"\n\nMachen Sie sich keine Sorgen, wenn Sie etwas länger brauchen um sich mit der Stadt vertraut zu machen. " +
 		"\n\nZunächst wird es schwierig sein die richtigen Geschäfte zu finden, aber mit der Zeit sollten Sie ein gutes Gefühl für die Stadt bekommen." +
-		"\n\nBitte sagen Sie dem Versuchsleiter bescheid wenn Sie diese Anleitung zu Ende gelesen haben.";
+		"\n\nBitte sagen Sie dem Versuchsleiter Bescheid, wenn Sie diese Anleitung zu Ende gelesen haben.";
 	
-	
+	//FINAL RECALL INSTRUCTIONS
 	public static string finalItemRecallInstructions = "In dem folgenden Gedächtnis Test, zählen Sie bitte so viele von allen " +
 		"heute gelieferten GEGENSTÄNDEN (d.h. von allen Lieferphasen) laut auf wie möglich (die Reihenfolge ist dabei unwichtig). Sie haben dafür " +
 		"mehrere Minuten Zeit. Bitte versuchen Sie sich bis zum Ende diese Zeitraumes an die Namen von Geschäften zu erinnern, da Ihnen u.U. auch " + 
 		"noch Gegenstände einfallen, wenn Sie glauben sich an keine weiteren erinnern zu können." +
 			"\n\n* Bitte drücken Sie (X) wenn Sie bereit sind  *";
-	
+	******
 	public static string finalStoreRecallInstructions = "Im folgenden Gedächtnis Test zählen Sie bitte so viele NAMEN VON" +
 		"GESCHÄFTEN laut auf wie möglich (die Reihenfolge ist dabei unwichtig). Sie haben dafür mehrere Minuten Zeit. Bitte versuchen Sie "+
 		"sich bis zum Ende dieses Zeitraumes an die Namen von Geschäften zu erinnern, da Ihnen u.U. auch noch Namen einfallen, wenn Sie glauben " +
@@ -124,7 +123,7 @@ public class InstructionsController : MonoBehaviour {
 
 	//ROTATION PHASE INSTRUCTIONS
 #if GERMAN
-	public static string rotationInstructions1 = "Sie werden jetzt Bilder von den Geschäften in der Stadt sehen damit Sie sie während des Spiels besser wieder erkennen können. " + 
+	public static string rotationInstructions1 = "Sie werden jetzt Bilder von den Geschäften in der Stadt sehen, damit Sie sie während des Spiels besser wieder erkennen können. " + 
 		"Bitte schauen Sie sich die Bilder sorgfältig an.";
 #elif
 	public static string rotationInstructions1 = "Now you will see images of the stores in the city so that you can better recognize them while doing the task. " +

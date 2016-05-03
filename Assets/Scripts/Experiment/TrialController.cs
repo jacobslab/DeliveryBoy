@@ -132,8 +132,12 @@ public class TrialController : MonoBehaviour {
 			for(int i = 0; i < ExperimentSettings.numDelivDays; i++){
 				exp.player.controls.ShouldLockControls = true;
 
+
+#if GERMAN
+				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i+1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
+#else
 				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
-			
+#endif
 
 				exp.player.controls.ShouldLockControls = false;
 
@@ -168,7 +172,13 @@ public class TrialController : MonoBehaviour {
 			}
 
 			exp.player.controls.ShouldLockControls = true;
+
+#if GERMAN
 			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("You have completed the session! \nPress (X) to proceed.", true, true, false, 0.0f));
+#else
+			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("You have completed the session! \nPress (X) to proceed.", true, true, false, 0.0f));
+
+#endif
 		}
 		
 	}
@@ -198,7 +208,12 @@ public class TrialController : MonoBehaviour {
 		currentState = TrialState.navigationLearning;
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, true);
 
+#if GERMAN
 		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
+#else
+		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
+#endif
+
 
 		exp.eventLogger.LogLearningPhaseStarted (true);
 
@@ -462,7 +477,7 @@ public class TrialController : MonoBehaviour {
 				recallState = TCP_Config.DefineStates.RECALL_FREE_ITEM;
 				recallTime = Config.freeRecallTime;
 #if GERMAN
-				exp.recallInstructionsController.DisplayText ("Sprechen Sie laut , alle Artikel, die Sie von diesem Liefertag erinnern.");
+				exp.recallInstructionsController.DisplayText ("Nennen Sie alle Artikel von dieser Lieferphase, an die Sie sich erinnern können.");
 #elif
 				exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember from this delivery day.");
 #endif
@@ -572,7 +587,7 @@ public class TrialController : MonoBehaviour {
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true);
 #if GERMAN
-				exp.recallInstructionsController.DisplayText("Was hat liefern Sie hier?");
+				exp.recallInstructionsController.DisplayText("Was haben Sie hierher geliefert?");
 #elif
 				exp.recallInstructionsController.DisplayText ("What did you deliver here?");
 #endif
@@ -593,9 +608,9 @@ public class TrialController : MonoBehaviour {
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true);
 
 #if GERMAN
-				exp.recallInstructionsController.DisplayText ("Wo haben Sie liefern das gesprochene Artikel?");
+				exp.recallInstructionsController.DisplayText ("Wohin haben Sie diesen Artikel geliefert?");
 #elif
-				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item?");
+				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item to?");
 #endif
 				//play audio
 				orderedStores[index].PlayCurrentAudio();
