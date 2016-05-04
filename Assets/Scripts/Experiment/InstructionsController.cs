@@ -107,17 +107,17 @@ public class InstructionsController : MonoBehaviour {
 		"\n\nBitte sagen Sie dem Versuchsleiter Bescheid, wenn Sie diese Anleitung zu Ende gelesen haben.";
 	
 	//FINAL RECALL INSTRUCTIONS
-	public static string finalItemRecallInstructions = "In dem folgenden Gedächtnis Test, zählen Sie bitte so viele von allen " +
+	public static string finalItemRecallInstructions = "In dem folgenden Gedächtnistest, zählen Sie bitte so viele von allen " +
 		"heute gelieferten GEGENSTÄNDEN (d.h. von allen Lieferphasen) laut auf wie möglich (die Reihenfolge ist dabei unwichtig). Sie haben dafür " +
 		"mehrere Minuten Zeit. Bitte versuchen Sie sich bis zum Ende diese Zeitraumes an die Namen von Geschäften zu erinnern, da Ihnen u.U. auch " + 
 		"noch Gegenstände einfallen, wenn Sie glauben sich an keine weiteren erinnern zu können." +
-			"\n\n* Bitte drücken Sie (X) wenn Sie bereit sind  *";
-	******
-	public static string finalStoreRecallInstructions = "Im folgenden Gedächtnis Test zählen Sie bitte so viele NAMEN VON" +
+			"\n\n* Bitte drücken Sie (X), wenn Sie bereit sind  *";
+
+	public static string finalStoreRecallInstructions = "Im folgenden Gedächtnistest zählen Sie bitte so viele NAMEN VON" +
 		"GESCHÄFTEN laut auf wie möglich (die Reihenfolge ist dabei unwichtig). Sie haben dafür mehrere Minuten Zeit. Bitte versuchen Sie "+
-		"sich bis zum Ende dieses Zeitraumes an die Namen von Geschäften zu erinnern, da Ihnen u.U. auch noch Namen einfallen, wenn Sie glauben " +
+			"sich bis zum Ende dieses Zeitraumes an die Namen von Gegenstand zu erinnern, da Ihnen u.U. auch noch Namen einfallen, wenn Sie glauben " +
 		"sich an keine weiteren erinnern zu können." +
-		"\n\n* Bitte drücken Sie (X) wenn Sie bereit sind *";
+		"\n\n* Bitte drücken Sie (X), wenn Sie bereit sind *";
 #endif
 
 
