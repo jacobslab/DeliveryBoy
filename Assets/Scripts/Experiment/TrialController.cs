@@ -56,8 +56,18 @@ public class TrialController : MonoBehaviour {
 		presentationBackgroundCube.TurnVisible (false);
 		orderedStores = new List<Store>();
 		orderedItemsDelivered = new List<string>();
+
+		InitUIText ();
 	}
 
+	public Text GamePausedText;
+	public Text HowToPauseInstructionText;
+	void InitUIText(){
+	#if GERMAN
+		GamePausedText.text = "Pause";
+		HowToPauseInstructionText.text = "(B) Pause";
+	#endif
+	}
 
 	
 	void Update(){
