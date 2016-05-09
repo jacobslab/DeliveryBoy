@@ -85,7 +85,7 @@ public class Store : MonoBehaviour {
 
 		#if GERMAN
 			string folder = "StoreAudioGerman/" + FullGermanName; //just happens to be organized with the full name...
-		#elif
+		#else
 			string folder = "StoreAudioEnglish/" + GetDisplayName(); //just happens to be organized with the display name...
 		#endif
 

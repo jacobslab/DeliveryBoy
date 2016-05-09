@@ -328,7 +328,7 @@ public class TrialController : MonoBehaviour {
 		//show instruction at top of screen, don't wait for button, wait for collision
 #if GERMAN
 		DeliveryInstructionText.text = "Bitte finden Sie " + storeToVisit.FullGermanName + ".";
-#elif
+#else
 		DeliveryInstructionText.text = "Please find the " + storeToVisit.GetDisplayName() + ".";
 #endif
 		yield return StartCoroutine (exp.player.WaitForStoreTrigger (storeToVisit));
@@ -488,7 +488,7 @@ public class TrialController : MonoBehaviour {
 				recallTime = Config.freeRecallTime;
 #if GERMAN
 				exp.recallInstructionsController.DisplayText ("Nennen Sie alle Artikel von dieser Lieferphase, an die Sie sich erinnern können.");
-#elif
+#else
 				exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember from this delivery day.");
 #endif
 				break;
@@ -598,7 +598,7 @@ public class TrialController : MonoBehaviour {
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true);
 #if GERMAN
 				exp.recallInstructionsController.DisplayText("Was haben Sie hierher geliefert?");
-#elif
+#else
 				exp.recallInstructionsController.DisplayText ("What did you deliver here?");
 #endif
 
@@ -619,7 +619,7 @@ public class TrialController : MonoBehaviour {
 
 #if GERMAN
 				exp.recallInstructionsController.DisplayText ("Wohin haben Sie diesen Artikel geliefert?");
-#elif
+#else
 				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item to?");
 #endif
 				//play audio

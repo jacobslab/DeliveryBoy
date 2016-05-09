@@ -50,7 +50,7 @@ public class InstructionsController : MonoBehaviour {
 	
 
 	//LEARNING PHASE INSTRUCTIONS
-	public static string learningInstructions1 = "PRACTICE SESSION" +
+	public static string learningInstructions = "PRACTICE SESSION" +
 		"\n\nBefore you start making deliveries, we want to make sure you know your way around the city. " +
 		" You'll be asked to go from store to store without delivering items. " +
 		"The city will be exactly the same during the practice as during the later delivery trials, so you can use this time to figure out the fastest way to get from place to place. " +
@@ -125,7 +125,7 @@ public class InstructionsController : MonoBehaviour {
 #if GERMAN
 	public static string rotationInstructions1 = "Sie werden jetzt Bilder von den Geschäften in der Stadt sehen, damit Sie sie während des Spiels besser wieder erkennen können. " + 
 		"Bitte schauen Sie sich die Bilder sorgfältig an.";
-#elif
+#else
 	public static string rotationInstructions1 = "Now you will see images of the stores in the city so that you can better recognize them while doing the task. " +
 		"Please pay attention to them as they appear on the screen.";
 #endif
