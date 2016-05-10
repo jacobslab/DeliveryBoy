@@ -184,7 +184,7 @@ public class TrialController : MonoBehaviour {
 			exp.player.controls.ShouldLockControls = true;
 
 #if GERMAN
-			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("You have completed the session! \nPress (X) to proceed.", true, true, false, 0.0f));
+			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Sie haben die Sitzung beendet! \nDrücken Sie (X) um fortzufahren.", true, true, false, 0.0f));
 #else
 			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("You have completed the session! \nPress (X) to proceed.", true, true, false, 0.0f));
 
@@ -219,7 +219,7 @@ public class TrialController : MonoBehaviour {
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, true);
 
 #if GERMAN
-		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
+		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Drücken Sie (X), um die Übungsphase zu beginnen.", true, true, false, 0.0f));
 #else
 		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
 #endif

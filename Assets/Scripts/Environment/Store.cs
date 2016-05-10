@@ -46,7 +46,7 @@ public class Store : MonoBehaviour {
 				TextMesh currTextMesh = signTexts[i];
 
 				//resize text if bigger than original text & 
-				int minResizeLength = 9;
+				int minResizeLength = 7;
 				if( shortGermanName.Length > currTextMesh.text.Length && shortGermanName.Length > minResizeLength){
 					int lengthDiff = shortGermanName.Length - currTextMesh.text.Length;
 					if(currTextMesh.text.Length < minResizeLength){ //if currText length is too small, don't want to resize as much (EX: "GYM")
