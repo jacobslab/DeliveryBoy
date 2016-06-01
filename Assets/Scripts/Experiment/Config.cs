@@ -42,9 +42,15 @@ public class Config : MonoBehaviour {
 	
 	public static bool isAudioDelivery = true;
 	public static bool isStoreCorrelatedDelivery = true;
-
-	public static int numLearningIterations = 1;
-	public static bool doLearningPhase = true;
+	
+	//a learning session, for the first session unless skipped
+	public static bool skipLearningSession = false;
+	public static int numLearningIterationsSession = 4;
+	
+	//learning phase, at the start of a session
+	public static bool doLearningPhase = false;
+	public static int numLearningIterationsPhase = 1;
+	
 	public static bool doPresentationPhase = true;
 	public static float storePresentationTime = 1.5f;
 	public static float betweenStoreBlankScreenTimeMax = 0.6f;
