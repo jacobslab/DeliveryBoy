@@ -153,12 +153,7 @@ public class TrialLogTrack : LogTrack {
 
 	public void LogSessionStarted (int sessionNum, bool isLearningSession){ //gets logged at the start of all delivery days
 		if (ExperimentSettings.isLogging) {
-			if(!isLearningSession){
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "SESS_STARTED" + separator + sessionNum);
-			}
-			else{
-				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "SESS_STARTED" + separator + sessionNum + separator + "LEARNING");
-			}
+			subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "SESS_STARTED" + separator + sessionNum + separator + "IS_LEARNING" + separator + isLearningSession);
 			Debug.Log ("Logged session started event.");
 		}
 	}
