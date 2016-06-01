@@ -153,14 +153,17 @@ public class StoreController : MonoBehaviour {
 		// weight vector (50%, 30%, 15%, 5%) for which closest store to choose
 		int[] randWeights = {1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,4};
 
-		Store currStore = stores[0]; //ASSUMING THAT THERE ARE MORE THAN ZERO STORES
+		//pick a random starting store
+		int randStartStoreIndex = Random.Range (0, stores.Length);
+		Store currStore = stores[randStartStoreIndex];
+
 		for(int i = 0; i < stores.Length - 1; i++){
 
 			//add the very first store to the list!
 			if(i == 0){
 				learningStores.Add(currStore);
 				//remove this store from possible next stores
-				possibleNextStores.RemoveAt(i);
+				possibleNextStores.RemoveAt(randStartStoreIndex);
 			}
 
 			// which of the closest stores
@@ -170,15 +173,13 @@ public class StoreController : MonoBehaviour {
 			List<float> storeDistances = GetStoreDistances(currStore, possibleNextStores);
 			List<int> orderedStoreIndices = GetOrderedStoreIndicesByDistance(storeDistances);
 
-			/// HOW TO I USE THE WEIGHT DISTRIBUTION VECTOR EXACTLY?
-			//float nextStoreDist = 0.0f;
-
+			//if we picked a larger weight index than stores left to choose, just pick the index with the largest distance.
 			if(nextDistWeight > orderedStoreIndices.Count){
 				nextDistWeight = orderedStoreIndices.Count;
 			}
 
+			//get the next store index
 			int nextStoreIndex = orderedStoreIndices[nextDistWeight - 1];
-			//nextStoreDist = storeDistances[nextStoreIndex];
 
 			//save store to order list
 			currStore = possibleNextStores[nextStoreIndex];
@@ -223,6 +224,7 @@ public class StoreController : MonoBehaviour {
 	}
 
 	//will not include itself. (unless otherStores does)
+	//uses euclidean distances.
 	List<float> GetStoreDistances(Store store, List<Store> otherStores){
 		List<float> distances = new List<float>();
 
