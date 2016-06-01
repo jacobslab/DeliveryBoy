@@ -36,11 +36,11 @@ public class ScreenRecorder : MonoBehaviour {
 		}*/
 	}
 
-	public void TakeNextContinuousScreenShot(){
-		StartCoroutine(TakeScreenshot(RecordingType.continuousVideo));
+	public void TakeNextContinuousScreenShot(string timeStamp){
+		StartCoroutine(TakeScreenshot(RecordingType.continuousVideo, timeStamp));
 	}
 
-	public string ScreenShotName(int width, int height, RecordingType recordingType) {
+	public string ScreenShotName(int width, int height, string timeStamp, RecordingType recordingType) {
 		string name = "";
 		
 		if (recordingType == RecordingType.screenshot) {
@@ -52,7 +52,7 @@ public class ScreenRecorder : MonoBehaviour {
 		else if (recordingType == RecordingType.continuousVideo) {
 			string numFramesPadded = numFrames.ToString();
 			numFramesPadded = numFramesPadded.PadLeft(Config.replayPadding, '0');
-			name = string.Format ("{0}/screen_{1}.png", 
+			name = string.Format ("{0}/"+timeStamp+"_{1}.png", 
 			                      path, //change to path variable? 
 			                      numFramesPadded);
 			
@@ -63,9 +63,9 @@ public class ScreenRecorder : MonoBehaviour {
 	}
 	
 	//despite waiting for the end of frame, this coroutine will be started every fixed update, resulting in an image for every fixedupdate call. which is good, because video will have a constant framerate, whereas the game will not.
-	IEnumerator TakeScreenshot(RecordingType recordingType){
+	IEnumerator TakeScreenshot(RecordingType recordingType, string timeStamp){
 		// We should only read the screen buffer after rendering is complete
-
+		
 		yield return new WaitForEndOfFrame();
 		
 		// Create a texture the size of the screen, RGB24 format
@@ -82,9 +82,11 @@ public class ScreenRecorder : MonoBehaviour {
 		Destroy(tex);
 		
 		// For testing purposes, also write to a file in the project folder
-		string filename = ScreenShotName(width, height, recordingType);
+		string filename = ScreenShotName(width, height, timeStamp, recordingType);
+		#if (!UNITY_WEBPLAYER)
 		System.IO.File.WriteAllBytes(filename, bytes);
-
+		#endif
+		
 		yield return null;
 	}
 

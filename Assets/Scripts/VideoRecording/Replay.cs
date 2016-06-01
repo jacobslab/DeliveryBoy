@@ -35,6 +35,23 @@ public class Replay : MonoBehaviour {
 	//a bool to determine if we should start the log file processing. replay should start once 
 	static bool shouldStartProcessingLog = false;
 
+	
+	//PARSING VARIABLES
+	public InputField minTimeStampInput;
+	public InputField maxTimeStampInput;
+	static bool hasSetSpecificTimeStamps = false;
+	
+	static long minTimeStamp = 0;//1452876489932;//0;//
+	static long maxTimeStamp = 0;//1452877069298;
+	long currentFrame = 0;
+	long currentTimeStamp = 0;
+	long lastTimeStamp = 0;
+	long lastTimeRecorded = 0;
+	long timeDifference = 0;
+
+
+
+
 	// Use this for initialization
 	void Start () {
 		objsInSceneDict = new Dictionary<String, GameObject> ();
@@ -69,7 +86,16 @@ public class Replay : MonoBehaviour {
 			SetFPS (int.Parse(FPSInputField.text));
 		}
 
-		
+		if (maxTimeStampInput != null && maxTimeStampInput != null) {
+			if(minTimeStampInput.text != "" && maxTimeStampInput.text != ""){
+				long min = long.Parse(minTimeStampInput.text);
+				long max = long.Parse(maxTimeStampInput.text);
+				
+				SetMinMaxTimeStamps(min, max);
+			}
+		}
+
+
 		try 
 		{
 			// Create an instance of StreamReader to read from a file. 
@@ -101,32 +127,47 @@ public class Replay : MonoBehaviour {
 		FPS = newFPS;
 	}
 
+	void SetMinMaxTimeStamps(long min, long max){
+		minTimeStamp = min;
+		maxTimeStamp = max;
+		
+		hasSetSpecificTimeStamps = true;
+	}
+
 
 	//TODO: make log file just log the time elapsed????
 	long GetMillisecondDifference(long baseMS, long newMS){
 		return (newMS - baseMS); 
 	}
-
-	void RecordScreenShot(){
-		if(MyScreenRecorder != null){
-			//will check if it's supposed to record or not
-			//also will wait until endofframe in order to take the shot
-			MyScreenRecorder.TakeNextContinuousScreenShot();
-		}
-		else{
-			Debug.Log("No screen recorder attached!");
+	
+	
+	
+	// Records the screen shot.
+	
+	void RecordScreenShot(long timeStamp){
+		
+		if (!hasSetSpecificTimeStamps || ( timeStamp < maxTimeStamp && timeStamp > minTimeStamp )) {
+			if (MyScreenRecorder != null) {
+				//will check if it's supposed to record or not
+				//also will wait until endofframe in order to take the shot
+				MyScreenRecorder.TakeNextContinuousScreenShot (timeStamp.ToString ());
+			} else {
+				Debug.Log ("No screen recorder attached!");
+			}
 		}
 	}
-	
+
+
+	void SetTimeStamp(long newTimeStamp){
+		lastTimeStamp = currentTimeStamp;
+		currentTimeStamp = newTimeStamp;
+		timeDifference = currentTimeStamp - lastTimeRecorded; //gets time between log file lines
+	}
+
+
 	//THIS PARSING DEPENDS GREATLY ON THE FORMATTING OF THE LOG FILE.
 	//IF THE FORMATTING OF THE LOG FILE IS CHANGED, THIS WILL VERY LIKELY HAVE TO CHANGE AS WELL.
 	IEnumerator ProcessLogFile(){
-
-		long currentFrame = 0;
-		long currentTimeStamp = 0;
-		long lastTimeRecorded = 0;
-		long timeDifference = 0;
-
 
 		//if (logFilePath != "") { 
 
@@ -150,8 +191,25 @@ public class Replay : MonoBehaviour {
 
 		char splitCharacter = Logger_Threading.LogTextSeparator.ToCharArray () [0];
 
+		bool hasReachedMinTime = false;
+
 		//PARSE
 		while (currentLogFileLine != null) {
+
+			//read up until desired timestamp
+			while (currentLogFileLine != null && !hasReachedMinTime){
+				splitLine = currentLogFileLine.Split(splitCharacter);
+				
+				SetTimeStamp(long.Parse(splitLine[0]));
+				currentLogFileLine = fileReader.ReadLine ();
+				
+				if(currentTimeStamp >= minTimeStamp || !hasSetSpecificTimeStamps){ //if we've reached the min stamp, or if we haven't set min/max times (then just continue)
+					hasReachedMinTime = true;
+					currentFrame = long.Parse(splitLine[1]);
+					lastTimeRecorded = currentTimeStamp; //we want to skip ahead!
+				}
+			}
+
 
 			splitLine = currentLogFileLine.Split(splitCharacter);
 
@@ -183,7 +241,7 @@ public class Replay : MonoBehaviour {
 							lastTimeRecorded = currentTimeStamp;
 							
 							if(isRecording){
-								RecordScreenShot();
+								RecordScreenShot(lastTimeStamp);
 							}
 							yield return 0; //advance the game a frame before continuing
 							
@@ -194,7 +252,7 @@ public class Replay : MonoBehaviour {
 							//record and wait the appropriate number of frames
 							for(int j = 0; j < numFramesToCapture; j++){
 								if(isRecording){
-									RecordScreenShot();
+									RecordScreenShot(lastTimeStamp);
 								}
 								yield return 0; //advance the game a frame before continuing
 							}
@@ -583,7 +641,7 @@ public class Replay : MonoBehaviour {
 
 		//take the last screenshot
 		if (isRecording) {
-			RecordScreenShot ();
+			RecordScreenShot (currentTimeStamp);
 		}
 		yield return 0;
 		Application.LoadLevel(0); //return to main menu
