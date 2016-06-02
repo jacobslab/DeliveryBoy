@@ -104,8 +104,12 @@ public class Experiment : MonoBehaviour {
 	void InitLogging(){
 
 		string subjectDirectory = ExperimentSettings.defaultLoggingPath + ExperimentSettings.currentSubject.name + "/";
-		SessionDirectory = subjectDirectory + "session_0" + "/";
-		
+		if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession) {
+			SessionDirectory = subjectDirectory + "session_learning_0" + "/";
+		} else {
+			SessionDirectory = subjectDirectory + "session_0" + "/";
+		}
+
 		sessionID = 0;
 		string sessionIDString = "_0";
 		
@@ -116,8 +120,13 @@ public class Experiment : MonoBehaviour {
 			sessionID++;
 			
 			sessionIDString = "_" + sessionID.ToString();
-			
-			SessionDirectory = subjectDirectory + "session" + sessionIDString + "/";
+
+
+			if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession) {
+				SessionDirectory = subjectDirectory + "session_learning" + sessionIDString + "/";
+			} else {
+				SessionDirectory = subjectDirectory + "session" + sessionIDString + "/";
+			}
 		}
 		
 		Directory.CreateDirectory(SessionDirectory);
