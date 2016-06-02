@@ -42,6 +42,19 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	//public Toggle syncboxToggle;
 
 
+	//SESSION TYPE TOGGLES
+	public Toggle learningSessToggle;
+	public Toggle delivSessToggle;
+
+	public enum SessionType
+	{
+		learningSession,
+		deliverySession
+	}
+
+	public SessionType mySessionType = SessionType.learningSession;
+
+	//NUM DELIV DAY TOGGLES
 	public static int numDelivDays = 6; //in main menu, it's 6 by default!
 	public Toggle sixDayToggle;
 	public Toggle eightDayToggle;
@@ -266,6 +279,34 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			}
 			break;
 		}
+	}
+
+	public void SetSessionType(int type){
+
+		switch (type) {
+		case 0: //learning
+			if(learningSessToggle.isOn){ //have to check if the toggle is on or we'll get an infinite loop of changing toggles!
+				mySessionType = SessionType.learningSession;
+				delivSessToggle.isOn = false; //set the other toggle to false
+			}
+			else{ //in case we toggled off the learning toggle...
+				mySessionType = SessionType.deliverySession;
+				delivSessToggle.isOn = true; //set the other toggle to false
+			}
+			break;
+		case 1: //delivery
+			if(delivSessToggle.isOn){//have to check if the toggle is on or we'll get an infinite loop of changing toggles!
+				mySessionType = (SessionType)System.Enum.Parse(typeof(SessionType), type.ToString());
+				learningSessToggle.isOn = false; //set the other toggle to false
+			}
+			else{ //in case we toggled off the deliv toggle...
+				mySessionType = SessionType.learningSession;
+				learningSessToggle.isOn = true; //set the other toggle to false
+			}
+			break;
+		}
+
+		Debug.Log("session type changed to: " + mySessionType.ToString());
 	}
 
 	public void SetTrialRecallTypes(){

@@ -154,7 +154,7 @@ public class Experiment : MonoBehaviour {
 		instructionsController.SetInstructionsColorful(); //want to keep a dark screen before transitioning to the end!
 #if GERMAN
 		instructionsController.DisplayText("Endbildschirm wird geladen...");
-#elif
+#else
 		instructionsController.DisplayText("...loading end screen...");
 #endif
 		EndExperiment();

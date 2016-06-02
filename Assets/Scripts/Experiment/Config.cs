@@ -44,11 +44,10 @@ public class Config : MonoBehaviour {
 	public static bool isStoreCorrelatedDelivery = true;
 	
 	//a learning session, for the first session unless skipped
-	public static bool skipLearningSession = false;
 	public static int numLearningIterationsSession = 4;
 	
 	//learning phase, at the start of a session
-	public static bool doLearningPhase = false;
+	public static bool doLearningPhase = false; //for delivery day session.
 	public static int numLearningIterationsPhase = 1;
 	
 	public static bool doPresentationPhase = true;

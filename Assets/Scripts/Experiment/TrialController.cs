@@ -131,12 +131,12 @@ public class TrialController : MonoBehaviour {
 				yield return StartCoroutine(DoStorePresentationPhase());
 			}
 
-			if(Experiment.sessionID == 0 && !Config.skipLearningSession){ //if it's the first session, do several learning phases
+			if(ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession){
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
 				//LEARNING PHASES
 				yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
 			}
-			else if (Experiment.sessionID != 0 || Config.skipLearningSession){
+			else if(ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession){ //the only alternative currently.
 				//LEARNING PHASE
 				if(Config.doLearningPhase){
 					yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
