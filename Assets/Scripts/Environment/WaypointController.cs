@@ -173,6 +173,10 @@ public class WaypointController : MonoBehaviour {
 				}
 			}
 
+			if(smallestDistIndex > currNode.neighbors.Length || smallestDistIndex == -1){
+				Debug.Log("BAD INDEX: " + smallestDistIndex + " FOR: " + currNode.name);
+			}
+
 			currNode = currNode.neighbors[smallestDistIndex];
 		}
 

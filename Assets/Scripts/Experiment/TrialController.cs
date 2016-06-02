@@ -33,6 +33,7 @@ public class TrialController : MonoBehaviour {
 	public CanvasGroup InitialDeliveryInstructionGroup;
 	public Text InitialDeliveryInstructionText;
 	public Text DeliveryInstructionText;
+	public Text LearningSessionProgressText;
 
 	//audio
 	public AudioSource recallStartBeep;
@@ -236,6 +237,8 @@ public class TrialController : MonoBehaviour {
 
 		for (int currNumIterations = 0; currNumIterations < numIterations; currNumIterations++) {
 
+			LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
+
 			//TODO: refactor so that we dont change the static shouldUseWaypoints variable.
 			if(currNumIterations < Config.numLearningIterationsWaypoints){
 				Config.shouldUseWaypoints = true;
@@ -255,6 +258,8 @@ public class TrialController : MonoBehaviour {
 
 			yield return 0;
 		}
+
+		LearningSessionProgressText.text = " ";
 
 		//TODO: should really set this somewhere else...
 		Config.shouldUseWaypoints = Config.shouldUseDeliveryDayWaypoints;
