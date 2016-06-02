@@ -92,7 +92,9 @@ public class Config : MonoBehaviour {
 
 
 	public static bool shouldUseWaypoints = false;
-	public static float timeUntilWaypoints = 360.0f; //6 minutes
+	public static bool shouldUseDeliveryDayWaypoints = false;
+	public static int numLearningIterationsWaypoints = 2;
+	public static float timeUntilWaypoints = 0;//360.0f; //six minutes
 
 	//tilt variables
 	public static bool isAvatarTilting = true;

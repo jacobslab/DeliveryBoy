@@ -236,6 +236,15 @@ public class TrialController : MonoBehaviour {
 
 		for (int currNumIterations = 0; currNumIterations < numIterations; currNumIterations++) {
 
+			//TODO: refactor so that we dont change the static shouldUseWaypoints variable.
+			if(currNumIterations < Config.numLearningIterationsWaypoints){
+				Config.shouldUseWaypoints = true;
+			}
+			else{
+				Config.shouldUseWaypoints = false;
+			}
+
+			//log learning iteration
 			exp.eventLogger.LogLearningIteration (currNumIterations);
 
 			List<Store> storeLearningOrder = exp.storeController.GetLearningOrderStores();
@@ -246,6 +255,9 @@ public class TrialController : MonoBehaviour {
 
 			yield return 0;
 		}
+
+		//TODO: should really set this somewhere else...
+		Config.shouldUseWaypoints = Config.shouldUseDeliveryDayWaypoints;
 
 		exp.eventLogger.LogLearningPhaseStarted (false);
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, false);
