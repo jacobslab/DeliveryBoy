@@ -105,7 +105,7 @@ public class Experiment : MonoBehaviour {
 
 		string subjectDirectory = ExperimentSettings.defaultLoggingPath + ExperimentSettings.currentSubject.name + "/";
 		if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession) {
-			SessionDirectory = subjectDirectory + "session_learning_0" + "/";
+			SessionDirectory = subjectDirectory + "session_learning" + "/";
 		} else {
 			SessionDirectory = subjectDirectory + "session_0" + "/";
 		}
@@ -123,7 +123,8 @@ public class Experiment : MonoBehaviour {
 
 
 			if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession) {
-				SessionDirectory = subjectDirectory + "session_learning" + sessionIDString + "/";
+				SessionDirectory = subjectDirectory + "session_learning_duplicate/";
+				break;
 			} else {
 				SessionDirectory = subjectDirectory + "session" + sessionIDString + "/";
 			}
