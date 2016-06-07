@@ -127,18 +127,21 @@ public class TrialController : MonoBehaviour {
 			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
 			yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 
-			//STORE PRESENTATION PHASE
-			if(Config.doPresentationPhase){
-				yield return StartCoroutine(DoStorePresentationPhase());
+			bool isLearningSession = false;
+			if(ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession){
+				isLearningSession = true;
 			}
 
-			if(ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession){
+			if(isLearningSession){
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
-				//LEARNING PHASES
+				//LEARNING
 				yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
 			}
-			else if(ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession){ //the only alternative currently.
-				//LEARNING PHASE
+			else { //if not in the learning session! ==> in delivery session
+				//STORE PRESENTATION PHASE
+				yield return StartCoroutine(DoStorePresentationPhase());
+
+				//LEARNING
 				if(Config.doLearningPhase){
 					yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
 				}
@@ -237,7 +240,7 @@ public class TrialController : MonoBehaviour {
 
 		for (int currNumIterations = 0; currNumIterations < numIterations; currNumIterations++) {
 
-			LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
+			//LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
 
 			//TODO: refactor so that we dont change the static shouldUseWaypoints variable.
 			if(currNumIterations < Config.numLearningIterationsWaypoints){
