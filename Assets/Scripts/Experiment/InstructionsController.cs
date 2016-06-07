@@ -44,10 +44,11 @@ public class InstructionsController : MonoBehaviour {
 
 			"\n\nAfter this cued recall period, you'll have a chance for a short break, and then the next set of deliveries will start. ";
 
-	public static string initialInstructions2Learning = "\n\nBefore you start the full task, you'll have a chance to explore the town, to get your bearings." +
+	public static string initialInstructions2Learning = "\n\nBefore you start the full task, you'll have a chance to explore the town, to get your bearings. " +
 		"We will describe this practice period next." +
 			"\n\nPlease tell the investigator when you have finished reading these instructions.";
-	
+
+	public static string pressToContinueText = "\n\nPress (X) to continue.";
 
 	//LEARNING PHASE INSTRUCTIONS
 	public static string learningInstructions = "PRACTICE SESSION" +
@@ -59,7 +60,7 @@ public class InstructionsController : MonoBehaviour {
 		"\n\nDon't worry if it takes a little while to learn the city!" +
 		/*" Your bonus is not affected by how long the practice period takes." +*/
 		"\n\nFinding the correct stores will be difficult at first, but it will get easier when you become more familiar with the city." +
-		"\n\nPlease tell the investigator when you have finished reading.";
+			"\n\nPlease tell the investigator when you have finished reading.";
 
 
 	public static string finalItemRecallInstructions = "In this next period, please recall as many ITEMS as you can remember from the entire session, in any order. " +
@@ -79,22 +80,24 @@ public class InstructionsController : MonoBehaviour {
 		"solcher Lieferungen in der ganzen Stadt zu tätigen." +
 
 		"\n\nAm Ende der letzten Lieferung einer solchen Serie werden Sie anstelle eines Gegenstandes einen leeren Bildschirm mit einer Reihe von " +
-			"Sternchen (*******) sehen und einen Ton hören. Sobald der Ton abbricht und die weißen Sternchen (*******) rot werden, " +
-			"haben Sie" + Config.freeRecallTime + "Sekunden Zeit, so viele der gelieferten Gegenstände wie möglich laut aufzuzählen (die Reihenfolge ist dabei unwichtig." +
+		"Sternchen (*******) sehen und einen Ton hören. Sobald der Ton abbricht und die weißen Sternchen (*******) rot werden, " +
+		"haben Sie" + Config.freeRecallTime + "Sekunden Zeit, so viele der gelieferten Gegenstände wie möglich laut aufzuzählen (die Reihenfolge ist dabei unwichtig." +
 		
-			"\n\nDanach werden Sie entweder ein Gebäude sehen und nach dem Gegenstand gefragt, den Sie hierher geliefert haben oder einen Gegenstand" +
-			"sehen und nach dem Geschäft gefragt, an das Sie den Gegenstand geliefert haben." +
+		"\n\nDanach werden Sie entweder ein Gebäude sehen und nach dem Gegenstand gefragt, den Sie hierher geliefert haben oder einen Gegenstand" +
+		"sehen und nach dem Geschäft gefragt, an das Sie den Gegenstand geliefert haben." +
 
-	//TODO: TRANSLATE TO GERMAN
-		"You will have 6 seconds to recall the matching item or store." +
+			//" You will have 6 seconds to recall the matching item or store." +
+			" Sie haben 6 Sekunden zu erinnern, der Gegenstand oder das Geschäft." +
 
-		"Nach diesem Gedächtnis Test können Sie eine kurze Pause machen, bevor eine neue Runde von Lieferungen beginnt.";
+			" Nach diesem Gedächtnis Test können Sie eine kurze Pause machen, bevor eine neue Runde von Lieferungen beginnt.";
 	
 	public static string initialInstructions2Learning = "\n\nBevor das eigentliche Spiel beginnt, lassen wir Sie erstmal die Stadt " +
 		"erkunden, damit Sie sich orientieren können. Diese Übungsphase werden wir Ihnen als nächstes erklären." +
 		"\n\nBitte sagen Sie dem Versuchsleiter Bescheid, wenn sie diese Anleitung zu Ende gelesen haben.";
 	
-	
+	public static string pressToContinueText = "\n\nDrücken Sie (X) um fortzufahren.";
+
+
 	//LEARNING PHASE INSTRUCTIONS
 	public static string learningInstructions = "ÜBUNGSPHASE" +
 		"\n\nBevor Sie mit den Lieferungen beginnen, möchten wir Sie mit der Stadt vertraut machen. Wir werden Sie bitten, zu verschiedenen Geschäften " +
@@ -104,7 +107,7 @@ public class InstructionsController : MonoBehaviour {
 	
 		"\n\nMachen Sie sich keine Sorgen, wenn Sie etwas länger brauchen um sich mit der Stadt vertraut zu machen. " +
 		"\n\nZunächst wird es schwierig sein die richtigen Geschäfte zu finden, aber mit der Zeit sollten Sie ein gutes Gefühl für die Stadt bekommen." +
-		"\n\nBitte sagen Sie dem Versuchsleiter Bescheid, wenn Sie diese Anleitung zu Ende gelesen haben.";
+			"\n\nBitte sagen Sie dem Versuchsleiter Bescheid, wenn Sie diese Anleitung zu Ende gelesen haben.";
 	
 	//FINAL RECALL INSTRUCTIONS
 	public static string finalItemRecallInstructions = "In dem folgenden Gedächtnistest, zählen Sie bitte so viele von allen " +
@@ -144,20 +147,27 @@ public class InstructionsController : MonoBehaviour {
 	}
 
 	public IEnumerator PlayStartInstructions(){
-		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions1 + InstructionsController.initialInstructions2Learning, true, true, false, Config.minInitialInstructionsTime));
-		/*yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions2, true, true, false, Config.minInitialInstructionsTime));
-		if (Config.doLearningPhase) {
-			yield return StartCoroutine (ShowSingleInstruction (InstructionsController.initialInstructions3Learning, true, true, false, Config.minInitialInstructionsTime));
-		} */
+		string startInstruction = InstructionsController.initialInstructions1;
+
+		if (Config.doLearningPhase || ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession) {
+			startInstruction += InstructionsController.initialInstructions2Learning;
+		}
+
+		startInstruction += InstructionsController.pressToContinueText;
+			
+		yield return StartCoroutine (ShowSingleInstruction (startInstruction, true, true, false, Config.minInitialInstructionsTime));
+
 	}
 
-	public IEnumerator PlayRotationInstructions(){
-		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.rotationInstructions1, true, true, false, Config.minInitialInstructionsTime));;
+	public IEnumerator PlayPresentationInstructions(){
+		string rotInstructions = InstructionsController.rotationInstructions1 + InstructionsController.pressToContinueText;
+		
+		yield return StartCoroutine (ShowSingleInstruction (rotInstructions, true, true, false, Config.minInitialInstructionsTime));;
 	}
 
 	public IEnumerator PlayLearningInstructions(){
-		yield return StartCoroutine (ShowSingleInstruction (InstructionsController.learningInstructions, true, true, false, Config.minInitialInstructionsTime));
-		//yield return StartCoroutine (ShowSingleInstruction (InstructionsController.learningInstructions2, true, true, false, Config.minInitialInstructionsTime));
+		string learningInstructions = InstructionsController.learningInstructions + InstructionsController.pressToContinueText;
+		yield return StartCoroutine (ShowSingleInstruction (learningInstructions, true, true, false, Config.minInitialInstructionsTime));
 	}
 
 	public IEnumerator ShowSingleInstruction(string line, bool isDark, bool waitForButton, bool addRandomPostJitter, float minDisplayTimeSeconds){

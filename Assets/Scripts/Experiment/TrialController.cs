@@ -123,23 +123,32 @@ public class TrialController : MonoBehaviour {
 				ConnectionUI.alpha = 0.0f;
 			}
 
-			//show instructions for exploring, wait for the action button
-			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
-			yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 
 			bool isLearningSession = false;
 			if(ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession){
 				isLearningSession = true;
 			}
 
+
+			//show instructions for exploring, wait for the action button
+			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
+
+			//learning phase/session instructions
 			if(isLearningSession){
+				yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
+			}
+
+			if(isLearningSession){
+				//STORE PRESENTATION PHASE
+				if(Config.doPresentationPhase){
+					yield return StartCoroutine(DoStorePresentationPhase());
+				}
+
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
 				//LEARNING
 				yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
 			}
 			else { //if not in the learning session! ==> in delivery session
-				//STORE PRESENTATION PHASE
-				yield return StartCoroutine(DoStorePresentationPhase());
 
 				//LEARNING
 				if(Config.doLearningPhase){
@@ -277,7 +286,7 @@ public class TrialController : MonoBehaviour {
 
 		exp.eventLogger.LogPresentationPhase (true);
 
-		yield return StartCoroutine(exp.instructionsController.PlayRotationInstructions());
+		yield return StartCoroutine(exp.instructionsController.PlayPresentationInstructions());
 
 		presentationBackgroundCube.TurnVisible (true);
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 0.0f;
