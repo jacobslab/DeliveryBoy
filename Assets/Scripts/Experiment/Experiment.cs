@@ -97,7 +97,6 @@ public class Experiment : MonoBehaviour {
 		}
 
 		eventLogger = GetComponent<TrialLogTrack> ();
-
 	}
 	
 	//TODO: move to logger_threading perhaps? *shrug*

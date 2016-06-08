@@ -10,10 +10,16 @@ public class StoreController : MonoBehaviour {
 	public Store[] stores;
 	public List<AudioClip> allStoreAudioLeftToUse;
 
+
+	DBStorePoolWriter storePoolWriter;
+
 	// Use this for initialization
 	bool isFirstInit = true;
 	void Awake () {
 		stores = GetStores ();
+
+		storePoolWriter = new DBStorePoolWriter ();
+		storePoolWriter.WriteStores (stores);
 
 		InitAudio();
 
@@ -22,24 +28,22 @@ public class StoreController : MonoBehaviour {
 	public void InitAudio(){
 		if (!Config.isStoreCorrelatedDelivery || ExperimentSettings.isReplay) { //if it's replay, we draw from here to replay the audio
 
-			allStoreAudioLeftToUse = new List<AudioClip> ();
+			//GET ALL POSSIBLE AUDIO
+			allStoreAudioLeftToUse = GetAllStoreAudio();
 
-			for (int i = 0; i < stores.Length; i++) {
-
-				string folder = "StoreAudio/" + stores [i].name;
-
-				AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
-				for (int j = 0; j < storeAudioClips.Length; j++) {
-					allStoreAudioLeftToUse.Add (storeAudioClips [j]);
-				}
-
-			}
+			//RECORD DBPOOL
+			storePoolWriter.WriteItemPool(allStoreAudioLeftToUse);
+			
 		} 
 		else { // INDIVIDUAL STORE AUDIO
 			//init audio for each store
 			for(int i = 0; i < stores.Length; i++){
 				stores[i].InitAudio();
 			}
+
+			//BEFORE PARSING OUT USED AUDIO, RECORD DBPOOL.
+			storePoolWriter.WriteItemPool(stores);
+
 
 			if(isFirstInit){
 				if(Experiment.sessionID != 0){
@@ -53,6 +57,24 @@ public class StoreController : MonoBehaviour {
 		}
 
 		isFirstInit = false;
+	}
+
+	List<AudioClip> GetAllStoreAudio(){
+		List<AudioClip> allAudio = new List<AudioClip> ();
+
+		for (int i = 0; i < stores.Length; i++) {
+#if GERMAN
+			string folder = "StoreAudioGerman/" + stores [i].FullGermanName;
+#else
+			string folder = "StoreAudioEnglish/" + stores [i].name;
+#endif
+			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
+			for (int j = 0; j < storeAudioClips.Length; j++) {
+				allAudio.Add (storeAudioClips [j]);
+			}
+
+		}
+		return allAudio;
 	}
 
 	void ParseOutUsedItemAudio(){

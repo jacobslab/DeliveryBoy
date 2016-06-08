@@ -18,6 +18,10 @@ public class Config : MonoBehaviour {
 	public static bool isSystem2 = false;
 
 
+	//STORE AND WORD POOL FILE NAMES
+	public static string StoreFileName = "dbstores.txt";
+	public static string PoolFileName = "dbpool.txt";
+
 	//REPLAY
 	public static int replayPadding = 6;
 

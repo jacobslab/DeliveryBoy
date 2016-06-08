@@ -37,6 +37,10 @@ public class Store : MonoBehaviour {
 
 		ChangeToGerman();
 		#endif
+
+		if (myAudioPlayer == null) {
+			myAudioPlayer = GetComponent<AudioSource> ();
+		}
 	}
 
 	void ChangeToGerman(){
@@ -76,9 +80,6 @@ public class Store : MonoBehaviour {
 
 	//called in StoreController for each store, also called to refill audio
 	public void InitAudio(){
-		if (myAudioPlayer == null) {
-			myAudioPlayer = GetComponent<AudioSource> ();
-		}
 
 		if (Config.isStoreCorrelatedDelivery) {
 			audioLeftToUse = new List<AudioClip> ();
