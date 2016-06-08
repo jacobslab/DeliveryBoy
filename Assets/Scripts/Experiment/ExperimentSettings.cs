@@ -55,9 +55,9 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public SessionType mySessionType = SessionType.learningSession;
 
 	//NUM DELIV DAY TOGGLES
-	public static int numDelivDays = 6; //in main menu, it's 6 by default!
+	public static int numDelivDays = 4; //in main menu, it's 4 by default!
+	public Toggle fourDayToggle;
 	public Toggle sixDayToggle;
-	public Toggle eightDayToggle;
 	public Toggle oneDayToggle;
 
 
@@ -259,7 +259,15 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 				numDelivDays = num;
 				oneDayToggle.isOn = true;
 				sixDayToggle.isOn = false;
-				eightDayToggle.isOn = false;
+				fourDayToggle.isOn = false;
+			}
+			break;
+		case 4:
+			if(fourDayToggle.isOn){
+				numDelivDays = num;
+				oneDayToggle.isOn = false;
+				sixDayToggle.isOn = false;
+				fourDayToggle.isOn = true;
 			}
 			break;
 		case 6:
@@ -267,15 +275,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 				numDelivDays = num;
 				oneDayToggle.isOn = false;
 				sixDayToggle.isOn = true;
-				eightDayToggle.isOn = false;
-			}
-			break;
-		case 8:
-			if(eightDayToggle.isOn){
-				numDelivDays = num;
-				oneDayToggle.isOn = false;
-				sixDayToggle.isOn = false;
-				eightDayToggle.isOn = true;
+				fourDayToggle.isOn = false;
 			}
 			break;
 		}
