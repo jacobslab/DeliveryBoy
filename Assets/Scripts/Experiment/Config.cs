@@ -49,6 +49,7 @@ public class Config : MonoBehaviour {
 	//learning phase, at the start of a delivery session
 	public static bool doLearningPhase = false;
 	public static int numLearningIterationsPhase = 1;
+	public static int maxLearningTimeMinutes = 45;
 	
 	public static bool doPresentationPhase = true;
 	public static float storePresentationTime = 1.5f;
@@ -91,8 +92,6 @@ public class Config : MonoBehaviour {
 
 
 	public static bool shouldUseWaypoints = false;
-	public static bool shouldUseDeliveryDayWaypoints = false;
-	public static int numLearningIterationsWaypoints = 2;
 	public static float timeUntilWaypoints = 0;//360.0f; //six minutes
 
 	//tilt variables

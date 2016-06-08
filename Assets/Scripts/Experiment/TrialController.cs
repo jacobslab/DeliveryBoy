@@ -40,7 +40,7 @@ public class TrialController : MonoBehaviour {
 	public AudioSource recallEndBeep;
 
 	//delivery timer
-	public SimpleTimer deliveryTimer;
+	public SimpleTimer learningPhaseTimer;
 
 	//store presentation variables
 	public Transform storePresentationTransform;
@@ -244,37 +244,36 @@ public class TrialController : MonoBehaviour {
 		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
 #endif
 
-
+		learningPhaseTimer.StartTimer ();
+		bool isRunning = learningPhaseTimer.IsRunning;
 		exp.eventLogger.LogLearningPhaseStarted (true);
 
 		for (int currNumIterations = 0; currNumIterations < numIterations; currNumIterations++) {
 
-			//LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
+			//if we're under the max learning time, continue to the next round of buildings.
+			if (learningPhaseTimer.GetSecondsInt () < Config.maxLearningTimeMinutes*60){
 
-			//TODO: refactor so that we dont change the static shouldUseWaypoints variable.
-			if(currNumIterations < Config.numLearningIterationsWaypoints){
-				Config.shouldUseWaypoints = true;
+				//LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
+
+
+				//log learning iteration
+				exp.eventLogger.LogLearningIteration (currNumIterations);
+
+				List<Store> storeLearningOrder = exp.storeController.GetLearningOrderStores ();
+
+				for (int i = 0; i < storeLearningOrder.Count; i++) {
+					Debug.Log(learningPhaseTimer.GetSecondsInt());
+					yield return StartCoroutine (DoVisitStoreCommand (storeLearningOrder [i], true, -1));
+				}
+
+				yield return 0;
+
 			}
-			else{
-				Config.shouldUseWaypoints = false;
-			}
-
-			//log learning iteration
-			exp.eventLogger.LogLearningIteration (currNumIterations);
-
-			List<Store> storeLearningOrder = exp.storeController.GetLearningOrderStores();
-
-			for (int i = 0; i < storeLearningOrder.Count; i++) {
-				yield return StartCoroutine(DoVisitStoreCommand(storeLearningOrder[i], true, -1));
-			}
-
-			yield return 0;
 		}
 
-		LearningSessionProgressText.text = " ";
+		learningPhaseTimer.ResetTimer ();
 
-		//TODO: should really set this somewhere else...
-		Config.shouldUseWaypoints = Config.shouldUseDeliveryDayWaypoints;
+		LearningSessionProgressText.text = " ";
 
 		exp.eventLogger.LogLearningPhaseStarted (false);
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, false);
@@ -400,13 +399,9 @@ public class TrialController : MonoBehaviour {
 
 
 		for (int numDelivery = 0; numDelivery < deliveryStores.Count; numDelivery++) {
-			//start delivery timer
-			deliveryTimer.StartTimer();
+
 			//visit store
 			yield return StartCoroutine(DoVisitStoreCommand(deliveryStores[numDelivery], false, numDelivery));
-
-			//calculate score
-			//exp.scoreController.CalculateTimeBonus(deliveryTimer.GetSecondsInt());
 
 			//if not the last delivery, deliver an item.
 			if(numDelivery < deliveryStores.Count - 1){
@@ -422,8 +417,6 @@ public class TrialController : MonoBehaviour {
 				exp.player.controls.ShouldLockControls = false;
 
 			}
-			//reset timer
-			deliveryTimer.ResetTimer();
 		}
 
 		exp.eventLogger.LogDeliveryDay (deliveryDay, false);
