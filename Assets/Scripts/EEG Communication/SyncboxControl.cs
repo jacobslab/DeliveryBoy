@@ -179,6 +179,10 @@ public class SyncboxControl : MonoBehaviour {
 		}
 	}
 
+	void OnDestroy(){
+		UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
+	}
+
 	void OnApplicationQuit(){
 		UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
 	}
