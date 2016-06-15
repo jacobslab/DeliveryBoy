@@ -7,6 +7,17 @@ using System.Diagnostics;
 public class SyncboxControl : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
+#if GERMAN
+	[DllImport ("FreiburgSyncboxPlugin")]
+	private static extern IntPtr OpenUSB();
+	[DllImport ("FreiburgSyncboxPlugin")]
+	private static extern IntPtr CloseUSB();
+	[DllImport ("FreiburgSyncboxPlugin")]
+	private static extern IntPtr TurnLEDOn();
+	[DllImport ("FreiburgSyncboxPlugin")]
+	private static extern IntPtr TurnLEDOff();
+
+#else
 	[DllImport ("ASimplePlugin")]
 	private static extern IntPtr OpenUSB();
 	[DllImport ("ASimplePlugin")]
@@ -15,11 +26,12 @@ public class SyncboxControl : MonoBehaviour {
 	private static extern IntPtr TurnLEDOn();
 	[DllImport ("ASimplePlugin")]
 	private static extern IntPtr TurnLEDOff();
-	[DllImport ("ASimplePlugin")]
-	private static extern long SyncPulse();
-	[DllImport ("ASimplePlugin")]
-	private static extern IntPtr StimPulse(float durationSeconds, float freqHz, bool doRelay);
-	
+	//[DllImport ("ASimplePlugin")]
+	//private static extern long SyncPulse();
+	//[DllImport ("ASimplePlugin")]
+	//private static extern IntPtr StimPulse(float durationSeconds, float freqHz, bool doRelay);
+#endif
+
 	public bool ShouldSyncPulse = true;
 	public float PulseOnSeconds;
 	public float PulseOffSeconds;
@@ -79,7 +91,7 @@ public class SyncboxControl : MonoBehaviour {
 
 	float syncPulseDuration = 0.05f;
 	float syncPulseInterval = 1.0f;
-	IEnumerator RunSyncPulse(){
+/*	IEnumerator RunSyncPulse(){
 		Stopwatch executionStopwatch = new Stopwatch ();
 
 		while (ShouldSyncPulse) {
@@ -97,7 +109,7 @@ public class SyncboxControl : MonoBehaviour {
 			executionStopwatch.Stop();
 
 		}
-	}
+	}*/
 
 	IEnumerator RunSyncPulseManual(){
 		float jitterMin = 0.1f;
