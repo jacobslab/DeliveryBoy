@@ -131,8 +131,8 @@ public class Experiment : MonoBehaviour {
 		
 		Directory.CreateDirectory(SessionDirectory);
 		
-		subjectLog.fileName = SessionDirectory + ExperimentSettings.currentSubject.name + "Log" + ".txt";
-		eegLog.fileName = SessionDirectory + ExperimentSettings.currentSubject.name + "EEGLog" + ".txt";
+		subjectLog.fileName = SessionDirectory + "log" + ".txt";
+		eegLog.fileName = SessionDirectory + "eeglog" + ".txt";
 	}
 
 	// Use this for initialization
