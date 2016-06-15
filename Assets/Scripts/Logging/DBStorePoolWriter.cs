@@ -4,17 +4,27 @@ using System.Collections.Generic;
 using System.IO;
 
 public class DBStorePoolWriter {
-	
+
+	string FormatStringForWriting(string currString){
+		string formattedString = currString.ToLower ();
+		formattedString = formattedString.Replace (" ", "_");
+
+		return formattedString;
+	}
+
 	public void WriteStores(Store[] stores){
 		string path = GetPath (Config.StoreFileName);
 		StreamWriter sr = new StreamWriter (path);
 
 		for (int i = 0; i < stores.Length; i++) {
+
 #if GERMAN
-			sr.WriteLine(stores[i].FullGermanName);
+			string storeName = stores[i].FullGermanName;
 #else
-			sr.WriteLine(stores[i].GetDisplayName());
+			string storeName = stores[i].GetDisplayName();
 #endif
+			storeName = FormatStringForWriting(storeName);
+			sr.WriteLine(storeName);
 		}
 
 		sr.Flush ();
@@ -27,7 +37,9 @@ public class DBStorePoolWriter {
 
 		for (int i = 0; i < stores.Length; i++) {
 			for(int j = 0; j < stores[i].audioLeftToUse.Count; j++){
-				sr.WriteLine(stores[i].audioLeftToUse[j].name);
+				string itemName = stores[i].audioLeftToUse[j].name;
+				itemName = FormatStringForWriting(itemName);
+				sr.WriteLine(itemName);
 			}
 		}
 
@@ -40,7 +52,9 @@ public class DBStorePoolWriter {
 		StreamWriter sr = new StreamWriter (path);
 		
 		for (int i = 0; i < audioItemList.Count; i++) {
-			sr.WriteLine(audioItemList[i].name);
+			string itemName = audioItemList[i].name;
+			itemName = FormatStringForWriting(itemName);
+			sr.WriteLine(itemName);
 		}
 		
 		sr.Flush ();
