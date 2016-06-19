@@ -51,7 +51,7 @@ public class Config : MonoBehaviour {
 	public static int numLearningIterationsSession = 3;
 	
 	//learning phase, at the start of a delivery session
-	public static bool doLearningPhase = false;
+	public static bool doLearningPhase = true;
 	public static int numLearningIterationsPhase = 1;
 	public static int maxLearningTimeMinutes = 45;
 	
