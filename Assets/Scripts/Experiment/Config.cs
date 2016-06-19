@@ -70,7 +70,7 @@ public class Config : MonoBehaviour {
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
-	public static int freeRecallTime = 60;
+	public static int freeRecallTime = 90;
 	public static int cuedRecallTime = 6;
 	public static int finalFreeItemRecallTime = 300;
 	public static int finalStoreRecallTime = 90;
