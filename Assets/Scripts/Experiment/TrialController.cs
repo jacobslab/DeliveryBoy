@@ -516,9 +516,9 @@ public class TrialController : MonoBehaviour {
 				recallState = TCP_Config.DefineStates.RECALL_FREE_ITEM;
 				recallTime = Config.freeRecallTime;
 #if GERMAN
-			exp.recallInstructionsController.DisplayText ("BITTE ERINNERN SIE DER GELIEFERTEN GEGENSTÄNDE");
+			exp.recallInstructionsController.DisplayText ("BITTE ERINNERN SIE DER GEGENSTÄNDE AUS DIES STADT LIEFERUNG"); //TODO: GET BETTER TRANSLATION.
 #else
-				exp.recallInstructionsController.DisplayText ("PLEASE RECALL DELIVERED ITEMS NOW");
+			exp.recallInstructionsController.DisplayText ("PLEASE RECALL ITEMS FROM THIS DELIVERY DAY");
 #endif
 				break;
 			case Config.RecallType.CuedRecall:
