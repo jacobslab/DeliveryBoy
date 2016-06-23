@@ -250,8 +250,8 @@ public class TrialController : MonoBehaviour {
 
 		for (int currNumIterations = 0; currNumIterations < numIterations; currNumIterations++) {
 
-			//if we're under the max learning time (or we're in deliv. session), continue to the next round of buildings.
-			if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || learningPhaseTimer.GetSecondsInt () < Config.maxLearningTimeMinutes*60){
+			//if we're past the second phase and under the max learning time (or we're in deliv. session), continue to the next round of buildings.
+			if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations > 1 && learningPhaseTimer.GetSecondsInt () < Config.maxLearningTimeMinutes*60)){
 
 				//LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
 
