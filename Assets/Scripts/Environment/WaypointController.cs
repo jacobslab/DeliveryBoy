@@ -68,8 +68,45 @@ public class WaypointController : MonoBehaviour {
 		}
 	}
 
+	public Waypoint GetClosestWaypoint(Vector3 position){
+		Waypoint closestPoint = waypoints [0];
+		float minDistanceToStart = (position - closestPoint.transform.position).magnitude;
+
+		for (int i = 1; i < waypoints.Length; i++) { //already used the 0 index to initialize, so start at index 1
+			Waypoint currPoint = waypoints[i];
+			float startToCurrPointDist = (position - currPoint.transform.position).magnitude;
+			
+			//min distance check
+			if(startToCurrPointDist < minDistanceToStart){
+				closestPoint = currPoint;				//set new start point
+				minDistanceToStart = startToCurrPointDist;	//set new min distance
+			}
+		}
+
+		return closestPoint;
+	}
+
+	//can't just use end.dijkstra distance, because this could be an old path with recalculated distances.
+	//thus, must recalculate the path length for accurate path length.
+	public float GetPathLength(List<Waypoint> path){
+		float length = 0.0f;
+
+		if (path.Count > 0) {
+			Waypoint startWP = path [0];
+			Waypoint nextWP = path[0];
+			for (int i = 1; i < path.Count; i++) {
+				nextWP = path[i];
+				length += UsefulFunctions.GetDistance(startWP.transform.position, nextWP.transform.position);
+			}
+		}
+		return length;
+	}
+
+
 	//https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-	List<Waypoint> GetShortestWaypointPath(Vector3 startPosition, Vector3 endPosition){
+	public List<Waypoint> GetShortestWaypointPath(Vector3 startPosition, Vector3 endPosition){
+		//startPosition = new Vector3 (startPosition.x, 0.0f, startPosition.z);
+		//endPosition = new Vector3 (endPosition.x, 0.0f, endPosition.z);
 
 		List<Waypoint> waypointPath = new List<Waypoint> ();
 

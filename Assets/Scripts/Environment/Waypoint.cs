@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 public class Waypoint : MonoBehaviour {
 	public Waypoint[] neighbors;
+	public bool isIntersection = false;
 
 	VisibilityToggler[] waypointArrowVisuals;
 
