@@ -130,6 +130,10 @@ public class TrialController : MonoBehaviour {
 			}
 
 
+			//CREATE SESSION STARTED FILE!
+			exp.CreateSessionStartedFile();
+
+
 			//show instructions for exploring, wait for the action button
 			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
 

@@ -24,6 +24,7 @@ public class Experiment : MonoBehaviour {
 	public static int sessionID;
 
 	public string SessionDirectory;
+	public static string sessionStartedFileName = "sessionStarted.txt";
 
 	//event logger!
 	public TrialLogTrack eventLogger;
@@ -115,7 +116,7 @@ public class Experiment : MonoBehaviour {
 		if(!Directory.Exists(subjectDirectory)){
 			Directory.CreateDirectory(subjectDirectory);
 		}
-		while (Directory.Exists(SessionDirectory)) {
+		while (File.Exists(SessionDirectory + sessionStartedFileName)){
 			sessionID++;
 			
 			sessionIDString = "_" + sessionID.ToString();
@@ -134,6 +135,15 @@ public class Experiment : MonoBehaviour {
 		subjectLog.fileName = SessionDirectory + "log" + ".txt";
 		eegLog.fileName = SessionDirectory + "eeglog" + ".txt";
 	}
+
+
+	//In order to increment the session, this file must be present. Otherwise, the session has not actually started.
+	//This accounts for when we don't successfully connect to hardware -- wouldn't want new session folders.
+	//Gets created in TrialController after any hardware has connected.
+	public void CreateSessionStartedFile(){
+		StreamWriter newSR = new StreamWriter (SessionDirectory + sessionStartedFileName);
+	}
+
 
 	// Use this for initialization
 	void Start () {
