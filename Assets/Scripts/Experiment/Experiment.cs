@@ -132,6 +132,19 @@ public class Experiment : MonoBehaviour {
 		
 		Directory.CreateDirectory(SessionDirectory);
 		
+		
+		//delete old files.
+		if(Directory.Exists(SessionDirectory)){
+			DirectoryInfo info = new DirectoryInfo(SessionDirectory);
+			FileInfo[] fileInfo = info.GetFiles();
+			for(int i = 0; i < fileInfo.Length; i++){
+				File.Delete(fileInfo[i].ToString());
+			}
+		}
+		else{ //if directory didn't exist, make it!
+			Directory.CreateDirectory(SessionDirectory);
+		}
+		
 		subjectLog.fileName = SessionDirectory + "log" + ".txt";
 		eegLog.fileName = SessionDirectory + "eeglog" + ".txt";
 	}
