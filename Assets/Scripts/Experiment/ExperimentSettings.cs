@@ -34,13 +34,6 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 
 	public Transform RecallTypeInputParent;
 
-	//EEG, STIM/SYNC TOGGLES
-	//public static bool isSystem2 = false;
-	//public static bool isSyncbox = false;
-
-	//public Toggle system2Toggle;
-	//public Toggle syncboxToggle;
-
 
 	//SESSION TYPE TOGGLES
 	public Toggle learningSessToggle;
@@ -155,6 +148,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 
 	public Text ExpNameVersion;
 	public Text BuildType;
+	public Text IsGermanText;
 	void InitMainMenuLabels(){
 		if (Application.loadedLevel == 0) {
 			ExpNameVersion.text = Config.BuildVersion.ToString () + "/" + Config.VersionNumber;
@@ -165,6 +159,12 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			} else {
 				BuildType.text = "Demo";
 			}
+
+#if GERMAN
+			IsGermanText.enabled = true;
+#else
+			IsGermanText.enabled = false;
+#endif
 		}
 	}
 
