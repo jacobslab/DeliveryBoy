@@ -28,7 +28,7 @@ public class TrialController : MonoBehaviour {
 	//UI
 	public CanvasGroup PauseUI;
 	public CanvasGroup ConnectionUI;
-	public UIScreen DeliveryUI; 
+	public Text ConnectionText; //changed in TrialController from "connecting..." to "press start..." etc.
 	public CanvasGroup RecallUI;
 	public CanvasGroup InitialDeliveryInstructionGroup;
 	public Text InitialDeliveryInstructionText;
@@ -222,8 +222,13 @@ public class TrialController : MonoBehaviour {
 
 		ConnectionUI.alpha = 1.0f;
 		if(Config.isSystem2){
-			while(!TCPServer.Instance.isConnected || !TCPServer.Instance.canStartGame){
+			while(!TCPServer.Instance.isConnected){
 				Debug.Log("Waiting for system 2 connection...");
+				yield return 0;
+			}
+			ConnectionText.text = "Press START on host PC...";
+			while (!TCPServer.Instance.canStartGame) {
+				Debug.Log ("Waiting for system 2 start command...");
 				yield return 0;
 			}
 		}
