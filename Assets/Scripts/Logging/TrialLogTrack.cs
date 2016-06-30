@@ -10,6 +10,8 @@ public class TrialLogTrack : LogTrack {
 	void LateUpdate () {
 		//just log the environment info on the first frame
 		if (ExperimentSettings.isLogging && !firstLog) {
+			LogVersion();
+			LogLanguage ();
 			LogEnvironmentDimensions ();
 			firstLog = true;
 		}
@@ -20,6 +22,20 @@ public class TrialLogTrack : LogTrack {
 		if (ExperimentSettings.isLogging) {
 			LogTrial (trialNumber);
 		}
+	}
+
+	void LogVersion(){
+		Debug.Log ("LOGGED VERSION");
+		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Experiment Info" + separator + "VERSION" + separator + Config.BuildVersion.ToString() + separator + Config.VersionNumber);
+	}
+	
+	void LogLanguage(){
+		Debug.Log ("LOGGED LANGUAGE");
+#if GERMAN
+		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Experiment Info" + separator + "LANGUAGE" + separator + "GERMAN");
+#else
+		subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Experiment Info" + separator + "LANGUAGE" + separator + "ENGLISH");
+#endif
 	}
 
 	//LOGGED ON THE START OF THE TRIAL.
