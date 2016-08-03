@@ -316,7 +316,7 @@ public class TrialController : MonoBehaviour {
 			currStore.ResetStore();
 			//if(storeImage != null){
 			//	storeImage.GetComponent<VisibilityToggler>().TurnVisible(false);
-			//}
+		//	}
 
 			//jitter blank screen
 			yield return StartCoroutine(UsefulFunctions.WaitForJitter(Config.betweenStoreBlankScreenTimeMin, Config.betweenStoreBlankScreenTimeMax));
@@ -704,8 +704,12 @@ public class TrialController : MonoBehaviour {
 	}
 
 	GameObject TurnOnStoreImage(string storeName){
+		//Debug.Log ("turning on store image");
 		GameObject storeImage = exp.objectController.GetStoreImage(storeName);
+
 		if(storeImage != null){
+			//Debug.Log ("got store image");
+			storeImage.GetComponent<Image>().enabled=true;
 			storeImage.GetComponent<VisibilityToggler>().TurnVisible(true);
 		}
 
