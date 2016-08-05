@@ -31,11 +31,10 @@ public class Store : MonoBehaviour {
 		origRotation = transform.rotation;
 
 		#if GERMAN
-		shortGermanName = FullGermanName.Replace("das ", "");
-		shortGermanName = shortGermanName.Replace("den ", ""); //next use the short german name, or we'll end up with the full german name most likely...
-		shortGermanName = shortGermanName.Replace("die ", "");
 
-		ChangeToGerman();
+
+		//waiting for ConfigReader to tell us when we can
+		//ChangeToGerman();
 		#endif
 
 		if (myAudioPlayer == null) {
@@ -43,7 +42,11 @@ public class Store : MonoBehaviour {
 		}
 	}
 
-	void ChangeToGerman(){
+	public void ChangeToGerman(){
+		//Debug.Log ("changing to german for " + gameObject.name);
+		shortGermanName = FullGermanName.Replace("das ", "");
+		shortGermanName = shortGermanName.Replace("den ", ""); //next use the short german name, or we'll end up with the full german name most likely...
+		shortGermanName = shortGermanName.Replace("die ", "");
 		foreach (Transform sign in Signs){
 			TextMesh[] signTexts = sign.GetComponentsInChildren<TextMesh> ();
 			for( int i = 0 ; i < signTexts.Length; i++){
