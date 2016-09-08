@@ -147,6 +147,7 @@ public class InstructionsController : MonoBehaviour {
 	}
 
 	public IEnumerator PlayStartInstructions(){
+		Debug.Log ("start instructions");
 		string startInstruction = InstructionsController.initialInstructions1;
 
 		if (Config.doLearningPhase || ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession) {
@@ -160,12 +161,14 @@ public class InstructionsController : MonoBehaviour {
 	}
 
 	public IEnumerator PlayPresentationInstructions(){
+		Debug.Log ("presentation instructions");
 		string rotInstructions = InstructionsController.rotationInstructions1 + InstructionsController.pressToContinueText;
 		
 		yield return StartCoroutine (ShowSingleInstruction (rotInstructions, true, true, false, Config.minInitialInstructionsTime));;
 	}
 
 	public IEnumerator PlayLearningInstructions(){
+		Debug.Log ("learning instructions");
 		string learningInstructions = InstructionsController.learningInstructions + InstructionsController.pressToContinueText;
 		yield return StartCoroutine (ShowSingleInstruction (learningInstructions, true, true, false, Config.minInitialInstructionsTime));
 	}

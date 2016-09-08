@@ -22,6 +22,15 @@ public class Config : MonoBehaviour {
 	public static string StoreFileName = "dbstores.txt";
 	public static string PoolFileName = "dbpool.txt";
 
+
+	//INTRO
+	public static bool skipIntro=false;
+
+
+	//controller
+	public static KeyCode skipKey=KeyCode.C;
+	public static KeyCode exitKey = KeyCode.Escape;
+
 	//REPLAY
 	public static int replayPadding = 6;
 
@@ -113,6 +122,13 @@ public class Config : MonoBehaviour {
 
 	void Start(){
 
+	}
+
+	void Update()
+	{
+		if (Input.GetKeyDown (exitKey)) {
+			Application.Quit ();
+		}
 	}
 
 }

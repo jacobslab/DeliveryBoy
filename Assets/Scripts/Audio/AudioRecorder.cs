@@ -47,6 +47,7 @@ public class AudioRecorder : MonoBehaviour {
 	}
 
 	public static bool CheckForRecordingDevice(){
+		//Debug.Log ("number of mic devices is: " + Microphone.devices);
 		if (Microphone.devices.Length > 0) {
 			return true;
 		}

@@ -35,6 +35,10 @@ public class TrialController : MonoBehaviour {
 	public Text DeliveryInstructionText;
 	public Text LearningSessionProgressText;
 
+	//birdeyecam
+	public GameObject birdeyeCam;
+	public GameObject birdeyeCanvas;
+
 	//audio
 	public AudioSource recallStartBeep;
 	public AudioSource recallEndBeep;
@@ -54,6 +58,8 @@ public class TrialController : MonoBehaviour {
 	
 
 	void Start(){
+		birdeyeCam.SetActive (false);
+		birdeyeCanvas.SetActive (false);
 		presentationBackgroundCube.TurnVisible (false);
 		orderedStores = new List<Store>();
 		orderedItemsDelivered = new List<string>();
@@ -128,6 +134,8 @@ public class TrialController : MonoBehaviour {
 			if(ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.learningSession){
 				isLearningSession = true;
 			}
+			else
+				isLearningSession=false;
 
 
 			//CREATE SESSION STARTED FILE!
@@ -136,12 +144,17 @@ public class TrialController : MonoBehaviour {
 
 			//show instructions for exploring, wait for the action button
 			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
-
+			Debug.Log (ExperimentSettings.Instance.mySessionType);
+			if(ExperimentSettings.Instance.mySessionType != ExperimentSettings.SessionType.learningSession){
+				isLearningSession = false;
+			}
 			//learning phase/session instructions
 			if(isLearningSession){
 				yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 			}
-
+			if(ExperimentSettings.Instance.mySessionType != ExperimentSettings.SessionType.learningSession){
+				isLearningSession = false;
+			}
 			if(isLearningSession){
 				//STORE PRESENTATION PHASE
 				if(Config.doPresentationPhase){
@@ -164,12 +177,15 @@ public class TrialController : MonoBehaviour {
 				for(int i = 0; i < ExperimentSettings.numDelivDays; i++){
 					exp.player.controls.ShouldLockControls = true;
 
-
+					Debug.Log ("skip intro is: " + Config.skipIntro);
 	#if GERMAN
+					if(!Config.skipIntro)
 					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i+1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
 	#else
+					if(!Config.skipIntro)
 					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
 	#endif
+					yield return StartCoroutine(ShowBirdeyeCam());
 
 					exp.player.controls.ShouldLockControls = false;
 
@@ -288,6 +304,20 @@ public class TrialController : MonoBehaviour {
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, false);
 	}
 
+	IEnumerator ShowBirdeyeCam()
+	{
+		birdeyeCam.SetActive (true);
+		birdeyeCanvas.SetActive (true);
+#if GERMAN
+		birdeyeCanvas.transform.GetChild (0).gameObject.GetComponent<Text> ().text = "Drücken Sie (Y) um mit der ersten Lieferphase";
+#else
+		birdeyeCanvas.transform.GetChild (0).gameObject.GetComponent<Text> ().text = "Press (Y) to continue to Delivery Phase";
+#endif
+		yield return StartCoroutine (UsefulFunctions.WaitForSkipButton());
+		birdeyeCam.SetActive (false);
+		birdeyeCanvas.SetActive (false);
+		yield return null;
+	}
 	IEnumerator DoStorePresentationPhase(){
 		currentState = TrialState.presentationLearning;
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_PRESENTATION_PHASE, true);
@@ -295,7 +325,7 @@ public class TrialController : MonoBehaviour {
 		exp.eventLogger.LogPresentationPhase (true);
 
 		yield return StartCoroutine(exp.instructionsController.PlayPresentationInstructions());
-
+                                            
 		presentationBackgroundCube.TurnVisible (true);
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 0.0f;
 		//exp.instructionsController.SetInstructionsColorful ();

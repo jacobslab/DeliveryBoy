@@ -99,14 +99,37 @@ public class UsefulFunctions {
 		Experiment.Instance.trialController.GetComponent<TrialLogTrack>().LogWaitForJitterEnded(currentTime);
 	}
 
-	public static IEnumerator WaitForActionButton(){
+	public static IEnumerator WaitForSkipButton()
+	{
 		bool hasPressedButton = false;
-		while(Input.GetAxis("Action Button") != 0f){
+		while(Input.GetAxis("Skip Button") !=0f){
 			yield return 0;
 		}
 		while(!hasPressedButton){
-			if(Input.GetAxis("Action Button") == 1.0f){
+			if(Input.GetAxis("Skip Button") == 1.0f){
 				hasPressedButton = true;
+			}
+			yield return 0;
+		}
+
+	}
+
+	public static IEnumerator WaitForActionButton(){
+		bool hasPressedButton = false;
+		while(Input.GetAxis("Action Button") != 0f || Input.GetAxis("Skip Button") != 0f){
+			yield return 0;
+		}
+		while(!hasPressedButton){
+			if(Input.GetAxis("Action Button") == 1.0f|| Input.GetAxis("Skip Button") == 1.0f){
+				hasPressedButton = true;
+				if(Input.GetAxis("Skip Button") == 1.0f)
+				{
+					Config.skipIntro=true;
+					Debug.Log ("turning everything off");
+					Config.doLearningPhase=false;
+					Config.doPresentationPhase=false;
+					ExperimentSettings.Instance.mySessionType = ExperimentSettings.SessionType.deliverySession;
+				}
 			}
 			yield return 0;
 		}

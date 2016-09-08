@@ -29,7 +29,7 @@ public class ConfigReader : MonoBehaviour {
 			{
 				GetComponent<Store>().FullGermanName=actualNames[j];
 				GetComponent<Store>().ChangeToGerman();
-				//Debug.Log("OH JA! " + englishKeyNames[j]);
+				//Debug.Log(englishKeyNames[j]);
 			}
 		}
 		}
