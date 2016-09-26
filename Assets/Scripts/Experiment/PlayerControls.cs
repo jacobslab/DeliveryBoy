@@ -42,6 +42,11 @@ public class PlayerControls : MonoBehaviour{
 				SetTilt(0.0f, 1.0f);
 			}
 		}
+
+		if(Input.GetKeyDown (KeyCode.P))
+		   {
+			CommandExecution.ExecuteCommand();
+		}
 	}
 
 

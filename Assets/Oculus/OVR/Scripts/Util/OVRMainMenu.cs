@@ -424,9 +424,9 @@ public class OVRMainMenu : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.M))
 			OVRManager.display.mirrorMode = !OVRManager.display.mirrorMode;
 		
-		// Escape Application
-		if (Input.GetKeyDown(QuitKey))
-			Application.Quit();
+//		// Escape Application
+//		if (Input.GetKeyDown(QuitKey))
+//			Application.Quit();
 	}
 	
 	/// <summary>

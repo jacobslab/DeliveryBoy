@@ -6,6 +6,26 @@ using UnityEngine.UI;
 public class CommandExecution : MonoBehaviour {
     public Text trialText;
     private int testInt = 0;
+	
+	//SINGLETON
+	private static CommandExecution _instance;
+	
+	public static CommandExecution Instance{
+		get{
+			return _instance;
+		}
+	}
+	
+	void Awake(){
+		
+		if (_instance != null) {
+			UnityEngine.Debug.Log ("Instance already exists!");
+			Destroy (transform.gameObject);
+			return;
+		}
+		_instance = this;
+	}
+
 	// Use this for initialization
 	void Start () {
         trialText.text = testInt.ToString();
@@ -34,8 +54,16 @@ public class CommandExecution : MonoBehaviour {
 
     static void Command()
     {
-        var processInfo = new ProcessStartInfo("powershell.exe", @"notepad.exe");
+//#if (UNITY_STANDALONE || UNITY_EDITOR)
+//        var processInfo = new ProcessStartInfo("powershell.exe", @"notepad.exe");
+//`#elif (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX)
+	//	var processInfo = new ProcessStartInfo("/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal", @"shutdown -s now");
+//#endif
+		var processInfo = new ProcessStartInfo ("open","shutdown.app");
+		//processInfo.FileName = "/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal";
+		//processInfo.Arguments="-c \" " + "shutdown -s now" + " \"";
         processInfo.CreateNoWindow = false;
+		processInfo.RedirectStandardOutput = true;
         processInfo.UseShellExecute = false;
 
         var process = Process.Start(processInfo);
