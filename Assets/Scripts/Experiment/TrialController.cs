@@ -161,6 +161,7 @@ public class TrialController : MonoBehaviour {
 					yield return StartCoroutine(DoStorePresentationPhase());
 				}
 
+				yield return StartCoroutine(ShowBirdeyeCam());
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
 				//LEARNING
 				yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
