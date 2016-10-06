@@ -4,28 +4,98 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using iView;
-
 public class GazeFollower2D : MonoBehaviour {
 
-	public Canvas myCanvas;
-	Transform gazeFollower;
+    public Canvas myCanvas;
+    private Ray ray;
+    private RaycastHit hit;
+    Transform gazeFollower;
+    public LayerMask mask;
+    public EyetrackerLogTrack eyetrackerLogTrack;
+    private float timer = 0f;
+    private Vector2 screenGazePos;
+    private bool lowConfidence =false;
+    //EXPERIMENT IS A SINGLETON
+    private static GazeFollower2D _instance;
 
-	void Awake(){
-		gazeFollower = GetComponent<Transform> ();
-	}
+    public static GazeFollower2D Instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
 
-	// Use this for initialization
-	void Start () {
-	
-	}
+    void Awake()
+    {
+        if (_instance != null)
+        {
+            Debug.Log("Instance already exists!");
+            return;
+        }
+        _instance = this;
+        gazeFollower = GetComponent<Transform>();
+
+    }
+
+    // Use this for initialization
+    void Start() {
+
+        SMIGazeController.CalibrationBegan += CalibrationStarted;
+        SMIGazeController.CalibrationStopped += CalibrationEnded;
+    }
+
+    void CalibrationStarted()
+    {
+        eyetrackerLogTrack.LogCalibrationStarted(5);
+        Debug.Log("CALIBRATION HAS STARTED");
+    }
+
+    void CalibrationEnded()
+    {
+        eyetrackerLogTrack.LogCalibrationEnded(5);
+    }
 	
 	// Update is called once per frame
 	void Update () {
+       
 		if (gazeFollower != null) {
-			Vector2 screenGazePos = SMIGazeController.Instance.GetSample ().averagedEye.gazePosInUnityScreenCoords ();
-			Debug.Log("SCREEN POS: " + screenGazePos);
-			Vector3 worldGazePos = Camera.main.ScreenToWorldPoint(new Vector3 ( screenGazePos.x, screenGazePos.y, gazeFollower.position.z));
-			Debug.Log("WORLD POS: " + worldGazePos);
+
+            
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                GetComponent<Image>().enabled = !(GetComponent<Image>().enabled);
+            }
+            Vector2 temp= SMIGazeController.Instance.GetSample().averagedEye.gazePosInUnityScreenCoords();
+            if (temp.x == 0 || temp.y == 0)
+            {
+                lowConfidence = true;
+            }
+            else
+            {
+                lowConfidence = false;
+            }
+
+            screenGazePos = temp;
+            //Debug.Log("SCREEN POS: " + screenGazePos);
+            eyetrackerLogTrack.LogScreenGazePoint(screenGazePos, lowConfidence);
+            double leftPupilDiameter = SMIGazeController.Instance.GetSample().leftEye.pupilDiameter;
+            double rightPupilDiameter= SMIGazeController.Instance.GetSample().rightEye.pupilDiameter;
+            double averagedPupilDiameter = SMIGazeController.Instance.GetSample().averagedEye.pupilDiameter;
+            eyetrackerLogTrack.LogPupilDiameter(leftPupilDiameter,rightPupilDiameter,averagedPupilDiameter);
+            Vector3 worldGazePos = Camera.main.ScreenToWorldPoint(new Vector3 ( screenGazePos.x, screenGazePos.y, gazeFollower.position.z));
+            eyetrackerLogTrack.LogWorldGazePoint(worldGazePos, lowConfidence);
+			//Debug.Log("WORLD POS: " + worldGazePos);
+            ray = Camera.main.ScreenPointToRay(screenGazePos);
+            
+            Debug.DrawRay(new Vector3(screenGazePos.x, screenGazePos.y, 0f), worldGazePos, Color.red);
+            if(Physics.SphereCast(ray,0.8f,out hit,100f,mask.value))
+            {
+               // Debug.Log(hit.collider.gameObject.name);
+                eyetrackerLogTrack.LogGazeObject(hit.collider.gameObject);
+               // hit.collider.gameObject.GetComponent<Renderer>().material.color = Color.green;
+            }
 			//gazeFollower.position = new Vector3(screenGazePos.x, screenGazePos.y, gazeFollower.position.z);
 			//gazeFollower.position = worldGazePos;
 

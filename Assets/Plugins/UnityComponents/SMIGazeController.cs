@@ -36,14 +36,16 @@ using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using iView;
-
 namespace iView
 {
     public class SMIGazeController : MonoBehaviour
     {
         // enable the internal Gazefilter
+        public delegate void CalibrationEvent();
+        public static event CalibrationEvent CalibrationBegan;
+        public static event CalibrationEvent CalibrationStopped;
         public bool useGazeFilter = true;
-
+        public bool runningCalibration = false;
         // maximal Distance for the Rays to detect focused Objects
         public float maxDistanceForRaycasts = 100f;
 
@@ -202,6 +204,9 @@ namespace iView
         /// <param name="calibrationPoints"> Select the Calibration Method (e.g. 5 = Fivepoint Calibration)</param>
         public void StartCalibration(int calibrationPoints)
         {
+            Debug.Log("running CALIBRATION NOW");
+            CalibrationBegan();
+            //runningCalibration = true;
             if (!instance.enabled)
                 instance.enabled = true;
 
@@ -440,6 +445,9 @@ namespace iView
             yield return new WaitForFixedUpdate();
             ET_Device.StartCalibration();
             Screen.fullScreen = true;
+            // EyeTrackingController.Instance.
+            CalibrationStopped();
+            Debug.Log("end of calibration");
             yield return null;
         }
 
