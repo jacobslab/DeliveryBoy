@@ -56,6 +56,7 @@ namespace iView
 
         public KeyCode startValidation = KeyCode.Alpha3;
 
+        private bool firstTime = true;
 
         //Thread for the initialisation of the GazeController
         private static Thread eyeThread;
@@ -122,7 +123,11 @@ namespace iView
                 StartCalibrationRoutine(ET_Device.getAcessToGazeModel().calibrationMethod);
                 StartValidationRoutine();
                 ManagePlayerInput();
-
+                if (firstTime)
+                {
+                    StartCalibration(5);
+                    firstTime = false;
+                }
             }
 #else
             Debug.LogError("You need Windows as operating system.");
