@@ -29,8 +29,6 @@ public class WaypointController : MonoBehaviour {
 		if (areWaypointsEnabled) {
 			IlluminateShortestWaypointPath();
 		}
-        if (Input.GetKeyDown(KeyCode.N))
-            EnableWaypoints(exp.player.transform.position,exp.storeController.currentStoreList[exp.trialController.currentDeliveryInt].transform.position);
 	}
 
 	public void EnableWaypoints(Vector3 startPosition, Vector3 endPosition){

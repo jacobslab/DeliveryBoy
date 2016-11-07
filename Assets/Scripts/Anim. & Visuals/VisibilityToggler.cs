@@ -30,10 +30,7 @@ public class VisibilityToggler : MonoBehaviour {
 	public void TurnVisible(bool shouldBeVisible){ 
 
 		if (isImage) {
-			if(shouldBeVisible)
-				GetComponent<Image>().color=new Color(GetComponent<Image>().color.r,GetComponent<Image>().color.g,GetComponent<Image>().color.b,1f);
-			else
-				GetComponent<Image>().color=new Color(GetComponent<Image>().color.r,GetComponent<Image>().color.g,GetComponent<Image>().color.b,0f);
+			GetComponent<Image>().enabled = shouldBeVisible;
 		} 
 		else {
 			if (GetComponent<Renderer> () != null) {

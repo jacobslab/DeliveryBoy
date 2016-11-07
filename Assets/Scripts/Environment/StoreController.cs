@@ -9,7 +9,7 @@ public class StoreController : MonoBehaviour {
 
 	public Store[] stores;
 	public List<AudioClip> allStoreAudioLeftToUse;
-    public List<Store> currentStoreList;
+
 
 	DBStorePoolWriter storePoolWriter;
 
@@ -158,7 +158,7 @@ public class StoreController : MonoBehaviour {
 		for (int i = 0; i < Config.numDeliveryStores; i++) {
 			deliveryStores.Add(stores[randomIndices[i]]);
 		}
-        currentStoreList = deliveryStores;
+
 		return deliveryStores;
 	}
 

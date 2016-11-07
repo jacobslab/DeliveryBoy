@@ -10,8 +10,6 @@ public class TrialController : MonoBehaviour {
 	List<Store> orderedStores;
 	List<string> orderedItemsDelivered;
 
-    public int currentDeliveryInt = 0;
-
 	public enum TrialState{
 		presentationLearning,
 		navigationLearning,
@@ -53,8 +51,9 @@ public class TrialController : MonoBehaviour {
 
 
 	[HideInInspector] public GameObject currentDefaultObject; //current treasure chest we're looking for. assuming a one-by-one reveal.
-    
-    void Start(){
+	
+
+	void Start(){
 		presentationBackgroundCube.TurnVisible (false);
 		orderedStores = new List<Store>();
 		orderedItemsDelivered = new List<string>();
@@ -317,7 +316,7 @@ public class TrialController : MonoBehaviour {
 			currStore.ResetStore();
 			//if(storeImage != null){
 			//	storeImage.GetComponent<VisibilityToggler>().TurnVisible(false);
-		//	}
+			//}
 
 			//jitter blank screen
 			yield return StartCoroutine(UsefulFunctions.WaitForJitter(Config.betweenStoreBlankScreenTimeMin, Config.betweenStoreBlankScreenTimeMax));
@@ -409,7 +408,7 @@ public class TrialController : MonoBehaviour {
 
 
 		for (int numDelivery = 0; numDelivery < deliveryStores.Count; numDelivery++) {
-            currentDeliveryInt = numDelivery;
+
 			//visit store
 			yield return StartCoroutine(DoVisitStoreCommand(deliveryStores[numDelivery], false, numDelivery));
 
@@ -705,12 +704,8 @@ public class TrialController : MonoBehaviour {
 	}
 
 	GameObject TurnOnStoreImage(string storeName){
-		//Debug.Log ("turning on store image");
 		GameObject storeImage = exp.objectController.GetStoreImage(storeName);
-
 		if(storeImage != null){
-			//Debug.Log ("got store image");
-			storeImage.GetComponent<Image>().enabled=true;
 			storeImage.GetComponent<VisibilityToggler>().TurnVisible(true);
 		}
 
