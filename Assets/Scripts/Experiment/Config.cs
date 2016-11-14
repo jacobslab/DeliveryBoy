@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using iView;
 public class Config : MonoBehaviour {
 
 	public enum Version
@@ -16,6 +16,8 @@ public class Config : MonoBehaviour {
 	
 	public static bool isSyncbox = false;
 	public static bool isSystem2 = false;
+
+    public static bool isEyetracker = false;
 
 
 	//STORE AND WORD POOL FILE NAMES
@@ -76,6 +78,9 @@ public class Config : MonoBehaviour {
 	public static int finalStoreRecallTime = 90;
 	public static float cuedEndBeepTimeBeforeEnd = 0.5f; //if the recall time is 6s, end beep should play this much time before the end of 6s. ie; 6 - endBeepTime
 
+
+
+
 	public enum RecallType
 	{
 		FreeItemRecall,
@@ -108,11 +113,24 @@ public class Config : MonoBehaviour {
 	//object buffer variables
 
 	void Awake(){
-		DontDestroyOnLoad(transform.gameObject);
+
+        SMIGazeController.EyetrackerSetupFinished += EyetrackerUpdate;
+        SMIGazeController.EyetrackerSetupFailed += EyetrackerFailed;
+        DontDestroyOnLoad(transform.gameObject);
 	}
 
 	void Start(){
 
 	}
+    
+    void EyetrackerFailed()
+    {
+        isEyetracker = false;
+    }
+
+    void EyetrackerUpdate()
+    {
+        isEyetracker = true;
+    }
 
 }

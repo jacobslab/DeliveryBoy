@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SceneController : MonoBehaviour { //there can be a separate scene controller in each scene
 
-
+    public GameObject calibrationInstructionPanel;
 	//SINGLETON
 	private static SceneController _instance;
 	
@@ -51,7 +51,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 		}
 
 		if (ExperimentSettings.currentSubject != null) {
-			LoadExperimentLevel();
+            ShowCalibrationInstructions();
 		} 
 		else if (ExperimentSettings.isReplay) {
 			Debug.Log ("loading experiment!");
@@ -66,6 +66,19 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 			}
 		}
 	}
+
+
+    //calibration instruction related functions
+    public void ShowCalibrationInstructions()
+    {
+        calibrationInstructionPanel.SetActive(true);
+    }
+
+    void ProceedWithCalibration()
+    {
+        calibrationInstructionPanel.SetActive(false);
+        LoadExperimentLevel();
+    }
 
 	void LoadExperimentLevel(){
 		if (ExperimentSettings.currentSubject.trials < ExperimentSettings.numDelivDays) {

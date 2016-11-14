@@ -44,6 +44,9 @@ namespace iView
         public delegate void CalibrationEvent();
         public static event CalibrationEvent CalibrationBegan;
         public static event CalibrationEvent CalibrationStopped;
+
+        public static event CalibrationEvent EyetrackerSetupFinished;
+        public static event CalibrationEvent EyetrackerSetupFailed;
         public bool useGazeFilter = true;
         public bool runningCalibration = false;
         // maximal Distance for the Rays to detect focused Objects
@@ -187,6 +190,15 @@ namespace iView
             }
         }
 
+        public void EyetrackerSetupSuccess()
+        {
+            EyetrackerSetupFinished();
+        }
+
+        public void EyetrackerSetupFailure()
+        {
+            EyetrackerSetupFailed();
+        }
         /// <summary>
         /// Continue the EyeTracker
         /// </summary>

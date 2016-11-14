@@ -108,6 +108,8 @@ public class UpdateLoadingScreen : MonoBehaviour {
 
         if (errorID == 1)
         {
+
+            SMIGazeController.Instance.EyetrackerSetupSuccess();
             loadingScreenText.text = "Setup finished";
             loadingWheel.SetSucessIcon();
     
@@ -116,6 +118,7 @@ public class UpdateLoadingScreen : MonoBehaviour {
 
         else
         {
+            SMIGazeController.Instance.EyetrackerSetupFailure();
             loadingScreenText.text = "Setup failed";
             loadingWheel.SetFailedIcon();
 
