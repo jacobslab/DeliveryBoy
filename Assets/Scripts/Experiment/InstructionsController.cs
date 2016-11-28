@@ -24,10 +24,12 @@ public class InstructionsController : MonoBehaviour {
 	Color backgroundColorDefault;
 
 	public GameObject ScoreInstructions; //turn these on and off as necessary during the trial.......
-
+	public GameObject VideoInstructions;
+	public VideoPlayer videoPlayer;
 
 	//INITIAL INSTRUCTIONS
 #if (!GERMAN)
+	public static string videoInstruction=" Play Instruction Video? (Y/N)";
 	public static string initialInstructions1 = "INTRODUCTION" +
 		"\n\nIn this game you will play a delivery person in a small city. " +
 		"Your task is to drive through the city delivering packages to the correct stores, as quickly as possible. " +
@@ -145,6 +147,13 @@ public class InstructionsController : MonoBehaviour {
 		SetInstructionsTransparentOverlay();
 		SetInstructionsBlank();
 	}
+	public IEnumerator PlayVideoInstructions(){
+		VideoInstructions.GetComponent<CanvasGroup> ().alpha = 1f;
+		yield return StartCoroutine (videoPlayer.Play());
+
+		VideoInstructions.GetComponent<CanvasGroup> ().alpha = 0f;
+		yield return null;
+	}
 
 	public IEnumerator PlayStartInstructions(){
 		string startInstruction = InstructionsController.initialInstructions1;
@@ -158,6 +167,29 @@ public class InstructionsController : MonoBehaviour {
 		yield return StartCoroutine (ShowSingleInstruction (startInstruction, true, true, false, Config.minInitialInstructionsTime));
 
 	}
+
+	public IEnumerator AskIfShouldPlay(){
+		SetInstructionsColorful ();
+		SetText ("Play instruction video? (y/n)");
+		Debug.Log("show instructions");
+		bool isValidInput = false;
+		while (!isValidInput) {
+			if (Input.GetKeyUp (KeyCode.Y)) {
+				isValidInput = true;
+				videoPlayer.shouldPlay = true;
+
+			}
+			else if (Input.GetKeyUp (KeyCode.N)) {
+				isValidInput = true;
+				videoPlayer.shouldPlay = false;
+			}
+			yield return 0;
+		}
+
+		SetInstructionsBlank ();
+		SetInstructionsTransparentOverlay ();
+	}
+
 
 	public IEnumerator PlayPresentationInstructions(){
 		string rotInstructions = InstructionsController.rotationInstructions1 + InstructionsController.pressToContinueText;
@@ -222,6 +254,7 @@ public class InstructionsController : MonoBehaviour {
 	public void SetInstructionsBlank(){
 		SetText ("");
 	}
+
 
 	public void SetInstructionsColorful(){
 		//Debug.Log("set instructions dark");

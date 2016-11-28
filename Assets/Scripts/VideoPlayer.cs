@@ -10,7 +10,7 @@ public class VideoPlayer : MonoBehaviour {
 	AudioSource movieAudio;
 	
 	public CanvasGroup group;
-	
+	public bool shouldPlay = false;
 	void Awake(){
 		group.alpha = 0.0f;
 	}
@@ -23,6 +23,7 @@ public class VideoPlayer : MonoBehaviour {
 				movie = (MovieTexture)rim.mainTexture;
 			}
 		}
+	//	rim.color = new Color (0f, 0f, 0f, 0f);
 		movieAudio = GetComponent<AudioSource> ();
 	}
 	
@@ -47,28 +48,36 @@ public class VideoPlayer : MonoBehaviour {
 			//Debug.Log("No movie attached! Can't update.");
 		//}
 	}
-	
+
+
 	public IEnumerator Play(){
+		group.alpha = 0.0f;
 		if (movie != null) {
-			group.alpha = 1.0f;
-			
-			movie.Stop ();
-			movieAudio.Play ();
-			movie.Play ();
-			
-			while (movie.isPlaying || isMoviePaused) {
-				yield return 0;
+			Debug.Log("playing instruction video");
+			yield return StartCoroutine (exp.instructionsController.AskIfShouldPlay());
+
+			if (shouldPlay) {
+				group.alpha = 1.0f;
+
+				movie.Stop ();
+				movieAudio.Play ();
+				movie.Play ();
+
+				while (movie.isPlaying || isMoviePaused) {
+					yield return 0;
+				}
+
+				isMoviePaused = false;
+
+				group.alpha = 0.0f;
 			}
-			
-			isMoviePaused = false;
-			
-			group.alpha = 0.0f;
 			yield return 0;
 		} 
 		else {
 			Debug.Log("No movie attached! Can't play.");
 		}
 	}
+
 	
 	void Pause(){
 		if(movie != null){

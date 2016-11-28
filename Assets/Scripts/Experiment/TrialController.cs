@@ -134,8 +134,12 @@ public class TrialController : MonoBehaviour {
 			exp.CreateSessionStartedFile();
 
 
+			//show video instructions
+			Debug.Log("ABOUT TO SHOW VIDEO INSTRUCTIONS");
+			yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions());
+
 			//show instructions for exploring, wait for the action button
-			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
+			//yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
 
 			//learning phase/session instructions
 			if(isLearningSession){
@@ -170,7 +174,6 @@ public class TrialController : MonoBehaviour {
 	#else
 					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
 	#endif
-
 					exp.player.controls.ShouldLockControls = false;
 
 					//DELIVERY DAY

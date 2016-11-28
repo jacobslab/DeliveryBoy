@@ -14,7 +14,7 @@ public class Config : MonoBehaviour {
 	public static Version BuildVersion = Version.DBoy3_1;
 	public static string VersionNumber = "3.0";
 	
-	public static bool isSyncbox = false;
+	public static bool isSyncbox = true;
 	public static bool isSystem2 = false;
 
 
@@ -96,7 +96,7 @@ public class Config : MonoBehaviour {
 
 
 	public static bool shouldUseWaypoints = true;
-	public static int maxNumWrongTurns = 0;
+	public static int maxNumWrongTurns = 3;
 
 	//tilt variables
 	public static bool isAvatarTilting = true;
