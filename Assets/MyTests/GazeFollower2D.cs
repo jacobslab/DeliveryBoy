@@ -76,7 +76,7 @@ public class GazeFollower2D : MonoBehaviour
             }
             Vector2 temp = SMIGazeController.Instance.GetSample().averagedEye.gazePosInUnityScreenCoords();
 
-            if (temp.x <= widthLimit || temp.y <= heightLimit)
+            if (temp.x <= 10 || temp.y <= 6)
             {
                 lowConfidence = true;
                 Debug.Log("LOW CONFIDENCE ON THIS");
