@@ -17,6 +17,8 @@ public class GazeFollower2D : MonoBehaviour
     private Vector2 screenGazePos;
     private bool lowConfidence = false;
     public float factor = 3f;
+    int widthLimit = 10;
+    int heightLimit = 7;
     //EXPERIMENT IS A SINGLETON
     private static GazeFollower2D _instance;
 
@@ -46,6 +48,8 @@ public class GazeFollower2D : MonoBehaviour
 
         SMIGazeController.CalibrationBegan += CalibrationStarted;
         SMIGazeController.CalibrationStopped += CalibrationEnded;
+        widthLimit = Mathf.CeilToInt(Screen.width / 192);
+        heightLimit = Mathf.CeilToInt(Screen.height / 192);
     }
 
     void CalibrationStarted()
@@ -71,7 +75,8 @@ public class GazeFollower2D : MonoBehaviour
                 GetComponent<Image>().enabled = !(GetComponent<Image>().enabled);
             }
             Vector2 temp = SMIGazeController.Instance.GetSample().averagedEye.gazePosInUnityScreenCoords();
-            if (temp.x <= 10 || temp.y <= 5)
+
+            if (temp.x <= widthLimit || temp.y <= heightLimit)
             {
                 lowConfidence = true;
                 Debug.Log("LOW CONFIDENCE ON THIS");
@@ -102,9 +107,11 @@ public class GazeFollower2D : MonoBehaviour
                 if(GazeMove.Instance!=null)
                     GazeMove.Instance.MoveSphere(hit.point);
             }
+
+            //masks and looks only for buildings
             if (Physics.SphereCast(ray, 0.8f, out hit, 100f, mask.value))
             {
-                Debug.Log(hit.collider.transform.position);
+               // Debug.Log(hit.collider.transform.position);
                 if (GazeMove.Instance != null)
                     GazeMove.Instance.MoveSphere(hit.point);
                 // Debug.Log(hit.collider.gameObject.name);

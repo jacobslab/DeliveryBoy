@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class EyetrackerLogTrack : LogTrack
 {
 
+    Dictionary<string, float> buildingGazeTime = new Dictionary<string, float>();
+    
     //currently just logs one point at a time.
     public void LogScreenGazePoint(Vector2 position, bool lowConfidence)
     {
@@ -36,11 +38,24 @@ public class EyetrackerLogTrack : LogTrack
         }
     }
 
+    //looks only for designated buildings at the moment
     public void LogGazeObject(GameObject gazeObject)
     {
+        string objName = gazeObject.name;
+        float val = 0f;
+        if(!buildingGazeTime.ContainsKey(objName))
+        {
+            buildingGazeTime.Add(objName, 0f);
+        }
+        else
+        {
+            val=buildingGazeTime[objName];
+            val += Time.deltaTime;
+            buildingGazeTime[objName] = val;
+        }
         if (ExperimentSettings.isLogging)
         {
-            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "GAZE_OBJECT" + separator + gazeObject.name);
+            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "GAZE_OBJECT" + separator + gazeObject.name + separator+  "TOTAL_GAZE_TIME" + separator + val.ToString("F2"));
         }
     }
     public void LogPupilDiameter(double leftPupilDiameter, double rightPupilDiameter, double averagedPupilDiameter)

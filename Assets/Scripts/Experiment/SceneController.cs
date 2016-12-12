@@ -22,6 +22,10 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 		_instance = this;
 	}
 
+    void OnEnable()
+    {
+        calibrationInstructionPanel.SetActive(false);
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -51,7 +55,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 		}
 
 		if (ExperimentSettings.currentSubject != null) {
-            ShowCalibrationInstructions();
+            
 		} 
 		else if (ExperimentSettings.isReplay) {
 			Debug.Log ("loading experiment!");
@@ -61,29 +65,33 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 			if(ExperimentSettings.currentSubject == null){
 				ExperimentSettings.Instance.subjectSelectionController.SendMessage("AddNewSubject");
 				if(ExperimentSettings.currentSubject != null){
-					LoadExperimentLevel();
-				}
+                    //DON'T forget to check whether eyetracker is connected to the computer or not
+                    Debug.Log("should be showing calibration instructions");
+                    StartCoroutine("ShowCalibrationInstructions");
+                }
 			}
 		}
 	}
 
 
     //calibration instruction related functions
-    public void ShowCalibrationInstructions()
+     IEnumerator ShowCalibrationInstructions()
     {
         calibrationInstructionPanel.SetActive(true);
+        yield return StartCoroutine(UsefulFunctions.WaitForActionButton());
+        ProceedWithCalibration();
+        yield return null;
     }
 
     void ProceedWithCalibration()
     {
-        calibrationInstructionPanel.SetActive(false);
         LoadExperimentLevel();
     }
 
 	void LoadExperimentLevel(){
 		if (ExperimentSettings.currentSubject.trials < ExperimentSettings.numDelivDays) {
 			Debug.Log ("loading experiment!");
-			Application.LoadLevel (1);
+            Application.LoadLevel (1);
 		} else {
 			Debug.Log ("Subject has already finished all blocks! Loading end menu.");
 			Application.LoadLevel (2);
