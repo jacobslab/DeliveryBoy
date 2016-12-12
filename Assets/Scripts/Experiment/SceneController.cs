@@ -24,6 +24,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 
     void OnEnable()
     {
+        Cursor.visible = false;
         calibrationInstructionPanel.SetActive(false);
     }
 
@@ -67,7 +68,9 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 				if(ExperimentSettings.currentSubject != null){
                     //DON'T forget to check whether eyetracker is connected to the computer or not
                     Debug.Log("should be showing calibration instructions");
-                    StartCoroutine("ShowCalibrationInstructions");
+                    LoadExperimentLevel();
+                    //temporarily disabling the calibration instructions screen
+                    //StartCoroutine("ShowCalibrationInstructions");
                 }
 			}
 		}

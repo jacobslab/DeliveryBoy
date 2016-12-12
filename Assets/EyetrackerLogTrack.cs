@@ -39,13 +39,14 @@ public class EyetrackerLogTrack : LogTrack
     }
 
     //looks only for designated buildings at the moment
-    public void LogGazeObject(GameObject gazeObject)
+    //logs object name, total gaze time and distance from current point
+    public void LogGazeObject(GameObject gazeObject, float distance)
     {
         string objName = gazeObject.name;
         float val = 0f;
         if(!buildingGazeTime.ContainsKey(objName))
         {
-            buildingGazeTime.Add(objName, 0f);
+            buildingGazeTime.Add(objName, 0f); 
         }
         else
         {
@@ -55,7 +56,7 @@ public class EyetrackerLogTrack : LogTrack
         }
         if (ExperimentSettings.isLogging)
         {
-            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "GAZE_OBJECT" + separator + gazeObject.name + separator+  "TOTAL_GAZE_TIME" + separator + val.ToString("F2"));
+            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "GAZE_OBJECT" + separator + gazeObject.name + separator+  "TOTAL_GAZE_TIME" + separator + val.ToString("F2") + separator + "GAZE_DISTANCE" + separator + distance.ToString("F2"));
         }
     }
     public void LogPupilDiameter(double leftPupilDiameter, double rightPupilDiameter, double averagedPupilDiameter)

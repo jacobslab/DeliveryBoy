@@ -115,7 +115,7 @@ public class GazeFollower2D : MonoBehaviour
                 if (GazeMove.Instance != null)
                     GazeMove.Instance.MoveSphere(hit.point);
                 // Debug.Log(hit.collider.gameObject.name);
-                eyetrackerLogTrack.LogGazeObject(hit.collider.gameObject);
+                eyetrackerLogTrack.LogGazeObject(hit.collider.gameObject, hit.distance);
                 // hit.collider.gameObject.GetComponent<Renderer>().material.color = Color.green;
             }
             //gazeFollower.position = new Vector3(screenGazePos.x, screenGazePos.y, gazeFollower.position.z);
