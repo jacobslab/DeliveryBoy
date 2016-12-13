@@ -24,8 +24,8 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 
     void OnEnable()
     {
-        Cursor.visible = false;
-        calibrationInstructionPanel.SetActive(false);
+       // Cursor.visible = false;
+        //calibrationInstructionPanel.SetActive(false);
     }
 
 	// Use this for initialization
