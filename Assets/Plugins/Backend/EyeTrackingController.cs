@@ -57,34 +57,10 @@ namespace iView
 
         //Instance of the GazeModel
         private GazeModel gazeModel;
-
-
-        //EXPERIMENT IS A SINGLETON
-        private static EyeTrackingController _instance;
-
-        public static EyeTrackingController Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
-
-        void Awake()
-        {
-            if (_instance != null)
-            {
-                Debug.Log("Instance already exists!");
-                return;
-            }
-            _instance = this;
-
-
-
-        }
+        
         /// <summary>
-         /// Init the Controller
-         /// </summary>
+        /// Init the Controller
+        /// </summary>
         public EyeTrackingController()
         {
             m_samplecallBack = GetSampleCallbackFunction;
@@ -229,7 +205,7 @@ namespace iView
 
             //Start the calibration
             resultID = iV_Calibrate();
-            
+
             //ErrorMessage
             GetLogData(resultID, IDContainerIviewNG.STATE_CALIBRATE);
         }
