@@ -153,11 +153,11 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		if (Application.loadedLevel == 0) {
 			ExpNameVersion.text = Config.BuildVersion.ToString () + "/" + Config.VersionNumber;
 			if (Config.isSyncbox) {
-				BuildType.text = "Sync Box";
+				BuildType.text = "Eyetracker Sync Box";
 			} else if (Config.isSystem2) {
-				BuildType.text = "System 2";
+				BuildType.text = "Eyetracker System 2";
 			} else {
-				BuildType.text = "Demo";
+				BuildType.text = "Eyetracker Demo";
 			}
 
 #if GERMAN
