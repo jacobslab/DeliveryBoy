@@ -68,9 +68,9 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 				if(ExperimentSettings.currentSubject != null){
                     //DON'T forget to check whether eyetracker is connected to the computer or not
                     Debug.Log("should be showing calibration instructions");
-                    LoadExperimentLevel();
+                   // LoadExperimentLevel();
                     //temporarily disabling the calibration instructions screen
-                    //StartCoroutine("ShowCalibrationInstructions");
+                    StartCoroutine("ShowCalibrationInstructions");
                 }
 			}
 		}

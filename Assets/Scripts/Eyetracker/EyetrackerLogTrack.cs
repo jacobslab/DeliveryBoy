@@ -7,11 +7,11 @@ public class EyetrackerLogTrack : LogTrack
     Dictionary<string, float> buildingGazeTime = new Dictionary<string, float>();
     
     //currently just logs one point at a time.
-    public void LogScreenGazePoint(Vector2 position, bool lowConfidence)
+    public void LogScreenGazePoint(Vector2 position, bool edgeConfidence, bool blinkConfidence)
     {
         if (ExperimentSettings.isLogging)
         {
-            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "SCREEN_GAZE_POSITION" + separator + position.x + separator + position.y + separator + "LOW_CONFIDENCE" + separator + lowConfidence.ToString());
+            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "SCREEN_GAZE_POSITION" + separator + position.x + separator + position.y + separator + "LOW_CONFIDENCE" + separator + edgeConfidence.ToString() + separator + "BLINK_UNCERTAINTY" + separator + blinkConfidence.ToString());
         }
     }
 
@@ -30,11 +30,11 @@ public class EyetrackerLogTrack : LogTrack
             subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "EYETRACKER_CALIBRATION_EVENT" + separator + calibrationPoints.ToString() + separator + "ENDED");
         }
     }
-    public void LogWorldGazePoint(Vector3 position, bool lowConfidence)
+    public void LogWorldGazePoint(Vector3 position, bool edgeConfidence, bool blinkConfidence)
     {
         if (ExperimentSettings.isLogging)
         {
-            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "WORLD_GAZE_POSITION" + separator + position.x + separator + position.y + separator + position.z + separator + "LOW_CONFIDENCE" + separator + lowConfidence.ToString());
+            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "WORLD_GAZE_POSITION" + separator + position.x + separator + position.y + separator + position.z + separator + "EDGE_UNCERTAINTY" + separator + edgeConfidence.ToString() + separator + "BLINK_UNCERTAINTY" + separator + blinkConfidence.ToString());
         }
     }
 

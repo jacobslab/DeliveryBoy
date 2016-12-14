@@ -15,7 +15,8 @@ public class GazeFollower2D : MonoBehaviour
     public EyetrackerLogTrack eyetrackerLogTrack;
     private float timer = 0f;
     private Vector2 screenGazePos;
-    private bool lowConfidence = false;
+    private bool edgeConfidence = false;
+    private bool blinkConfidence = false;
     public float factor = 3f;
     int widthLimit = 10;
     int heightLimit = 7;
@@ -78,23 +79,32 @@ public class GazeFollower2D : MonoBehaviour
 
             if (temp.x <= 10 || temp.y <= 6)
             {
-                lowConfidence = true;
-                Debug.Log("LOW CONFIDENCE ON THIS");
+                edgeConfidence = true;
+                Debug.Log("EDGE CONFIDENCE ON THIS");
             }
             else
             {
-                lowConfidence = false;
+                edgeConfidence = false;
             }
 
             screenGazePos = temp;
             //Debug.Log("SCREEN POS: " + screenGazePos);
-            eyetrackerLogTrack.LogScreenGazePoint(screenGazePos, lowConfidence);
+            eyetrackerLogTrack.LogScreenGazePoint(screenGazePos, edgeConfidence,blinkConfidence);
             double leftPupilDiameter = SMIGazeController.Instance.GetSample().leftEye.pupilDiameter;
             double rightPupilDiameter = SMIGazeController.Instance.GetSample().rightEye.pupilDiameter;
             double averagedPupilDiameter = SMIGazeController.Instance.GetSample().averagedEye.pupilDiameter;
+
+            if(leftPupilDiameter==0f || rightPupilDiameter==0f)
+            {
+                blinkConfidence = true;
+            }
+            else
+            {
+                blinkConfidence = false;
+            }
             eyetrackerLogTrack.LogPupilDiameter(leftPupilDiameter, rightPupilDiameter, averagedPupilDiameter);
             Vector3 worldGazePos = Camera.main.ScreenToWorldPoint(new Vector3(screenGazePos.x, screenGazePos.y, gazeFollower.z));
-            eyetrackerLogTrack.LogWorldGazePoint(worldGazePos, lowConfidence);
+            eyetrackerLogTrack.LogWorldGazePoint(worldGazePos, edgeConfidence,blinkConfidence);
 
             //Debug.Log("WORLD POS: " + worldGazePos);
             ray = Camera.main.ScreenPointToRay(screenGazePos);

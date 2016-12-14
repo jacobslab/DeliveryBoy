@@ -109,6 +109,7 @@ namespace iView
             int resultID = iV_ConnectLocal();
             iV_SetSampleCallback(m_samplecallBack);
             GetLogData(resultID, IDContainerIviewNG.STATE_CONNECT);
+            UnityEngine.Debug.Log("resultID" + resultID.ToString());
             gazeModel.isStartingProcessOver = true;
         }
 
