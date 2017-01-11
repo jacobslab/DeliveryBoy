@@ -97,6 +97,7 @@ public class InstructionsController : MonoBehaviour {
 	
 	public static string pressToContinueText = "\n\nDrücken Sie (X) um fortzufahren.";
 
+	public static string pressToSkipText="\nDrücken Sie (Y) um zu überspringen.";
 
 	//LEARNING PHASE INSTRUCTIONS
 	public static string learningInstructions = "ÜBUNGSPHASE" +
@@ -155,7 +156,7 @@ public class InstructionsController : MonoBehaviour {
 		}
 
 		startInstruction += InstructionsController.pressToContinueText;
-			
+		startInstruction += InstructionsController.pressToSkipText;
 		yield return StartCoroutine (ShowSingleInstruction (startInstruction, true, true, false, Config.minInitialInstructionsTime));
 
 	}

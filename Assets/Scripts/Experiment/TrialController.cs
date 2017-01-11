@@ -180,13 +180,15 @@ public class TrialController : MonoBehaviour {
 
 					Debug.Log ("skip intro is: " + Config.skipIntro);
 	#if GERMAN
+					yield return StartCoroutine(ShowBirdeyeCam());
+
 					if(!Config.skipIntro)
 					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i+1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
 	#else
 					if(!Config.skipIntro)
 					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
 	#endif
-					yield return StartCoroutine(ShowBirdeyeCam());
+
 
 					exp.player.controls.ShouldLockControls = false;
 
@@ -310,7 +312,7 @@ public class TrialController : MonoBehaviour {
 		birdeyeCam.SetActive (true);
 		birdeyeCanvas.SetActive (true);
 #if GERMAN
-		birdeyeCanvas.transform.GetChild (0).gameObject.GetComponent<Text> ().text = "Drücken Sie (Y) um mit der ersten Lieferphase";
+		birdeyeCanvas.transform.GetChild (0).GetChild(0).gameObject.GetComponent<Text> ().text = "Drücken Sie (Y) um mit der ersten Lieferphase";
 #else
 		birdeyeCanvas.transform.GetChild (0).gameObject.GetComponent<Text> ().text = "Press (Y) to continue to Delivery Phase";
 #endif

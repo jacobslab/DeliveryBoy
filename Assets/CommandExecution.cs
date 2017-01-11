@@ -4,7 +4,7 @@ using System.Threading;
 using System.Diagnostics;
 using UnityEngine.UI;
 public class CommandExecution : MonoBehaviour {
-    public Text trialText;
+  //  public Text trialText;
     private int testInt = 0;
 	
 	//SINGLETON
@@ -28,21 +28,20 @@ public class CommandExecution : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        trialText.text = testInt.ToString();
+      //  trialText.text = testInt.ToString();
     }
 	
 	// Update is called once per frame
 	void Update () {
-
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            ExecuteCommand();
-        }
-        if(Input.GetKeyDown(KeyCode.D))
-        {
-            testInt++;
-            trialText.text = testInt.ToString();
-        }
+//        if(Input.GetKeyDown(KeyCode.A))
+//        {
+//            ExecuteCommand();
+//        }
+//        if(Input.GetKeyDown(KeyCode.D))
+//        {
+//            testInt++;
+//            trialText.text = testInt.ToString();
+//        }
 	
 	}
     public static void ExecuteCommand()
