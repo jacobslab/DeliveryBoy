@@ -20,6 +20,7 @@ public class GazeFollower2D : MonoBehaviour
     public float factor = 3f;
     int widthLimit = 10;
     int heightLimit = 7;
+    bool allowOnce = true;
     //EXPERIMENT IS A SINGLETON
     private static GazeFollower2D _instance;
 
@@ -64,6 +65,27 @@ public class GazeFollower2D : MonoBehaviour
         eyetrackerLogTrack.LogCalibrationEnded(5);
     }
 
+
+    IEnumerator ShowEyeReconnectionScreen()
+    {
+        
+        yield return null;
+    }
+
+    IEnumerator CheckEyeDetection()
+    {
+        float timer = 0f;
+        while (edgeConfidence)
+        {
+            timer += Time.deltaTime;
+            if(timer>10f)
+            {
+                StartCoroutine("ShowEyeReconnectionScreen");
+            }
+            yield return 0;
+        }
+        yield return null;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -87,14 +109,22 @@ public class GazeFollower2D : MonoBehaviour
                 edgeConfidence = false;
             }
 
+            while(edgeConfidence)
+            {
+                if(allowOnce)
+                {
+                    StartCoroutine("CheckEyeDetection");
+                }
+                
+            }
+
             screenGazePos = temp;
             //Debug.Log("SCREEN POS: " + screenGazePos);
             eyetrackerLogTrack.LogScreenGazePoint(screenGazePos, edgeConfidence,blinkConfidence);
             double leftPupilDiameter = SMIGazeController.Instance.GetSample().leftEye.pupilDiameter;
             double rightPupilDiameter = SMIGazeController.Instance.GetSample().rightEye.pupilDiameter;
             double averagedPupilDiameter = SMIGazeController.Instance.GetSample().averagedEye.pupilDiameter;
-
-            if(leftPupilDiameter==0f || rightPupilDiameter==0f)
+            if (leftPupilDiameter==0f || rightPupilDiameter==0f)
             {
                 blinkConfidence = true;
             }
