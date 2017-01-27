@@ -139,7 +139,7 @@ public class TrialController : MonoBehaviour {
 			yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions());
 
 			//show instructions for exploring, wait for the action button
-			//yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
+			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
 
 			//learning phase/session instructions
 			if(isLearningSession){

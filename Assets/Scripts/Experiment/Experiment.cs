@@ -44,6 +44,8 @@ public class Experiment : MonoBehaviour {
 	//environment controller
 	public EnvironmentController environmentController;
 
+	public GameObject eyetrackingComponents;
+
 	//avatar
 	public Player player;
 
@@ -92,6 +94,7 @@ public class Experiment : MonoBehaviour {
 
 		if (ExperimentSettings.isLogging) {
 			InitLogging();
+			EnableEyetrackerComponents (false);
 		}
 		else if(ExperimentSettings.isReplay) {
 			instructionsController.TurnOffInstructions();
@@ -161,6 +164,11 @@ public class Experiment : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+	}
+
+	public void EnableEyetrackerComponents(bool shouldEnable)
+	{
+		eyetrackingComponents.SetActive(shouldEnable);
 	}
 
 	// Update is called once per frame
