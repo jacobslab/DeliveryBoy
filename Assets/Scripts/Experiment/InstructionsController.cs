@@ -14,6 +14,12 @@ public class InstructionsController : MonoBehaviour {
 
 	public bool isFinished = false;
 
+	//instruction screen images
+	public Image presentationInstructions;
+	public Image practiceInstructions;
+	public Image recapDeliveryInstructions;
+	public Image finishedDeliveryInstructions;
+
 	//TextMesh _textMesh;
 	public Text text; //TODO: rename this!!!
 	public Text oculusText;
@@ -33,16 +39,16 @@ public class InstructionsController : MonoBehaviour {
 	public static string initialInstructions1 = "INTRODUCTION" +
 		"\n\nIn this game you will play a delivery person in a small city. " +
 		"Your task is to drive through the city delivering packages to the correct stores, as quickly as possible. " +
-		"\n\nYour current delivery goal will be shown in the top left of the screen.  Simply drive right up to the store, and the item you delivered will spoken out loud. " +
+		"\n\nYour current delivery goal will be shown in the top left of the screen.  Simply drive right up to the store, and the object you delivered will spoken out loud. " +
 		"On each trial you will make a series of deliveries to stores all over the town. " +
 
-		"\n\nOn the final delivery of a given trial, no item will be said. " +
+		"\n\nOn the final delivery of a given trial, no object will be said. " +
 		"Rather, the screen will go blank, and you'll see a row of asterisks (*******), and hear a tone. " +
-		"When the tone has finished and the asterisks turn red, your job is to verbally recall all of the delivered items that you can remember, in any order. " +
+		"When the tone has finished and the asterisks turn red, your job is to verbally recall all of the delivered objects that you can remember, in any order. " +
 		"This free recall period will last for " + Config.freeRecallTime + " seconds. " +
-		"Once this free recall period has ended, you will either be shown a building and asked to recall the item you delivered, " +
-		"or you will hear an item that you delivered, and will be asked to recall the store to which you delivered it. " +
-		"You will have 6 seconds to recall the matching item or store." +
+		"Once this free recall period has ended, you will either be shown a building and asked to recall the object you delivered, " +
+		"or you will hear an object that you delivered, and will be asked to recall the store to which you delivered it. " +
+		"You will have 6 seconds to recall the matching object or store." +
 
 			"\n\nAfter this cued recall period, you'll have a chance for a short break, and then the next set of deliveries will start. ";
 
@@ -55,7 +61,7 @@ public class InstructionsController : MonoBehaviour {
 	//LEARNING PHASE INSTRUCTIONS
 	public static string learningInstructions = "PRACTICE SESSION" +
 		"\n\nBefore you start making deliveries, we want to make sure you know your way around the city. " +
-		" You'll be asked to go from store to store without delivering items. " +
+		" You'll be asked to go from store to store without delivering objects. " +
 		"The city will be exactly the same during the practice as during the later delivery trials, so you can use this time to figure out the fastest way to get from place to place. " +
 			"To help you out, we will often send you from one store to another store that is nearby in the town." +
 
@@ -65,7 +71,7 @@ public class InstructionsController : MonoBehaviour {
 			"\n\nPlease tell the investigator when you have finished reading.";
 
 
-	public static string finalItemRecallInstructions = "In this next period, please recall as many ITEMS as you can remember from the entire session, in any order. " +
+	public static string finalItemRecallInstructions = "In this next period, please recall as many OBJECTS as you can remember from the entire session, in any order. " +
 		"You will be given several minutes to do this; please keep trying for the whole period, as you may find that words keep springing up in your memory." +
 		"\n\n* Press (X) to begin the recall period *";
 
@@ -141,11 +147,21 @@ public class InstructionsController : MonoBehaviour {
 			backgroundColorDefault = background.color;
 		}
 		textColorDefault = text.color;
+		TurnOffInstructions ();
 	}
 
 	public void TurnOffInstructions(){
 		SetInstructionsTransparentOverlay();
+		DisableInstructionScreens ();
 		SetInstructionsBlank();
+	}
+
+	void DisableInstructionScreens()
+	{
+		presentationInstructions.enabled = false;
+		practiceInstructions.enabled = false;
+		recapDeliveryInstructions.enabled = false;
+		finishedDeliveryInstructions.enabled = false;
 	}
 	public IEnumerator PlayVideoInstructions(){
 		VideoInstructions.GetComponent<CanvasGroup> ().alpha = 1f;
@@ -192,14 +208,36 @@ public class InstructionsController : MonoBehaviour {
 
 
 	public IEnumerator PlayPresentationInstructions(){
-		string rotInstructions = InstructionsController.rotationInstructions1 + InstructionsController.pressToContinueText;
-		
-		yield return StartCoroutine (ShowSingleInstruction (rotInstructions, true, true, false, Config.minInitialInstructionsTime));;
+		//string rotInstructions = InstructionsController.rotationInstructions1 + InstructionsController.pressToContinueText;
+		yield return StartCoroutine (ShowInstructionScreen (presentationInstructions, true, false, Config.minInitialInstructionsTime));
+		//yield return StartCoroutine (ShowSingleInstruction (rotInstructions, true, true, false, Config.minInitialInstructionsTime));;
 	}
 
-	public IEnumerator PlayLearningInstructions(){
-		string learningInstructions = InstructionsController.learningInstructions + InstructionsController.pressToContinueText;
-		yield return StartCoroutine (ShowSingleInstruction (learningInstructions, true, true, false, Config.minInitialInstructionsTime));
+	public IEnumerator PlayPracticeInstructions(){
+
+		yield return StartCoroutine (ShowInstructionScreen (practiceInstructions, true, false, Config.minInitialInstructionsTime));
+
+	//	string learningInstructions = InstructionsController.learningInstructions + InstructionsController.pressToContinueText;
+	//	yield return StartCoroutine (ShowSingleInstruction (learningInstructions, true, true, false, Config.minInitialInstructionsTime));
+	}
+
+	public IEnumerator ShowInstructionScreen(Image instructionImage, bool waitForButton, bool addRandomPostJitter, float minDisplayTimeSeconds)
+	{
+		instructionImage.enabled = true;
+		Experiment.Instance.trialController.GetComponent<TrialLogTrack> ().LogInstructionEvent ();
+		yield return new WaitForSeconds (minDisplayTimeSeconds);
+
+		if (waitForButton) {
+			yield return StartCoroutine (UsefulFunctions.WaitForActionButton ());
+		}
+
+		if (addRandomPostJitter) {
+			yield return StartCoroutine(UsefulFunctions.WaitForJitter ( Config.randomJitterMin, Config.randomJitterMax ) );
+		}
+
+		instructionImage.enabled = false;
+		TurnOffInstructions ();
+		exp.cameraController.SetInGame();
 	}
 
 	public IEnumerator ShowSingleInstruction(string line, bool isDark, bool waitForButton, bool addRandomPostJitter, float minDisplayTimeSeconds){

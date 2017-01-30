@@ -139,13 +139,13 @@ public class TrialController : MonoBehaviour {
 			yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions());
 
 			//show instructions for exploring, wait for the action button
-			yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
+			//yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
 
 			//learning phase/session instructions
-			if(isLearningSession){
-				yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
-			}
-
+//			if(isLearningSession){
+//				yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
+//			}
+//
 			if(isLearningSession){
 				//STORE PRESENTATION PHASE
 				if(Config.doPresentationPhase){
@@ -153,6 +153,8 @@ public class TrialController : MonoBehaviour {
 				}
 
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
+
+
 				//LEARNING
 				yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
 			}
@@ -248,13 +250,16 @@ public class TrialController : MonoBehaviour {
 	IEnumerator DoLearningPhase(int numIterations){
 
 		currentState = TrialState.navigationLearning;
+
+		yield return StartCoroutine(exp.instructionsController.ShowInstructionScreen(exp.instructionsController.practiceInstructions,true,false,Config.minInitialInstructionsTime));
+
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, true);
 		Debug.Log ("NUMBER OF ITERATIONS IS: " + numIterations);
 		Debug.Log ("session type is:" + ExperimentSettings.Instance.mySessionType);
 #if GERMAN
 		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Drücken Sie (X), um die Übungsphase zu beginnen.", true, true, false, 0.0f));
 #else
-		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
+		//yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
 #endif
 
 		learningPhaseTimer.StartTimer ();
@@ -531,7 +536,7 @@ public class TrialController : MonoBehaviour {
 #if GERMAN
 			exp.recallInstructionsController.DisplayText ("BITTE ERINNERN SIE DER GEGENSTÄNDE AUS DIES STADT LIEFERUNG"); //TODO: GET BETTER TRANSLATION.
 #else
-			exp.recallInstructionsController.DisplayText ("PLEASE RECALL ITEMS FROM THIS DELIVERY DAY");
+			exp.recallInstructionsController.DisplayText ("PLEASE RECALL OBJECTS FROM THIS DELIVERY DAY");
 #endif
 				break;
 			case Config.RecallType.CuedRecall:
@@ -550,7 +555,7 @@ public class TrialController : MonoBehaviour {
 				recallState = TCP_Config.DefineStates.FINALRECALL_ITEM;
 				recallTime = Config.finalFreeItemRecallTime;
 				RecallUI.alpha = 0.0f;
-				exp.recallInstructionsController.DisplayText("");
+				exp.recallInstructionsController.DisplayText("Please recall objects from all delivery days");
 				fileName = "ffr";
 				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalItemRecallInstructions, true, true, false, 0.0f));
 				RecallUI.alpha = 1.0f;
@@ -560,7 +565,7 @@ public class TrialController : MonoBehaviour {
 				recallState = TCP_Config.DefineStates.FINALRECALL_STORE;
 				recallTime = Config.finalStoreRecallTime;
 				RecallUI.alpha = 0.0f;
-				exp.recallInstructionsController.DisplayText("");
+				exp.recallInstructionsController.DisplayText("Please recall stores from all delivery days");
 				fileName = "sr";
 				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalStoreRecallInstructions, true, true, false, 0.0f));
 				RecallUI.alpha = 1.0f;
