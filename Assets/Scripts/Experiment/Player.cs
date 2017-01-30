@@ -34,8 +34,8 @@ public class Player : MonoBehaviour {
 	public IEnumerator WaitForStoreTrigger(Store store){
 
 		bool areWayPointsEnabled = false;
-
-
+		numWrongTurns = 0;
+		Debug.Log ("reset! NUM WRONG: " + numWrongTurns);
 		Debug.Log("WAITING FOR COLLISION/TRIGGER WITH: " + store.name);
 
 
@@ -73,9 +73,9 @@ public class Player : MonoBehaviour {
 							float newShortestPathLength = exp.waypointController.GetPathLength(path);
 
 							//if new length is larger than old length, increment num wrong turns
-							if(newShortestPathLength > oldShortestPathLength){
+							if (newShortestPathLength > oldShortestPathLength) {
 								numWrongTurns++;
-								Debug.Log("wrong turn! NUM WRONG: " + numWrongTurns);
+								Debug.Log ("wrong turn! NUM WRONG: " + numWrongTurns);
 							}
 						}
 					}

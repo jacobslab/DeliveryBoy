@@ -249,7 +249,8 @@ public class TrialController : MonoBehaviour {
 
 		currentState = TrialState.navigationLearning;
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, true);
-
+		Debug.Log ("NUMBER OF ITERATIONS IS: " + numIterations);
+		Debug.Log ("session type is:" + ExperimentSettings.Instance.mySessionType);
 #if GERMAN
 		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Drücken Sie (X), um die Übungsphase zu beginnen.", true, true, false, 0.0f));
 #else
@@ -263,11 +264,11 @@ public class TrialController : MonoBehaviour {
 		for (int currNumIterations = 0; currNumIterations < numIterations; currNumIterations++) {
 
 			//if we're past the second phase and under the max learning time (or we're in deliv. session), continue to the next round of buildings.
-			if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations > 1 && learningPhaseTimer.GetSecondsInt () < Config.maxLearningTimeMinutes*60)){
+			if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations <3 && learningPhaseTimer.GetSecondsInt () < Config.maxLearningTimeMinutes*60)){
 
 				//LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
 
-
+				Debug.Log ("CURRENT LEARNING ITERATION: " + currNumIterations);
 				//log learning iteration
 				exp.eventLogger.LogLearningIteration (currNumIterations);
 
