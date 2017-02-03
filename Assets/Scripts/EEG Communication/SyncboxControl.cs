@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-
+using LabJack.LabJackUD;
 public class SyncboxControl : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
@@ -38,9 +38,14 @@ public class SyncboxControl : MonoBehaviour {
 
 	public bool isUSBOpen = false;
 
+    //u3 specific
+    private U3 u3;
+    double dblDriverVersion;
+    LJUD.IO ioType = 0;
+    LJUD.CHANNEL channel = 0;
 
-	//SINGLETON
-	private static SyncboxControl _instance;
+    //SINGLETON
+    private static SyncboxControl _instance;
 	
 	public static SyncboxControl Instance{
 		get{
@@ -61,16 +66,58 @@ public class SyncboxControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if(Config.isSyncbox){
+
+        //Read and display the UD version.
+        dblDriverVersion = LJUD.GetDriverVersion();
+        UnityEngine.Debug.Log(dblDriverVersion);
+        if (Config.isSyncbox){
 			StartCoroutine(ConnectSyncbox());
 		}
 	}
 
-	IEnumerator ConnectSyncbox(){
-		while(!isUSBOpen){
+   
+        
+
+    IEnumerator TurnOnOff()
+{
+    LJUD.eDO(u3.ljhandle, 0, 1);
+    yield return new WaitForSeconds(2f);
+    LJUD.eDO(u3.ljhandle, 0, 0);
+    yield return null;
+}
+public void ShowErrorMessage(LabJackUDException e)
+{
+    UnityEngine.Debug.Log("ERROR: " + e.ToString());
+
+
+}
+    
+
+IEnumerator ConnectSyncbox(){
+
+        string connectionError = "";
+        while (!isUSBOpen){
+            /*
 			string usbOpenFeedback = Marshal.PtrToStringAuto (OpenUSB());
 			UnityEngine.Debug.Log(usbOpenFeedback);
-			if(usbOpenFeedback != "didn't open USB..."){
+            */
+            try
+            {
+
+                u3 = new U3(LJUD.CONNECTION.USB, "0", true); // Connection through USB
+                                                             //Start by using the pin_configuration_reset IOType so that all
+                                                             //pin assignments are in the factory default condition.
+
+
+            }
+            catch (LabJackUDException e)
+            {
+                connectionError = e.ToString();
+                ShowErrorMessage(e);
+            }
+            StartCoroutine("TurnOnOff");
+        
+        if (connectionError != "Error: LabJack not found"){
 				isUSBOpen = true;
 			}
 
@@ -142,14 +189,16 @@ public class SyncboxControl : MonoBehaviour {
 	//return microseconds it took to turn on LED
 	void ToggleLEDOn(){
 
-		TurnLEDOn ();
-		LogSYNCOn (GameClock.SystemTime_Milliseconds);
+
+        LJUD.eDO(u3.ljhandle, 0, 1);
+        LogSYNCOn (GameClock.SystemTime_Milliseconds);
 	}
 
 	void ToggleLEDOff(){
 
-		TurnLEDOff();
-		LogSYNCOff (GameClock.SystemTime_Milliseconds);
+
+        LJUD.eDO(u3.ljhandle, 0, 0);
+        LogSYNCOff (GameClock.SystemTime_Milliseconds);
 
 	}
 
@@ -197,6 +246,7 @@ public class SyncboxControl : MonoBehaviour {
 
 	void OnApplicationQuit(){
 		UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
+        LJUD.Close();
 	}
 
 }
