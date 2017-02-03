@@ -94,7 +94,7 @@ public class Experiment : MonoBehaviour {
 
 		if (ExperimentSettings.isLogging) {
 			InitLogging();
-			EnableEyetrackerComponents (false);
+			//EnableEyetrackerComponents (false);
 		}
 		else if(ExperimentSettings.isReplay) {
 			instructionsController.TurnOffInstructions();

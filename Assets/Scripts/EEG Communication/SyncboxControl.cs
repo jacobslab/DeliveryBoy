@@ -241,11 +241,11 @@ IEnumerator ConnectSyncbox(){
 	}
 
 	void OnDestroy(){
-		UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
+		//UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
 	}
 
 	void OnApplicationQuit(){
-		UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
+		//UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
         LJUD.Close();
 	}
 
