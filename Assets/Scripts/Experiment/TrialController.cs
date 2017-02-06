@@ -301,7 +301,12 @@ public class TrialController : MonoBehaviour {
 		currentState = TrialState.presentationLearning;
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_PRESENTATION_PHASE, true);
 
-		exp.eventLogger.LogPresentationPhase (true);
+        //calibration instructions
+#if EYETRACKER
+yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructions());
+#endif
+
+        exp.eventLogger.LogPresentationPhase (true);
 
 		yield return StartCoroutine(exp.instructionsController.PlayPresentationInstructions());
 

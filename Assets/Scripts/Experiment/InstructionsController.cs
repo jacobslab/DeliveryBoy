@@ -14,7 +14,8 @@ public class InstructionsController : MonoBehaviour {
 
 	public bool isFinished = false;
 
-	//instruction screen images
+    //instruction screen images
+    public Image calibrationInstructions;
 	public Image presentationInstructions;
 	public Image practiceInstructions;
 	public Image recapDeliveryInstructions;
@@ -158,6 +159,7 @@ public class InstructionsController : MonoBehaviour {
 
 	void DisableInstructionScreens()
 	{
+        calibrationInstructions.enabled = false;
 		presentationInstructions.enabled = false;
 		practiceInstructions.enabled = false;
 		recapDeliveryInstructions.enabled = false;
@@ -205,9 +207,12 @@ public class InstructionsController : MonoBehaviour {
 		SetInstructionsBlank ();
 		SetInstructionsTransparentOverlay ();
 	}
+    public IEnumerator PlayCalibrationInstructions()
+    {
+        yield return StartCoroutine(ShowInstructionScreen(calibrationInstructions, true, false, Config.minInitialInstructionsTime));
+    }
 
-
-	public IEnumerator PlayPresentationInstructions(){
+    public IEnumerator PlayPresentationInstructions(){
 		//string rotInstructions = InstructionsController.rotationInstructions1 + InstructionsController.pressToContinueText;
 		yield return StartCoroutine (ShowInstructionScreen (presentationInstructions, true, false, Config.minInitialInstructionsTime));
 		//yield return StartCoroutine (ShowSingleInstruction (rotInstructions, true, true, false, Config.minInitialInstructionsTime));;
