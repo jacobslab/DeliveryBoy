@@ -116,10 +116,14 @@ IEnumerator ConnectSyncbox(){
                 ShowErrorMessage(e);
             }
             StartCoroutine("TurnOnOff");
-        
-        if (connectionError != "Error: LabJack not found"){
-				isUSBOpen = true;
-			}
+
+            if (connectionError == "") {
+                isUSBOpen = true;
+            }
+            else
+            {
+                exp.trialController.ConnectionText.text = "Please connect Syncbox and Restart";
+            }
 
 			yield return 0;
 		}
