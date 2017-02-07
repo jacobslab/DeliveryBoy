@@ -98,9 +98,9 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 
 	void ResetDefaultLoggingPath(){
 		if (Config.isSystem2) {
-			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data/";
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data";
 		} else if(Config.isSyncbox) {
-			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM/data/";
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM/data";
 		}
 		else{
 			defaultLoggingPath = System.IO.Directory.GetCurrentDirectory() + "/TextFiles/";

@@ -197,6 +197,7 @@ namespace iView
 
         public void EyetrackerSetupFailure()
         {
+            UnityEngine.Debug.Log("SHOULD FAIL");
             EyetrackerSetupFailed();
         }
         /// <summary>

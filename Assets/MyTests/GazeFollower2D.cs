@@ -21,6 +21,7 @@ public class GazeFollower2D : MonoBehaviour
     int widthLimit = 10;
     int heightLimit = 7;
     bool allowOnce = true;
+    public bool ETStatus = true;
     //EXPERIMENT IS A SINGLETON
     private static GazeFollower2D _instance;
 
@@ -50,12 +51,14 @@ public class GazeFollower2D : MonoBehaviour
 
         SMIGazeController.CalibrationBegan += CalibrationStarted;
         SMIGazeController.CalibrationStopped += CalibrationEnded;
+        SMIGazeController.EyetrackerSetupFailed += SetupFailed;
         widthLimit = Mathf.CeilToInt(Screen.width / 192);
         heightLimit = Mathf.CeilToInt(Screen.height / 192);
     }
 
     void CalibrationStarted()
     {
+        ETStatus = true;
         eyetrackerLogTrack.LogCalibrationStarted(5);
         Debug.Log("CALIBRATION HAS STARTED");
     }
@@ -63,6 +66,13 @@ public class GazeFollower2D : MonoBehaviour
     void CalibrationEnded()
     {
         eyetrackerLogTrack.LogCalibrationEnded(5);
+    }
+
+    void SetupFailed()
+    {
+
+        UnityEngine.Debug.Log("FAILED");
+        ETStatus = false;
     }
 
     /*
@@ -91,7 +101,7 @@ public class GazeFollower2D : MonoBehaviour
     void Update()
     {
 
-        if (gazeFollower != null)
+        if (gazeFollower != null && ETStatus)
         {
 
             if (Input.GetKeyDown(KeyCode.P))

@@ -115,7 +115,7 @@ IEnumerator ConnectSyncbox(){
                 connectionError = e.ToString();
                 ShowErrorMessage(e);
             }
-            StartCoroutine("TurnOnOff");
+         //   StartCoroutine("TurnOnOff");
 
             if (connectionError == "") {
                 isUSBOpen = true;
