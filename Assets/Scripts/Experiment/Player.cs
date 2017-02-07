@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
 
 	public PlayerControls controls;
 	public GameObject visuals;
-
+	public Camera playerCam;
 	ObjectLogTrack objLogTrack;
 
 	//WAYPOINTS

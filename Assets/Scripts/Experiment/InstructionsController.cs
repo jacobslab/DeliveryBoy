@@ -20,6 +20,11 @@ public class InstructionsController : MonoBehaviour {
 	public Image recapDeliveryInstructions;
 	public Image finishedDeliveryInstructions;
 
+	public Image presentationInstructions_German;
+	public Image practiceInstructions_German;
+	public Image recapDeliveryInstructions_German;
+	public Image finishedDeliveryInstructions_German;
+
 	//TextMesh _textMesh;
 	public Text text; //TODO: rename this!!!
 	public Text oculusText;
@@ -158,10 +163,15 @@ public class InstructionsController : MonoBehaviour {
 
 	void DisableInstructionScreens()
 	{
+		
 		presentationInstructions.enabled = false;
 		practiceInstructions.enabled = false;
 		recapDeliveryInstructions.enabled = false;
 		finishedDeliveryInstructions.enabled = false;
+		presentationInstructions_German.enabled = false;
+		practiceInstructions_German.enabled = false;
+		recapDeliveryInstructions_German.enabled = false;
+		finishedDeliveryInstructions_German.enabled = false;
 	}
 	public IEnumerator PlayVideoInstructions(){
 		VideoInstructions.GetComponent<CanvasGroup> ().alpha = 1f;
@@ -209,13 +219,21 @@ public class InstructionsController : MonoBehaviour {
 
 	public IEnumerator PlayPresentationInstructions(){
 		//string rotInstructions = InstructionsController.rotationInstructions1 + InstructionsController.pressToContinueText;
+		#if GERMAN
+		yield return StartCoroutine (ShowInstructionScreen (presentationInstructions_German, true, false, Config.minInitialInstructionsTime));
+		#else
 		yield return StartCoroutine (ShowInstructionScreen (presentationInstructions, true, false, Config.minInitialInstructionsTime));
+		#endif
 		//yield return StartCoroutine (ShowSingleInstruction (rotInstructions, true, true, false, Config.minInitialInstructionsTime));;
 	}
 
 	public IEnumerator PlayPracticeInstructions(){
 
+		#if GERMAN
+		yield return StartCoroutine (ShowInstructionScreen (practiceInstructions_German, true, false, Config.minInitialInstructionsTime));
+		#else
 		yield return StartCoroutine (ShowInstructionScreen (practiceInstructions, true, false, Config.minInitialInstructionsTime));
+		#endif
 
 	//	string learningInstructions = InstructionsController.learningInstructions + InstructionsController.pressToContinueText;
 	//	yield return StartCoroutine (ShowSingleInstruction (learningInstructions, true, true, false, Config.minInitialInstructionsTime));
