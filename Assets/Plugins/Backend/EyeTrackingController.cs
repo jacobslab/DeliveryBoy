@@ -239,6 +239,7 @@ namespace iView
             gazeModel.statusID = errorID;
             if (errorID > IDContainerIviewNG.ACTION_COMPLETE && errorID <402)
             {
+                SMIGazeController.Instance.EyetrackerSetupFailure();
                 Debug.LogError("Error by " + IDContainerIviewNG.getState(state) + ": " + IDContainerIviewNG.getErrorMessage(errorID));
             }
         }

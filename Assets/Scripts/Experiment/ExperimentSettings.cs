@@ -98,9 +98,9 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 
 	void ResetDefaultLoggingPath(){
 		if (Config.isSystem2) {
-			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data/";
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data";
 		} else if(Config.isSyncbox) {
-			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM/data/";
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM/data";
 		}
 		else{
 			defaultLoggingPath = System.IO.Directory.GetCurrentDirectory() + "/TextFiles/";
@@ -152,12 +152,15 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	void InitMainMenuLabels(){
 		if (Application.loadedLevel == 0) {
 			ExpNameVersion.text = Config.BuildVersion.ToString () + "/" + Config.VersionNumber;
-			if (Config.isSyncbox) {
-				BuildType.text = "Sync Box";
+#if EYETRACKER
+            BuildType.text = "Eyetracker ";
+#endif
+            if (Config.isSyncbox) {
+				BuildType.text += "Sync Box";
 			} else if (Config.isSystem2) {
-				BuildType.text = "System 2";
+				BuildType.text += "System 2";
 			} else {
-				BuildType.text = "Demo";
+				BuildType.text += "Demo";
 			}
 
 #if GERMAN

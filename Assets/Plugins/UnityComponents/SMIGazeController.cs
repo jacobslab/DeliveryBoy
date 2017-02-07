@@ -36,14 +36,19 @@ using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using iView;
-
 namespace iView
 {
     public class SMIGazeController : MonoBehaviour
     {
         // enable the internal Gazefilter
-        public bool useGazeFilter = true;
+        public delegate void CalibrationEvent();
+        public static event CalibrationEvent CalibrationBegan;
+        public static event CalibrationEvent CalibrationStopped;
 
+        public static event CalibrationEvent EyetrackerSetupFinished;
+        public static event CalibrationEvent EyetrackerSetupFailed;
+        public bool useGazeFilter = true;
+        public bool runningCalibration = false;
         // maximal Distance for the Rays to detect focused Objects
         public float maxDistanceForRaycasts = 100f;
 
@@ -54,6 +59,7 @@ namespace iView
 
         public KeyCode startValidation = KeyCode.Alpha3;
 
+        private bool firstTime = true;
 
         //Thread for the initialisation of the GazeController
         private static Thread eyeThread;
@@ -64,7 +70,7 @@ namespace iView
         private static SMIGazeController instance;
 
         // Input for 2PC setup
-        
+
         private string sendIP;
         private int sendPort;
 
@@ -87,10 +93,10 @@ namespace iView
                 //Connect to the Device
                 //Single PC Setup:
                 instance.InitEyeThread();
-                
+
                 //Two PC Setup:
                 //instance.InitEyeThread(sendIP, sendPort, receiveIP, receivePort);
-                
+
                 instance.StartEyeThread();
 
             }
@@ -120,7 +126,11 @@ namespace iView
                 StartCalibrationRoutine(ET_Device.getAcessToGazeModel().calibrationMethod);
                 StartValidationRoutine();
                 ManagePlayerInput();
-
+                if (firstTime)
+                {
+                    StartCalibration(5);
+                    firstTime = false;
+                }
             }
 #else
             Debug.LogError("You need Windows as operating system.");
@@ -180,6 +190,16 @@ namespace iView
             }
         }
 
+        public void EyetrackerSetupSuccess()
+        {
+            EyetrackerSetupFinished();
+        }
+
+        public void EyetrackerSetupFailure()
+        {
+            UnityEngine.Debug.Log("SHOULD FAIL");
+            EyetrackerSetupFailed();
+        }
         /// <summary>
         /// Continue the EyeTracker
         /// </summary>
@@ -202,6 +222,9 @@ namespace iView
         /// <param name="calibrationPoints"> Select the Calibration Method (e.g. 5 = Fivepoint Calibration)</param>
         public void StartCalibration(int calibrationPoints)
         {
+            Debug.Log("running CALIBRATION NOW");
+            CalibrationBegan();
+            //runningCalibration = true;
             if (!instance.enabled)
                 instance.enabled = true;
 
@@ -440,6 +463,9 @@ namespace iView
             yield return new WaitForFixedUpdate();
             ET_Device.StartCalibration();
             Screen.fullScreen = true;
+            // EyeTrackingController.Instance.
+            CalibrationStopped();
+            Debug.Log("end of calibration");
             yield return null;
         }
 

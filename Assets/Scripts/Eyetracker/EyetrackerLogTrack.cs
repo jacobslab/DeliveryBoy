@@ -5,13 +5,13 @@ public class EyetrackerLogTrack : LogTrack
 {
 
     Dictionary<string, float> buildingGazeTime = new Dictionary<string, float>();
-    
+
     //currently just logs one point at a time.
-    public void LogScreenGazePoint(Vector2 position, bool lowConfidence)
+    public void LogScreenGazePoint(Vector2 position, bool edgeConfidence, bool blinkConfidence)
     {
         if (ExperimentSettings.isLogging)
         {
-            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "SCREEN_GAZE_POSITION" + separator + position.x + separator + position.y + separator + "LOW_CONFIDENCE" + separator + lowConfidence.ToString());
+            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "SCREEN_GAZE_POSITION" + separator + position.x + separator + position.y + separator + "LOW_CONFIDENCE" + separator + edgeConfidence.ToString() + separator + "BLINK_UNCERTAINTY" + separator + blinkConfidence.ToString());
         }
     }
 
@@ -30,11 +30,11 @@ public class EyetrackerLogTrack : LogTrack
             subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "EYETRACKER_CALIBRATION_EVENT" + separator + calibrationPoints.ToString() + separator + "ENDED");
         }
     }
-    public void LogWorldGazePoint(Vector3 position, bool lowConfidence)
+    public void LogWorldGazePoint(Vector3 position, bool edgeConfidence, bool blinkConfidence)
     {
         if (ExperimentSettings.isLogging)
         {
-            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "WORLD_GAZE_POSITION" + separator + position.x + separator + position.y + separator + position.z + separator + "LOW_CONFIDENCE" + separator + lowConfidence.ToString());
+            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "WORLD_GAZE_POSITION" + separator + position.x + separator + position.y + separator + position.z + separator + "EDGE_UNCERTAINTY" + separator + edgeConfidence.ToString() + separator + "BLINK_UNCERTAINTY" + separator + blinkConfidence.ToString());
         }
     }
 
@@ -44,19 +44,19 @@ public class EyetrackerLogTrack : LogTrack
     {
         string objName = gazeObject.name;
         float val = 0f;
-        if(!buildingGazeTime.ContainsKey(objName))
+        if (!buildingGazeTime.ContainsKey(objName))
         {
-            buildingGazeTime.Add(objName, 0f); 
+            buildingGazeTime.Add(objName, 0f);
         }
         else
         {
-            val=buildingGazeTime[objName];
+            val = buildingGazeTime[objName];
             val += Time.deltaTime;
             buildingGazeTime[objName] = val;
         }
         if (ExperimentSettings.isLogging)
         {
-            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "GAZE_OBJECT" + separator + gazeObject.name + separator+  "TOTAL_GAZE_TIME" + separator + val.ToString("F2") + separator + "GAZE_DISTANCE" + separator + distance.ToString("F2"));
+            subjectLog.Log(GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount(), "GAZE_OBJECT" + separator + gazeObject.name + separator + "TOTAL_GAZE_TIME" + separator + val.ToString("F2") + separator + "GAZE_DISTANCE" + separator + distance.ToString("F2"));
         }
     }
     public void LogPupilDiameter(double leftPupilDiameter, double rightPupilDiameter, double averagedPupilDiameter)
