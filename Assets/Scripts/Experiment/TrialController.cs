@@ -115,6 +115,7 @@ public class TrialController : MonoBehaviour {
 	public IEnumerator RunExperiment(){
 		if (!ExperimentSettings.isReplay) {
 			exp.player.controls.ShouldLockControls = true;
+            exp.player.TurnOnCamera(false);
 
 			if(Config.isSystem2 || Config.isSyncbox){
 				yield return StartCoroutine( WaitForEEGHardwareConnection() );
@@ -177,6 +178,7 @@ public class TrialController : MonoBehaviour {
 					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
 	#endif
 					exp.player.controls.ShouldLockControls = false;
+                    exp.player.TurnOnCamera(true);
 
 					//DELIVERY DAY
 					orderedStores.Clear();
@@ -301,10 +303,6 @@ public class TrialController : MonoBehaviour {
 		currentState = TrialState.presentationLearning;
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_PRESENTATION_PHASE, true);
 
-        //calibration instructions
-#if EYETRACKER
-yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructions());
-#endif
 
         exp.eventLogger.LogPresentationPhase (true);
 

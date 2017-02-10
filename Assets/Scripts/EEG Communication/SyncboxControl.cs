@@ -4,6 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using LabJack.LabJackUD;
+using LabJack;
 public class SyncboxControl : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
@@ -68,8 +69,8 @@ public class SyncboxControl : MonoBehaviour {
 	void Start () {
 
         //Read and display the UD version.
-        dblDriverVersion = LJUD.GetDriverVersion();
-        UnityEngine.Debug.Log(dblDriverVersion);
+        //dblDriverVersion = LJUD.GetDriverVersion();
+        //UnityEngine.Debug.Log(dblDriverVersion);
         if (Config.isSyncbox){
 			StartCoroutine(ConnectSyncbox());
 		}
@@ -115,8 +116,8 @@ IEnumerator ConnectSyncbox(){
                 connectionError = e.ToString();
                 ShowErrorMessage(e);
             }
-         //   StartCoroutine("TurnOnOff");
-
+            //   StartCoroutine("TurnOnOff");
+            UnityEngine.Debug.Log("connectionerror " + connectionError);
             if (connectionError == "") {
                 isUSBOpen = true;
             }

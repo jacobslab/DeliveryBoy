@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
 
 	public PlayerControls controls;
 	public GameObject visuals;
-
+    public Camera playerCam;
 	ObjectLogTrack objLogTrack;
 
 	//WAYPOINTS
@@ -19,12 +19,18 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		objLogTrack = GetComponent<ObjectLogTrack> ();
+        TurnOnCamera(false);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 	}
+
+    public void TurnOnCamera(bool canSee)
+    {
+        playerCam.enabled = canSee;
+    }
 
 	public void TurnOnVisuals(bool isVisible){
 		visuals.SetActive (isVisible);

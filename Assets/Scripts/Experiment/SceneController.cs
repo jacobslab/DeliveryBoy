@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class SceneController : MonoBehaviour { //there can be a separate scene controller in each scene
 
-
+    public Image calibrationInstructions;
 	//SINGLETON
 	private static SceneController _instance;
 	
@@ -25,6 +26,8 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 
 	// Use this for initialization
 	void Start () {
+        if (calibrationInstructions!=null)
+        calibrationInstructions.enabled = false;
 
 	}
 
@@ -34,7 +37,15 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 
 	}
 
-	public void LoadMainMenu(){
+    IEnumerator ShowCalibrationInstructions()
+    {
+        calibrationInstructions.enabled = true;
+        yield return StartCoroutine(UsefulFunctions.WaitForActionButton());
+        yield return null;
+    }
+
+
+    public void LoadMainMenu(){
 		if(Experiment.Instance != null){
 			Experiment.Instance.OnExit();
 		}
@@ -44,8 +55,17 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 		Application.LoadLevel(0);
 	}
 
+    IEnumerator LoadExperimentTask()
+    {
+        yield return StartCoroutine(ShowCalibrationInstructions());
+        Application.LoadLevel(1);
+       // calibrationInstructions.enabled = false;
+        yield return null;
+    }
+
 	public void LoadExperiment(){
-		//should be no new data to record for the subject
+
+        //should be no new data to record for the subject
 		if(Experiment.Instance != null){
 			Experiment.Instance.OnExit();
 		}
@@ -70,7 +90,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 	void LoadExperimentLevel(){
 		if (ExperimentSettings.currentSubject.trials < ExperimentSettings.numDelivDays) {
 			Debug.Log ("loading experiment!");
-			Application.LoadLevel (1);
+            StartCoroutine("LoadExperimentTask");
 		} else {
 			Debug.Log ("Subject has already finished all blocks! Loading end menu.");
 			Application.LoadLevel (2);

@@ -217,11 +217,10 @@ public class Experiment : MonoBehaviour {
 		yield return 0;
 
 	}
-
+  
 
 	public IEnumerator BeginExperiment(){
 		isRunningExperiment = true;
-
 		yield return StartCoroutine(trialController.RunExperiment());
 		
 		yield return StartCoroutine(RunOutOfTrials()); //calls EndExperiment()
