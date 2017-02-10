@@ -57,7 +57,8 @@ public class TrialController : MonoBehaviour {
 		presentationBackgroundCube.TurnVisible (false);
 		orderedStores = new List<Store>();
 		orderedItemsDelivered = new List<string>();
-
+		//disable player camera
+		exp.player.playerCam.enabled = false;
 		InitUIText ();
 	}
 
@@ -115,8 +116,6 @@ public class TrialController : MonoBehaviour {
 	public IEnumerator RunExperiment(){
 		if (!ExperimentSettings.isReplay) {
 			exp.player.controls.ShouldLockControls = true;
-            exp.player.TurnOnCamera(false);
-
 			if(Config.isSystem2 || Config.isSyncbox){
 				yield return StartCoroutine( WaitForEEGHardwareConnection() );
 			}
@@ -154,7 +153,7 @@ public class TrialController : MonoBehaviour {
 				}
 
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
-
+				exp.player.playerCam.enabled = true;
 
 				//LEARNING
 				yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
@@ -171,14 +170,22 @@ public class TrialController : MonoBehaviour {
 				for(int i = 0; i < ExperimentSettings.numDelivDays; i++){
 					exp.player.controls.ShouldLockControls = true;
 
+					if (i == 0) {
 
-	#if GERMAN
-					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i+1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
-	#else
+						#if GERMAN
+						yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen (exp.instructionsController.recapDeliveryInstructions_German, true, false, Config.minDefaultInstructionTime));
+						#else
+						yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen(exp.instructionsController.recapDeliveryInstructions,true,false,Config.minDefaultInstructionTime));
+						#endif
+					} else {
+
+						#if GERMAN
+						yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i + 1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
+						#else
 					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
-	#endif
+						#endif
+					}
 					exp.player.controls.ShouldLockControls = false;
-                    exp.player.TurnOnCamera(true);
 
 					//DELIVERY DAY
 					orderedStores.Clear();
@@ -201,6 +208,12 @@ public class TrialController : MonoBehaviour {
 
 				exp.player.controls.ShouldLockControls = true;
 
+				//show final instructions screen
+				#if GERMAN
+				yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen(exp.instructionsController.finishedDeliveryInstructions_German,true,false,Config.minDefaultInstructionTime));
+				#else
+				yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen(exp.instructionsController.finishedDeliveryInstructions,true,false,Config.minDefaultInstructionTime));
+				#endif
 				//FINAL RECALL
 				if(Config.doFinalStoreRecall){
 					yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, ExperimentSettings.numDelivDays + 1)); //it's an extra recall phase! +1
@@ -303,6 +316,10 @@ public class TrialController : MonoBehaviour {
 		currentState = TrialState.presentationLearning;
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_PRESENTATION_PHASE, true);
 
+        //calibration instructions
+#if EYETRACKER
+yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructions());
+#endif
 
         exp.eventLogger.LogPresentationPhase (true);
 
@@ -537,7 +554,7 @@ public class TrialController : MonoBehaviour {
 				recallState = TCP_Config.DefineStates.RECALL_FREE_ITEM;
 				recallTime = Config.freeRecallTime;
 #if GERMAN
-			exp.recallInstructionsController.DisplayText ("BITTE ERINNERN SIE DER GEGENSTÄNDE AUS DIES STADT LIEFERUNG"); //TODO: GET BETTER TRANSLATION.
+			exp.recallInstructionsController.DisplayText ("Bitte erinnern Sie die in dieser Runde zugestellten Gegenstände"); //TODO: GET BETTER TRANSLATION.
 #else
 			exp.recallInstructionsController.DisplayText ("PLEASE RECALL OBJECTS FROM THIS DELIVERY DAY");
 #endif
@@ -558,7 +575,11 @@ public class TrialController : MonoBehaviour {
 				recallState = TCP_Config.DefineStates.FINALRECALL_ITEM;
 				recallTime = Config.finalFreeItemRecallTime;
 				RecallUI.alpha = 0.0f;
+			#if GERMAN
+				exp.recallInstructionsController.DisplayText("Bitte erinnern Sie die zugestellten GEGENSTÄNDE aller Runden");
+			#else
 				exp.recallInstructionsController.DisplayText("Please recall objects from all delivery days");
+			#endif
 				fileName = "ffr";
 				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalItemRecallInstructions, true, true, false, 0.0f));
 				RecallUI.alpha = 1.0f;
@@ -568,7 +589,11 @@ public class TrialController : MonoBehaviour {
 				recallState = TCP_Config.DefineStates.FINALRECALL_STORE;
 				recallTime = Config.finalStoreRecallTime;
 				RecallUI.alpha = 0.0f;
+			#if GERMAN
+				exp.recallInstructionsController.DisplayText("Bitte erinnern Sie die GESCHÄFTE aller Runden");
+			#else
 				exp.recallInstructionsController.DisplayText("Please recall stores from all delivery days");
+			#endif
 				fileName = "sr";
 				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalStoreRecallInstructions, true, true, false, 0.0f));
 				RecallUI.alpha = 1.0f;
@@ -668,7 +693,7 @@ public class TrialController : MonoBehaviour {
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true);
 
 #if GERMAN
-				exp.recallInstructionsController.DisplayText ("Wohin haben Sie diesen Artikel geliefert?");
+				exp.recallInstructionsController.DisplayText ("Wohin haben Sie diesen Gegenstand geliefert?");
 #else
 				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item to?");
 #endif
