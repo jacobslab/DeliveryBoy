@@ -8,7 +8,10 @@ public class VideoPlayer : MonoBehaviour {
 	
 	MovieTexture movie;
 	AudioSource movieAudio;
-	
+    public MovieTexture englishVideo;
+    public AudioClip englishAudio;
+    public MovieTexture germanVideo;
+    public AudioClip germanAudio;
 	public CanvasGroup group;
 	public bool shouldPlay = false;
 	void Awake(){
@@ -18,13 +21,20 @@ public class VideoPlayer : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		RawImage rim = GetComponent<RawImage>();
+        movieAudio = GetComponent<AudioSource>();
 		if(rim != null){
 			if(rim.texture != null){
-				movie = (MovieTexture)rim.mainTexture;
+#if GERMAN
+                rim.texture=germanVideo;
+                movieAudio.clip=germanAudio;
+#else
+                rim.texture = englishVideo;
+                movieAudio.clip = englishAudio;
+#endif
+                movie = (MovieTexture)rim.mainTexture;
 			}
 		}
 	//	rim.color = new Color (0f, 0f, 0f, 0f);
-		movieAudio = GetComponent<AudioSource> ();
 	}
 	
 	bool isMoviePaused = false;
