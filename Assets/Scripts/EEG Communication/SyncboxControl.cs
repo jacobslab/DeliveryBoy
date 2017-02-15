@@ -251,7 +251,8 @@ IEnumerator ConnectSyncbox(){
 
 	void OnApplicationQuit(){
 		//UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
-        LJUD.Close();
+		if(Config.isSyncbox)
+        	LJUD.Close();
 	}
 
 }

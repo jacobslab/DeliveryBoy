@@ -13,8 +13,8 @@ public class Config : MonoBehaviour {
 	
 	public static Version BuildVersion = Version.DBoy3_1;
 	public static string VersionNumber = "3.0";
-
-    public static bool isSyncbox = false;
+	
+	public static bool isSyncbox = false;
 	public static bool isSystem2 = true;
 
 

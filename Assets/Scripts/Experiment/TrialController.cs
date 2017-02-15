@@ -265,17 +265,16 @@ public class TrialController : MonoBehaviour {
 	IEnumerator DoLearningPhase(int numIterations){
 
 		currentState = TrialState.navigationLearning;
-
-		yield return StartCoroutine(exp.instructionsController.ShowInstructionScreen(exp.instructionsController.practiceInstructions,true,false,Config.minInitialInstructionsTime));
+		yield return StartCoroutine(exp.instructionsController.PlayPracticeInstructions());
 
 		TCPServer.Instance.SetState (TCP_Config.DefineStates.LEARNING_NAVIGATION_PHASE, true);
 		Debug.Log ("NUMBER OF ITERATIONS IS: " + numIterations);
 		Debug.Log ("session type is:" + ExperimentSettings.Instance.mySessionType);
-#if GERMAN
-		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Drücken Sie (X), um die Übungsphase zu beginnen.", true, true, false, 0.0f));
-#else
-		//yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
-#endif
+//#if GERMAN
+//		yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Drücken Sie (X), um die Übungsphase zu beginnen.", true, true, false, 0.0f));
+//#else
+//		//yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin the practice session.", true, true, false, 0.0f));
+//#endif
 
 		learningPhaseTimer.StartTimer ();
 		bool isRunning = learningPhaseTimer.IsRunning;
@@ -538,7 +537,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 		currentState = TrialState.recall;
 
 		RecallUI.alpha = 1.0f;
-
+		Debug.Log ("doing RECALL " + recallType.ToString());
 		exp.player.controls.ShouldLockControls = true;
 
 		//record audio to a file in the session directory for the duration of the recall period
@@ -548,7 +547,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 
 		TCP_Config.DefineStates recallState = TCP_Config.DefineStates.RECALL_CUED;
 
-		//exp.recallInstructionsController.SetInstructionsColorful ();
+		exp.recallInstructionsController.SetInstructionsColorful ();
 
 		switch(recallType){
 			case Config.RecallType.FreeItemRecall:
@@ -664,6 +663,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 
 			//if divisible by 2, make it store cued
 			if(isStoreOrItem % 2 == 0){
+				Debug.Log ("cued recall happened");
 				exp.recallInstructionsController.background.color = new Color(0,0,0,0);
 
 				recordFileName = origFileName + i + "i"; //i - items are being recalled! (stores are cues)

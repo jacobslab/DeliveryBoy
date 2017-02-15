@@ -154,6 +154,8 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			ExpNameVersion.text = Config.BuildVersion.ToString () + "/" + Config.VersionNumber;
 #if EYETRACKER
             BuildType.text = "Eyetracker ";
+#else
+			BuildType.text="";
 #endif
             if (Config.isSyncbox) {
 				BuildType.text += "Sync Box";

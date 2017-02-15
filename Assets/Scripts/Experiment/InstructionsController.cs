@@ -230,6 +230,7 @@ public class InstructionsController : MonoBehaviour {
 	public IEnumerator PlayPracticeInstructions(){
 
 		#if GERMAN
+		Debug.Log("playing german practice instructions on gameobject" + practiceInstructions_German.gameObject.name);
 		yield return StartCoroutine (ShowInstructionScreen (practiceInstructions_German, true, false, Config.minInitialInstructionsTime));
 		#else
 		yield return StartCoroutine (ShowInstructionScreen (practiceInstructions, true, false, Config.minInitialInstructionsTime));

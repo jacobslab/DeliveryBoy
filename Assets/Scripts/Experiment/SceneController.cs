@@ -57,7 +57,9 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 
     IEnumerator LoadExperimentTask()
     {
+		#if EYETRACKER
         yield return StartCoroutine(ShowCalibrationInstructions());
+		#endif
         Application.LoadLevel(1);
        // calibrationInstructions.enabled = false;
         yield return null;
