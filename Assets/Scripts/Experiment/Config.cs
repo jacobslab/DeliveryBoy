@@ -46,13 +46,26 @@ public class Config : MonoBehaviour {
 //	public static int numDeliveryStores = 4;
 	public static bool isAudioDelivery = true;
 	public static bool isStoreCorrelatedDelivery = true;
-	
-	//a learning session, for the first session unless skipped
-	public static int numLearningIterationsSession = 3;
-	
-	//learning phase, at the start of a delivery session
-	public static bool doLearningPhase = true;
+
+
+#if HOSPITAL
+    //a learning session, for the first session unless skipped
+    public static int numLearningIterationsSession = 4;
 	public static int numLearningIterationsPhase = 1;
+    public static float numDelivTime=45f;
+#else
+    //for scalp lab
+    //first session
+    public static int numLearningIterationsSession = 4;
+    public static int numFirstSessionDelivDays = 2;
+    //second session onwards
+    public static int numLearningIterationsPhase = 1;
+#endif
+
+    public static int numDelivDays = 6;
+   
+    //learning phase, at the start of a delivery session
+    public static bool doLearningPhase = true;
 	public static int maxLearningTimeMinutes = 45;
 	
 	public static bool doPresentationPhase = true;

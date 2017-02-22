@@ -90,7 +90,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 	}
 
 	void LoadExperimentLevel(){
-		if (ExperimentSettings.currentSubject.trials < ExperimentSettings.numDelivDays) {
+        if (ExperimentSettings.currentSubject.trials < Config.numDelivDays) {
 			Debug.Log ("loading experiment!");
             StartCoroutine("LoadExperimentTask");
 		} else {

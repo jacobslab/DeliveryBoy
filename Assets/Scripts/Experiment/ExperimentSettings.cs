@@ -164,11 +164,16 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			} else {
 				BuildType.text += "Demo";
 			}
+#if HOSPITAL
+            BuildType.text+=" (for Hospital)";
+#else
+            BuildType.text += " (for Scalp Lab)";
+#endif
 
 #if GERMAN
 			IsGermanText.enabled = true;
 #else
-			IsGermanText.enabled = false;
+            IsGermanText.enabled = false;
 #endif
 		}
 	}
