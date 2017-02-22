@@ -45,15 +45,19 @@ public class PlayerControls : MonoBehaviour{
 	}
 
 
-	void GetInput()
-	{
-		//VERTICAL
-		float verticalAxisInput = Input.GetAxis ("Vertical");
-		if ( Mathf.Abs(verticalAxisInput) > 0.0f) { //EPSILON should be accounted for in Input Settings "dead zone" parameter
+    void GetInput()
+    {
+        //VERTICAL
+        float verticalAxisInput = Input.GetAxis("Vertical");
+        if (verticalAxisInput > 0.0f) { //EPSILON should be accounted for in Input Settings "dead zone" parameter
 
-			GetComponent<Rigidbody>().velocity = transform.forward*verticalAxisInput*Config.driveSpeed; //since we are setting velocity based on input, no need for time.delta time component
+            GetComponent<Rigidbody>().velocity = transform.forward * verticalAxisInput * Config.driveSpeed; //since we are setting velocity based on input, no need for time.delta time component
 
-		}
+        }
+        else if (verticalAxisInput < 0.0f)
+        {
+            GetComponent<Rigidbody>().velocity = transform.forward * verticalAxisInput * Config.reverseSpeed;
+        }
 		else{
 			GetComponent<Rigidbody>().velocity = Vector3.zero;
 		}

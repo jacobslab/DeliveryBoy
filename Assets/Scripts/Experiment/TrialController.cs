@@ -735,7 +735,10 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 			else{
 				SetServerItemCueState(index, false);
 			}
+            //wait for one second before going onto next cue
+            yield return new WaitForSeconds(Config.timeBetweenCuedRecalls);
 		}
+
 		presentationBackgroundCube.TurnVisible (false);
 
 		yield return 0;

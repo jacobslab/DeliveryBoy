@@ -15,7 +15,7 @@ public class Config : MonoBehaviour {
 	public static string VersionNumber = "3.0";
 	
 	public static bool isSyncbox = false;
-	public static bool isSystem2 = true;
+	public static bool isSystem2 = false;
 
 
 	//STORE AND WORD POOL FILE NAMES
@@ -74,6 +74,7 @@ public class Config : MonoBehaviour {
 	public static int cuedRecallTime = 6;
 	public static int finalFreeItemRecallTime = 300;
 	public static int finalStoreRecallTime = 90;
+    public static float timeBetweenCuedRecalls = 1f;
 	public static float cuedEndBeepTimeBeforeEnd = 0.5f; //if the recall time is 6s, end beep should play this much time before the end of 6s. ie; 6 - endBeepTime
 
 	public enum RecallType
@@ -103,7 +104,8 @@ public class Config : MonoBehaviour {
 	public static float turnAngleMult = 0.07f;
 
 	//drive variables
-	public static float driveSpeed = 10;
+	public static float driveSpeed = 10f;
+    public static float reverseSpeed = 2.5f;
 
 	//object buffer variables
 
