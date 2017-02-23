@@ -230,13 +230,18 @@ public class TrialController : MonoBehaviour {
 			if(isLearningSession){
 				//STORE PRESENTATION PHASE
 				if(Config.doPresentationPhase){
+                    Debug.Log("doing store presentation now");
 					yield return StartCoroutine(DoStorePresentationPhase());
 				}
+
+                Debug.Log("finished store presentation now");
                 //should play SHORT INSTRUCTION VIDEO HERE
-				exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
+                exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
 				exp.player.playerCam.enabled = true;
-				//LEARNING
-				yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
+                //LEARNING
+
+                Debug.Log("starting learning session now");
+                yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
 
 #if !HOSPITAL
                 //for scalp we will have 2 delivery days in the first session
