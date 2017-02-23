@@ -323,12 +323,15 @@ public class TrialController : MonoBehaviour {
 
 		for (int currNumIterations = 0; currNumIterations < numIterations; currNumIterations++) {
 
-			//if we're past the third phase (or we're in deliv. session), continue to the next round of buildings.
-			if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations < Config.numLearningIterationsSession)){
+#if HOSPITAL
+            //if we're past the third phase (or we're in deliv. session), continue to the next round of buildings.
+            if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations < Config.numLearningIterationsSession && learningPhaseTimer.GetSecondsInt()<(Config.maxLearningTimeMinutes*60)) ){
+#else
+                if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations < Config.numLearningIterationsSession)){
+#endif
+                //LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
 
-				//LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
-
-				Debug.Log ("CURRENT LEARNING ITERATION: " + currNumIterations);
+                Debug.Log ("CURRENT LEARNING ITERATION: " + currNumIterations);
 				//log learning iteration
 				exp.eventLogger.LogLearningIteration (currNumIterations);
 
