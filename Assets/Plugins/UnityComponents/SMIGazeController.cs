@@ -128,7 +128,7 @@ namespace iView
                 ManagePlayerInput();
                 if (firstTime)
                 {
-                    StartCalibration(5);
+                    StartCalibration(9);
                     firstTime = false;
                 }
             }

@@ -191,12 +191,12 @@ namespace iView
             int targetSize = 50;
 
             m_CalibrationData.displayDevice = displayDevice;
-            m_CalibrationData.autoAccept = 1;
+            m_CalibrationData.autoAccept = 0;
             m_CalibrationData.method = calibrationPoints;
             m_CalibrationData.visualization = 1;
             m_CalibrationData.speed = 1;
             m_CalibrationData.targetShape = 2;
-            m_CalibrationData.backgroundColor = 0;
+            m_CalibrationData.backgroundColor = 125;
             m_CalibrationData.foregroundColor = 250;
             m_CalibrationData.targetSize = targetSize;
             m_CalibrationData.targetFilename = "";
