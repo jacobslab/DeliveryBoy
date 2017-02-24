@@ -15,7 +15,7 @@ public class Config : MonoBehaviour {
 	public static string VersionNumber = "3.0";
 	
 	public static bool isSyncbox = false;
-	public static bool isSystem2 = true;
+	public static bool isSystem2 = false;
 
 
 	//STORE AND WORD POOL FILE NAMES
@@ -46,13 +46,26 @@ public class Config : MonoBehaviour {
 //	public static int numDeliveryStores = 4;
 	public static bool isAudioDelivery = true;
 	public static bool isStoreCorrelatedDelivery = true;
-	
-	//a learning session, for the first session unless skipped
-	public static int numLearningIterationsSession = 3;
-	
-	//learning phase, at the start of a delivery session
-	public static bool doLearningPhase = true;
+
+
+#if HOSPITAL
+    //a learning session, for the first session unless skipped
+    public static int numLearningIterationsSession = 4;
 	public static int numLearningIterationsPhase = 1;
+    public static float numDelivTime=45f;
+#else
+    //for scalp lab
+    //first session
+    public static int numLearningIterationsSession = 4;
+    public static int numFirstSessionDelivDays = 2;
+    //second session onwards
+    public static int numLearningIterationsPhase = 1;
+#endif
+
+    public static int numDelivDays = 6;
+   
+    //learning phase, at the start of a delivery session
+    public static bool doLearningPhase = true;
 	public static int maxLearningTimeMinutes = 45;
 	
 	public static bool doPresentationPhase = true;
@@ -70,10 +83,13 @@ public class Config : MonoBehaviour {
 	public static float deliveryCompleteInstructionsTime = 2.0f;
 	public static float minDefaultInstructionTime = 0.0f; //time each learning trial instruction should be displayed for
 
+    public static float eyeDetectionToleranceTime = 10f;
+
 	public static int freeRecallTime = 90;
 	public static int cuedRecallTime = 6;
 	public static int finalFreeItemRecallTime = 300;
 	public static int finalStoreRecallTime = 90;
+    public static float timeBetweenCuedRecalls = 1f;
 	public static float cuedEndBeepTimeBeforeEnd = 0.5f; //if the recall time is 6s, end beep should play this much time before the end of 6s. ie; 6 - endBeepTime
 
 	public enum RecallType
@@ -103,7 +119,8 @@ public class Config : MonoBehaviour {
 	public static float turnAngleMult = 0.07f;
 
 	//drive variables
-	public static float driveSpeed = 10;
+	public static float driveSpeed = 10f;
+    public static float reverseSpeed = 2.5f;
 
 	//object buffer variables
 

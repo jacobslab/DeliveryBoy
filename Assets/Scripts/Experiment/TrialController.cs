@@ -41,6 +41,7 @@ public class TrialController : MonoBehaviour {
 
 	//delivery timer
 	public SimpleTimer learningPhaseTimer;
+    public SimpleTimer deliveryTimer;
 
 	//store presentation variables
 	public Transform storePresentationTransform;
@@ -114,9 +115,89 @@ public class TrialController : MonoBehaviour {
 		}
 	}
 
+    IEnumerator DoDeliveryDays(int numDelivDays)
+    {
+        int numDelivDaysComplete = 0;
+#if HOSPITAL
+        deliveryTimer.StartTimer();
+        bool isDeliveryTimerRunning=deliveryTimer.IsRunning;
+   
+        for (int i = 0;deliveryTimer.GetSecondsInt() < Config.numDelivTime; i++)
+#else
+        for (int i = 0; i < Config.numDelivDays; i++)
+#endif
+        {
+            numDelivDaysComplete = i;
+            exp.player.controls.ShouldLockControls = true;
 
-	//FILL THIS IN DEPENDING ON EXPERIMENT SPECIFICATIONS
-	public IEnumerator RunExperiment(){
+            if (i == 0)
+            {
+
+#if GERMAN
+						yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen (exp.instructionsController.recapDeliveryInstructions_German, true, false, Config.minDefaultInstructionTime));
+#else
+                yield return StartCoroutine(exp.instructionsController.ShowInstructionScreen(exp.instructionsController.recapDeliveryInstructions, true, false, Config.minDefaultInstructionTime));
+#endif
+            }
+            else
+            {
+
+#if HOSPITAL
+#if GERMAN
+						yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i + 1) + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
+#else
+                        yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1), true, true, false, Config.minDefaultInstructionTime));
+#endif
+#else
+#if GERMAN
+						yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i + 1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
+#else
+                yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
+#endif
+#endif
+            }
+
+            exp.player.controls.ShouldLockControls = false;
+
+            //DELIVERY DAY
+            orderedStores.Clear();
+            orderedItemsDelivered.Clear();
+            yield return StartCoroutine(DoStoreDeliveryPhase(i));
+
+            //RECALL
+            //TODO: implement different kinds of recall phases
+            Config.RecallType recallType = Config.RecallType.FreeThenCued;
+            if (recallType == Config.RecallType.FreeThenCued)
+            {
+                yield return StartCoroutine(DoRecallPhase(Config.RecallType.FreeItemRecall, i));
+                yield return StartCoroutine(DoRecallPhase(Config.RecallType.CuedRecall, i));
+            }
+            else
+            {
+                yield return StartCoroutine(DoRecallPhase(recallType, i));
+            }
+        }
+            exp.player.controls.ShouldLockControls = true;
+            //show final instructions screen
+#if GERMAN
+				yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen(exp.instructionsController.finishedDeliveryInstructions_German,true,false,Config.minDefaultInstructionTime));
+#else
+            yield return StartCoroutine(exp.instructionsController.ShowInstructionScreen(exp.instructionsController.finishedDeliveryInstructions, true, false, Config.minDefaultInstructionTime));
+#endif
+            //FINAL RECALL
+            if (Config.doFinalStoreRecall)
+            {
+                yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, numDelivDaysComplete + 1)); //it's an extra recall phase! +1
+            }
+
+            if (Config.doFinalItemRecall)
+            {
+                yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, numDelivDaysComplete + 1));
+            }
+    }
+
+    //FILL THIS IN DEPENDING ON EXPERIMENT SPECIFICATIONS
+    public IEnumerator RunExperiment(){
 		if (!ExperimentSettings.isReplay) {
 			exp.player.controls.ShouldLockControls = true;
 			if(Config.isSystem2 || Config.isSyncbox){
@@ -152,80 +233,40 @@ public class TrialController : MonoBehaviour {
 			if(isLearningSession){
 				//STORE PRESENTATION PHASE
 				if(Config.doPresentationPhase){
+                    Debug.Log("doing store presentation now");
 					yield return StartCoroutine(DoStorePresentationPhase());
 				}
 
-				exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
+                Debug.Log("finished store presentation now");
+                //should play SHORT INSTRUCTION VIDEO HERE
+                exp.eventLogger.LogSessionStarted(Experiment.sessionID, true);
 				exp.player.playerCam.enabled = true;
+                //LEARNING
 
-				//LEARNING
-				yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
-			}
+                Debug.Log("starting learning session now");
+                yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsSession));
+
+#if !HOSPITAL
+                //for scalp we will have 2 delivery days in the first session
+                yield return StartCoroutine(DoDeliveryDays(Config.numFirstSessionDelivDays));
+#endif
+            }
 			else { //if not in the learning session! ==> in delivery session
 
 				//LEARNING
 				if(Config.doLearningPhase){
+                    //do one familiarization trial
 					yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
 				}
-
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, false);
-
-				for(int i = 0; i < ExperimentSettings.numDelivDays; i++){
-					exp.player.controls.ShouldLockControls = true;
-
-					if (i == 0) {
-
-						#if GERMAN
-						yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen (exp.instructionsController.recapDeliveryInstructions_German, true, false, Config.minDefaultInstructionTime));
-						#else
-						yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen(exp.instructionsController.recapDeliveryInstructions,true,false,Config.minDefaultInstructionTime));
-						#endif
-					} else {
-
-						#if GERMAN
-						yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i + 1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
-						#else
-					yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Press (X) to begin delivery day number " + (i+1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
-						#endif
-					}
-					exp.player.controls.ShouldLockControls = false;
-
-					//DELIVERY DAY
-					orderedStores.Clear();
-					orderedItemsDelivered.Clear();
-					yield return StartCoroutine(DoStoreDeliveryPhase(i));
-
-
-					//RECALL
-					//TODO: implement different kinds of recall phases
-					Config.RecallType recallType = Config.RecallTypesAcrossTrials[i];
-					if(recallType == Config.RecallType.FreeThenCued){
-						yield return StartCoroutine(DoRecallPhase( Config.RecallType.FreeItemRecall, i));
-						yield return StartCoroutine(DoRecallPhase( Config.RecallType.CuedRecall, i));
-					}
-					else{
-						yield return StartCoroutine(DoRecallPhase( recallType, i));
-					}
-
-				}
-
-				exp.player.controls.ShouldLockControls = true;
-
-				//show final instructions screen
-				#if GERMAN
-				yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen(exp.instructionsController.finishedDeliveryInstructions_German,true,false,Config.minDefaultInstructionTime));
-				#else
-				yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen(exp.instructionsController.finishedDeliveryInstructions,true,false,Config.minDefaultInstructionTime));
-				#endif
-				//FINAL RECALL
-				if(Config.doFinalStoreRecall){
-					yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, ExperimentSettings.numDelivDays + 1)); //it's an extra recall phase! +1
-				}
-
-				if(Config.doFinalItemRecall){
-					yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, ExperimentSettings.numDelivDays));
-				}
-
+#if HOSPITAL
+                yield return StartCoroutine(DoDeliveryDays(100)); //number of delivery days doesn't matter as it is constrained by Config.numDelivTime
+#else
+                //do six delivery days for scalp
+                yield return StartCoroutine(DoDeliveryDays(Config.numDelivDays));          
+#endif
+            }
+				
 			}
 
 			exp.player.controls.ShouldLockControls = true;
@@ -236,7 +277,7 @@ public class TrialController : MonoBehaviour {
 			yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("You have completed the session! \nPress (X) to proceed.", true, true, false, 0.0f));
 
 #endif
-		}
+		
 		
 	}
 
@@ -285,12 +326,15 @@ public class TrialController : MonoBehaviour {
 
 		for (int currNumIterations = 0; currNumIterations < numIterations; currNumIterations++) {
 
-			//if we're past the second phase and under the max learning time (or we're in deliv. session), continue to the next round of buildings.
-			if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations <3 && learningPhaseTimer.GetSecondsInt () < Config.maxLearningTimeMinutes*60)){
+#if HOSPITAL
+            //if we're past the third phase (or we're in deliv. session), continue to the next round of buildings.
+            if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations < Config.numLearningIterationsSession && learningPhaseTimer.GetSecondsInt()<(Config.maxLearningTimeMinutes*60)) ){
+#else
+                if (ExperimentSettings.Instance.mySessionType == ExperimentSettings.SessionType.deliverySession || (currNumIterations < Config.numLearningIterationsSession)){
+#endif
+                //LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
 
-				//LearningSessionProgressText.text = "Learning Round " + (currNumIterations + 1) + "/" + numIterations;
-
-				Debug.Log ("CURRENT LEARNING ITERATION: " + currNumIterations);
+                Debug.Log ("CURRENT LEARNING ITERATION: " + currNumIterations);
 				//log learning iteration
 				exp.eventLogger.LogLearningIteration (currNumIterations);
 
@@ -323,7 +367,7 @@ public class TrialController : MonoBehaviour {
         /*#if EYETRACKER
 yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructions());
 #endif
-*/
+                */
         exp.eventLogger.LogPresentationPhase (true);
 
 		yield return StartCoroutine(exp.instructionsController.PlayPresentationInstructions());
@@ -738,7 +782,10 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 			else{
 				SetServerItemCueState(index, false);
 			}
+            //wait for one second before going onto next cue
+            yield return new WaitForSeconds(Config.timeBetweenCuedRecalls);
 		}
+
 		presentationBackgroundCube.TurnVisible (false);
 
 		yield return 0;

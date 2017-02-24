@@ -17,11 +17,17 @@ public class GazeFollower2D : MonoBehaviour
     private Vector2 screenGazePos;
     private bool edgeConfidence = false;
     private bool blinkConfidence = false;
+    public Image leftEye;
+    public Image rightEye;
     public float factor = 3f;
     int widthLimit = 10;
     int heightLimit = 7;
     bool allowOnce = true;
     public bool ETStatus = true;
+    public Text reconnectionInstructionText;
+    bool reconnectionActive = false;
+    public Text reconnectionTitleText;
+    public GameObject reconnectionPanel;
     //EXPERIMENT IS A SINGLETON
     private static GazeFollower2D _instance;
 
@@ -54,6 +60,9 @@ public class GazeFollower2D : MonoBehaviour
         SMIGazeController.EyetrackerSetupFailed += SetupFailed;
         widthLimit = Mathf.CeilToInt(Screen.width / 192);
         heightLimit = Mathf.CeilToInt(Screen.height / 192);
+        reconnectionInstructionText.enabled = false;
+        reconnectionTitleText.enabled = false;
+        reconnectionPanel.SetActive(false);
     }
 
     void CalibrationStarted()
@@ -75,41 +84,105 @@ public class GazeFollower2D : MonoBehaviour
         ETStatus = false;
     }
 
-    /*
+    
     IEnumerator ShowEyeReconnectionScreen()
     {
+        reconnectionActive = true;
+        reconnectionPanel.SetActive(true);
+        yield return StartCoroutine(ReconnectionProcedure());
+        //please hold position
 
+        Debug.Log("done with procedure");
+        reconnectionInstructionText.text = "Please maintain this posture during the session";
+
+        Debug.Log("waited for two seconds...TURNING things off");
+        leftEye.enabled = false;
+        rightEye.enabled = false;
+        reconnectionPanel.SetActive(false);
+        Experiment.Instance.trialController.TogglePause();  //unpause now
+        yield return new WaitForSeconds(2f);
+        
+        reconnectionInstructionText.enabled= false;
+        reconnectionTitleText.enabled = false;
+        reconnectionActive = false;
+        yield return null;
+    }
+
+    IEnumerator ReconnectionProcedure()
+    {
+        Debug.Log("starting reconnection procedure");
+        float leftDepth = 0f;
+        float rightDepth = 0f;
+        Vector2 leftPos, rightPos;
+        reconnectionTitleText.enabled = true;
+        reconnectionInstructionText.enabled = true;
+        Experiment.Instance.trialController.TogglePause(); //pause game
+                                                           // GetComponent<Image>().enabled = true; //enable averaged eye indicator
+        leftEye.enabled = true;
+        float minTimer = 0f;
+        rightEye.enabled = true;
+        while ((leftDepth > 70f && leftDepth < 60f && rightDepth < 60f && rightDepth > 70f) || (leftDepth == 0 || rightDepth == 0))
+        {
+            if (leftDepth < 60f || rightDepth < 60f)
+            {
+                reconnectionInstructionText.text = "Please move closer to the screen";
+            }
+            else if(leftDepth>70f || rightDepth > 70f)
+            {
+                reconnectionInstructionText.text = "Please move further from the screen";
+            }
+            minTimer += Time.deltaTime;
+            leftPos = SMIGazeController.Instance.GetSample().leftEye.gazePosInUnityScreenCoords();
+            rightPos = SMIGazeController.Instance.GetSample().rightEye.gazePosInUnityScreenCoords();
+            Vector2 left, right;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, leftPos, myCanvas.worldCamera, out left);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, rightPos, myCanvas.worldCamera, out right);
+            leftEye.transform.position = myCanvas.transform.TransformPoint(left);
+            rightEye.transform.position = myCanvas.transform.TransformPoint(right);
+            leftDepth = SMIGazeController.Instance.GetSample().leftEye.eyePosition.z / 10f;
+            rightDepth = SMIGazeController.Instance.GetSample().rightEye.eyePosition.z / 10f;
+
+            /*Debug.Log(minTimer);
+            Debug.Log("LEFT: " + leftDepth);
+            Debug.Log("RIGHT: " + rightDepth);
+            */
+            yield return 0;
+        }
         yield return null;
     }
 
     IEnumerator CheckEyeDetection()
     {
         float timer = 0f;
-        while (edgeConfidence)
+        Debug.Log("starting eye detection check;");
+        while (edgeConfidence && !reconnectionActive)
         {
+            Debug.Log("eye wait: " + timer);
             timer += Time.deltaTime;
-            if (timer > 10f)
+            if (timer > Config.eyeDetectionToleranceTime)
             {
                 StartCoroutine("ShowEyeReconnectionScreen");
+                timer = 0f;
             }
             yield return 0;
         }
         yield return null;
     }
-    */
+    
     // Update is called once per frame
     void Update()
     {
-
         if (gazeFollower != null && ETStatus)
         {
 
             if (Input.GetKeyDown(KeyCode.P))
             {
-                GetComponent<Image>().enabled = !(GetComponent<Image>().enabled);
-            }
+                StartCoroutine("ShowEyeReconnectionScreen");
+            
+            // GetComponent<Image>().enabled = !(GetComponent<Image>().enabled);
+        }
             Vector2 temp = SMIGazeController.Instance.GetSample().averagedEye.gazePosInUnityScreenCoords();
-
+           
             if (temp.x <= 10 || temp.y <= 6)
             {
                 edgeConfidence = true;
@@ -119,16 +192,14 @@ public class GazeFollower2D : MonoBehaviour
             {
                 edgeConfidence = false;
             }
-            /*
-            while (edgeConfidence)
+            
+            if (edgeConfidence)
             {
-                if (allowOnce)
-                {
-                  //  StartCoroutine("CheckEyeDetection");
-                }
+                    StartCoroutine("CheckEyeDetection");
+                
 
             }
-    */
+    
             screenGazePos = temp;
             //Debug.Log("SCREEN POS: " + screenGazePos);
             eyetrackerLogTrack.LogScreenGazePoint(screenGazePos, edgeConfidence, blinkConfidence);
