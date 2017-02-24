@@ -110,6 +110,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 	}
 
 	public void Quit(){
+		Debug.Log ("trying to QUIT");
 		SubjectReaderWriter.Instance.RecordSubjects();
 		Application.Quit();
 	}

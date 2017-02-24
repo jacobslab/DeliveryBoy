@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.IO;
 using System.Collections.Generic;
-
+using UnityEngine.SceneManagement;
 public class ExperimentSettings : MonoBehaviour { //should be in main menu AND experiment
 
 
@@ -63,6 +63,9 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public GameObject nonPilotOptions;
 	public bool isRelease { get { return GetIsRelease (); } }
 
+	public Button returnMenuButton;
+	public Button quitButton;
+
 
 	//LOGGING
 	public static string defaultLoggingPath = ""; //SET IN RESETDEFAULTLOGGINGPATH();
@@ -89,13 +92,27 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		}
 		_instance = this;
 
-		InitLoggingPath ();
-		InitMainMenuLabels ();
-		DoMicTest ();
+		if (SceneManager.GetActiveScene ().name != "EndMenu") {
+			InitLoggingPath ();
+			InitMainMenuLabels ();
+			DoMicTest ();
+		} else {
+			AttachSceneController ();
+		}
 
 		QualitySettings.vSyncCount = 1; //max framerate now = refresh rate of screen! mac = 60hz
 	}
+	void AttachSceneController()
+	{
+		GameObject sceneControl = GameObject.Find ("SceneController");
+		if (sceneControl != null) {
+			returnMenuButton.onClick.RemoveAllListeners ();
+			returnMenuButton.onClick.AddListener (() => SceneController.Instance.LoadMainMenu ());
 
+			quitButton.onClick.RemoveAllListeners ();
+			quitButton.onClick.AddListener (() => SceneController.Instance.Quit ());
+		}
+	}
 	void ResetDefaultLoggingPath(){
 		if (Config.isSystem2) {
 			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data";

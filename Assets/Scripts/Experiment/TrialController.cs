@@ -3,7 +3,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class TrialController : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
@@ -76,6 +76,9 @@ public class TrialController : MonoBehaviour {
 		if(!isConnectingToHardware && currentState != TrialState.recall){
 			GetPauseInput ();
 		}
+
+//		if (Input.GetKeyDown (KeyCode.Alpha3))
+//			SceneManager.LoadScene (2);
 	}
 
 	bool isPauseButtonPressed = false;
