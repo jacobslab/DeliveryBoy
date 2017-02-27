@@ -191,7 +191,7 @@ namespace iView
             int targetSize = 50;
 
             m_CalibrationData.displayDevice = displayDevice;
-            m_CalibrationData.autoAccept = 1;
+            m_CalibrationData.autoAccept = 0;
             m_CalibrationData.method = calibrationPoints;
             m_CalibrationData.visualization = 1;
             m_CalibrationData.speed = 1;
@@ -205,6 +205,7 @@ namespace iView
 
             //Start the calibration
             resultID = iV_Calibrate();
+
 
             //ErrorMessage
             GetLogData(resultID, IDContainerIviewNG.STATE_CALIBRATE);

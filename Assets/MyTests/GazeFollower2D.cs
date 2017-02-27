@@ -157,7 +157,7 @@ public class GazeFollower2D : MonoBehaviour
         Debug.Log("starting eye detection check;");
         while (edgeConfidence && !reconnectionActive)
         {
-            Debug.Log("eye wait: " + timer);
+            //Debug.Log("eye wait: " + timer);
             timer += Time.deltaTime;
             if (timer > Config.eyeDetectionToleranceTime)
             {

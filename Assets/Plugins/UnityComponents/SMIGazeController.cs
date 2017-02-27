@@ -60,6 +60,7 @@ namespace iView
         public KeyCode startValidation = KeyCode.Alpha3;
 
         private bool firstTime = true;
+        private bool canStartValidation = false;
 
         //Thread for the initialisation of the GazeController
         private static Thread eyeThread;
@@ -128,8 +129,15 @@ namespace iView
                 ManagePlayerInput();
                 if (firstTime)
                 {
+                    UnityEngine.Debug.Log("doing calibration & validation");
+                    //ET_Device.getAcessToGazeModel().isValidationRunning = true;
                     StartCalibration(9);
                     firstTime = false;
+                }
+                if (canStartValidation)
+                {
+                    StartValidationRoutine();
+                    canStartValidation = false;
                 }
             }
 #else
@@ -466,6 +474,7 @@ namespace iView
             // EyeTrackingController.Instance.
             CalibrationStopped();
             Debug.Log("end of calibration");
+            canStartValidation = true;
             yield return null;
         }
 
@@ -480,6 +489,7 @@ namespace iView
                 Screen.fullScreen = false;
 
             yield return new WaitForFixedUpdate();
+            UnityEngine.Debug.Log("in validation");
             ET_Device.StartValidation();
             Screen.fullScreen = true;
             yield return null;
