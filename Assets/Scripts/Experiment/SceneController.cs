@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class SceneController : MonoBehaviour { //there can be a separate scene controller in each scene
 
     public Image calibrationInstructions;
+	public Image calibrationInstructions_German;
 	//SINGLETON
 	private static SceneController _instance;
 	
@@ -26,8 +27,13 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 
 	// Use this for initialization
 	void Start () {
+		#if !GERMAN
         if (calibrationInstructions!=null)
         calibrationInstructions.enabled = false;
+		#else
+		if (calibrationInstructions_German!=null)
+		calibrationInstructions_German.enabled = false;
+		#endif
 
 	}
 
@@ -39,7 +45,11 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 
     IEnumerator ShowCalibrationInstructions()
     {
+		#if !GERMAN
         calibrationInstructions.enabled = true;
+		#else
+		calibrationInstructions_German.enabled=true;
+		#endif
         yield return StartCoroutine(UsefulFunctions.WaitForActionButton());
         yield return null;
     }
