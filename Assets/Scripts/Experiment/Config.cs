@@ -112,7 +112,7 @@ public class Config : MonoBehaviour {
 
 
 	public static bool shouldUseWaypoints = true;
-	public static int maxNumWrongTurns = 3;
+	public static int maxNumWrongTurns = 1;
 
 	//tilt variables
 	public static bool isAvatarTilting = true;

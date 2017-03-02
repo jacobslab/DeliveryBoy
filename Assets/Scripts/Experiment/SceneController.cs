@@ -50,7 +50,9 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 		#else
 		calibrationInstructions_German.enabled=true;
 		#endif
-        yield return StartCoroutine(UsefulFunctions.WaitForActionButton());
+		while (!Input.GetKeyDown (KeyCode.Tab)) {
+			yield return 0;
+		}
         yield return null;
     }
 

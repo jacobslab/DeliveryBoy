@@ -720,9 +720,9 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true);
 #if GERMAN
-				exp.recallInstructionsController.DisplayText("Was haben Sie hierher geliefert?");
+				exp.recallInstructionsController.DisplayText("Zu welchem Geschäft haben Sie diesen Gegenstand geliefert?");
 #else
-				exp.recallInstructionsController.DisplayText ("What did you deliver here?");
+				exp.recallInstructionsController.DisplayText ("Which object did you deliver to this store?");
 #endif
 
 				//show image
@@ -741,9 +741,9 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true);
 
 #if GERMAN
-				exp.recallInstructionsController.DisplayText ("Wohin haben Sie diesen Gegenstand geliefert?");
+				exp.recallInstructionsController.DisplayText ("Welchen Gegenstand haben Sie zu diesem Geschäft geliefert?");
 #else
-				exp.recallInstructionsController.DisplayText ("Where did you deliver the spoken item to?");
+				exp.recallInstructionsController.DisplayText ("Which store did you deliver the spoken object to?");
 #endif
 				//play audio
 				orderedStores[index].PlayCurrentAudio();
