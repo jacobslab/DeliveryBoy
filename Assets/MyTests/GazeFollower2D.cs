@@ -197,7 +197,7 @@ public class GazeFollower2D : MonoBehaviour
         double leftYDev = SMIGazeController.Instance.leftYDeviation;
         double rightXDev = SMIGazeController.Instance.rightXDeviation;
         double rightYDev = SMIGazeController.Instance.rightYDeviation;
-        validationResults.text = " Left X/Y Deviation:  " + leftXDev.ToString("F2") + " / " + leftYDev.ToString("F2") + "\n Right X/Y Deviation:  " + rightXDev.ToString("F2") + " / " + rightYDev.ToString("F2");
+        validationResults.text = " Left X/Y:  " + leftXDev.ToString("F2") + " / " + leftYDev.ToString("F2") + "\n Right X/Y:  " + rightXDev.ToString("F2") + " / " + rightYDev.ToString("F2");
     }
 
     // Update is called once per frame

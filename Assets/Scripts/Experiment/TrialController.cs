@@ -226,7 +226,7 @@ public class TrialController : MonoBehaviour {
 
 			//show video instructions
 			Debug.Log("ABOUT TO SHOW VIDEO INSTRUCTIONS");
-			yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions());
+			//yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions());
 
             exp.gazeController.EnableCalibrationUI(true);
             //wait till eyetracker finished calibration & validation procedure

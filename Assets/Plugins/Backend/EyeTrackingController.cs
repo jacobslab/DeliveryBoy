@@ -199,9 +199,8 @@ namespace iView
             int displayDevice = 0;
             int calibrationPoints = SMIGazeController.Instance.GetCalibrationPoints();
             int targetSize = 50;
-
             m_CalibrationData.displayDevice = displayDevice;
-            m_CalibrationData.autoAccept = 1;
+            m_CalibrationData.autoAccept = 2;
             m_CalibrationData.method = calibrationPoints;
             m_CalibrationData.visualization = 1;
             m_CalibrationData.speed = 1;
