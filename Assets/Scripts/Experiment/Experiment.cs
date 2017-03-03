@@ -21,6 +21,8 @@ public class Experiment : MonoBehaviour {
 	public Logger_Threading subjectLog;
 	private string eegLogfile; //gets set based on the current subject in Awake()
 	public Logger_Threading eegLog;
+    //eyetracker data controller
+    public GazeFollower2D gazeController;
 	public static int sessionID;
 
 	public string SessionDirectory;

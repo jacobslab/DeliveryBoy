@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using iView;
 public class TrialController : MonoBehaviour {
 	Experiment exp { get { return Experiment.Instance; } }
 
@@ -176,6 +177,11 @@ public class TrialController : MonoBehaviour {
             {
                 yield return StartCoroutine(DoRecallPhase(recallType, i));
             }
+
+            //check for eye reconnection
+
+            if (exp.gazeController.edgeConfidence)
+                yield return StartCoroutine(exp.gazeController.ShowEyeReconnectionScreen());
         }
             exp.player.controls.ShouldLockControls = true;
             //show final instructions screen
@@ -221,6 +227,15 @@ public class TrialController : MonoBehaviour {
 			//show video instructions
 			Debug.Log("ABOUT TO SHOW VIDEO INSTRUCTIONS");
 			yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions());
+
+            exp.gazeController.EnableCalibrationUI(true);
+            //wait till eyetracker finished calibration & validation procedure
+            while(SMIGazeController.Instance.isDoingCalibration)
+            {
+                yield return 0;
+            }
+
+            exp.gazeController.EnableCalibrationUI(false);
 
 			//show instructions for exploring, wait for the action button
 			//yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());

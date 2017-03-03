@@ -174,7 +174,8 @@ public class InstructionsController : MonoBehaviour {
 		finishedDeliveryInstructions_German.enabled = false;
 	}
 	public IEnumerator PlayVideoInstructions(){
-		VideoInstructions.GetComponent<CanvasGroup> ().alpha = 1f;
+        yield return StartCoroutine(videoPlayer.SetVideoTexture());
+        VideoInstructions.GetComponent<CanvasGroup> ().alpha = 1f;
 		yield return StartCoroutine (videoPlayer.Play());
 
 		VideoInstructions.GetComponent<CanvasGroup> ().alpha = 0f;

@@ -59,7 +59,10 @@ namespace iView
 
         public KeyCode startValidation = KeyCode.Alpha3;
 
+        public bool isDoingCalibration = true;
+
         private bool firstTime = true;
+        public bool waitingInput = false;
         private bool canStartValidation = false;
 
         //Thread for the initialisation of the GazeController
@@ -77,6 +80,11 @@ namespace iView
 
         private string receiveIP;
         private int receivePort;
+
+        public double leftXDeviation = 0f;
+        public double leftYDeviation = 0f;
+        public double rightXDeviation = 0f;
+        public double rightYDeviation = 0f;
 
         #region UnityInternFunction
 
@@ -124,27 +132,39 @@ namespace iView
 
             if (GetIsStartingOver())
             {
+
                 StartCalibrationRoutine(ET_Device.getAcessToGazeModel().calibrationMethod);
                 StartValidationRoutine();
                 ManagePlayerInput();
                 if (firstTime)
                 {
-                    UnityEngine.Debug.Log("doing calibration & validation");
-                    //ET_Device.getAcessToGazeModel().isValidationRunning = true;
-                    StartCalibration(9);
+                    DoCalibrationProcedure();
                     firstTime = false;
                 }
-                if (canStartValidation)
-                {
-                    StartValidationRoutine();
-                    canStartValidation = false;
-                }
+               
+            }
+            if(waitingInput && Input.GetKeyDown(KeyCode.Tab))
+            {
+                DoCalibrationProcedure();
+            }
+            else if(waitingInput && Input.GetKeyDown(KeyCode.X))
+            {
+                waitingInput = false;
+                isDoingCalibration = false;
             }
 #else
             Debug.LogError("You need Windows as operating system.");
 #endif
         }
 
+        void DoCalibrationProcedure()
+        {
+
+            isDoingCalibration = true;
+            UnityEngine.Debug.Log("doing calibration & validation");
+            //ET_Device.getAcessToGazeModel().isValidationRunning = true;
+            StartCalibration(9);
+        }
         /// <summary>
         /// Mono Behaviour OnApplicationQuit Function:
         /// Stops the EyeTrackingController and Joins the Thread
@@ -472,9 +492,21 @@ namespace iView
             ET_Device.StartCalibration();
             Screen.fullScreen = true;
             // EyeTrackingController.Instance.
-            CalibrationStopped();
-            Debug.Log("end of calibration");
-            canStartValidation = true;
+            
+
+            //run validation now
+
+            StartValidation();
+            StartValidationRoutine();
+            
+            yield return null;
+        }
+
+        IEnumerator DisplayCalibrationResults()
+        {
+            ET_Device.ShowAccuracyImage(true);
+            yield return new WaitForSeconds(5f);
+            ET_Device.ShowAccuracyImage(false);
             yield return null;
         }
 
@@ -492,7 +524,31 @@ namespace iView
             UnityEngine.Debug.Log("in validation");
             ET_Device.StartValidation();
             Screen.fullScreen = true;
+
+            Debug.Log("end of validation");
             yield return null;
+        }
+
+        public void ShowAccuracyResults()
+        {
+            ET_Device.ShowAccuracyImage(true);
+           
+        }
+
+        public void PrintAccuracyResults(double leftXDev,double leftYDev,double rightXDev,double rightYDev)
+        {
+            leftXDeviation = leftXDev;
+            leftYDeviation = leftYDev;
+            rightXDeviation = rightXDev;
+            rightYDeviation = rightYDev;
+            CalibrationStopped();
+            waitingInput = true;
+            Debug.Log("end of calibration+validation procedure");
+
+            UnityEngine.Debug.Log("LEFT X DEVIATION: " + leftXDev.ToString());
+            UnityEngine.Debug.Log("LEFT Y DEVIATION: " + leftYDev.ToString());
+            UnityEngine.Debug.Log("RIGHT X DEVIATION: " + rightXDev.ToString());
+            UnityEngine.Debug.Log("RIGHT X DEVIATION: " + rightYDev.ToString());
         }
     }
 }

@@ -15,7 +15,7 @@ public class GazeFollower2D : MonoBehaviour
     public EyetrackerLogTrack eyetrackerLogTrack;
     private float timer = 0f;
     private Vector2 screenGazePos;
-    private bool edgeConfidence = false;
+    public bool edgeConfidence = false;
     private bool blinkConfidence = false;
     public Image leftEye;
     public Image rightEye;
@@ -28,6 +28,14 @@ public class GazeFollower2D : MonoBehaviour
     bool reconnectionActive = false;
     public Text reconnectionTitleText;
     public GameObject reconnectionPanel;
+
+
+    public CanvasGroup calibrationResults;
+
+    public Text calibrationComplete;
+    public Text validationComplete;
+    public Text validationResults;
+        
     //EXPERIMENT IS A SINGLETON
     private static GazeFollower2D _instance;
 
@@ -63,6 +71,9 @@ public class GazeFollower2D : MonoBehaviour
         reconnectionInstructionText.enabled = false;
         reconnectionTitleText.enabled = false;
         reconnectionPanel.SetActive(false);
+        calibrationResults.alpha = 0f;
+        EnableCalibrationUI(false);
+        EnableValidationUI(false);
     }
 
     void CalibrationStarted()
@@ -74,6 +85,7 @@ public class GazeFollower2D : MonoBehaviour
 
     void CalibrationEnded()
     {
+        EnableValidationUI(true);
         eyetrackerLogTrack.LogCalibrationEnded(5);
     }
 
@@ -85,7 +97,7 @@ public class GazeFollower2D : MonoBehaviour
     }
 
     
-    IEnumerator ShowEyeReconnectionScreen()
+    public IEnumerator ShowEyeReconnectionScreen()
     {
         reconnectionActive = true;
         reconnectionPanel.SetActive(true);
@@ -154,7 +166,7 @@ public class GazeFollower2D : MonoBehaviour
     IEnumerator CheckEyeDetection()
     {
         float timer = 0f;
-        Debug.Log("starting eye detection check;");
+       // Debug.Log("starting eye detection check;");
         while (edgeConfidence && !reconnectionActive)
         {
             //Debug.Log("eye wait: " + timer);
@@ -168,38 +180,58 @@ public class GazeFollower2D : MonoBehaviour
         }
         yield return null;
     }
-    
+    public void EnableCalibrationUI(bool shouldEnable)
+    {
+        if (shouldEnable)
+        {
+            calibrationResults.alpha = 1f;
+        }
+        else
+            calibrationResults.alpha = 0f;
+        calibrationComplete.gameObject.SetActive(shouldEnable);
+    }
+    public void EnableValidationUI(bool shouldEnable)
+    {
+        validationComplete.gameObject.SetActive(shouldEnable);
+        double leftXDev = SMIGazeController.Instance.leftXDeviation;
+        double leftYDev = SMIGazeController.Instance.leftYDeviation;
+        double rightXDev = SMIGazeController.Instance.rightXDeviation;
+        double rightYDev = SMIGazeController.Instance.rightYDeviation;
+        validationResults.text = " Left X/Y Deviation:  " + leftXDev.ToString("F2") + " / " + leftYDev.ToString("F2") + "\n Right X/Y Deviation:  " + rightXDev.ToString("F2") + " / " + rightYDev.ToString("F2");
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (gazeFollower != null && ETStatus)
         {
 
-            if (Input.GetKeyDown(KeyCode.P))
+          /*  if (Input.GetKeyDown(KeyCode.P))
             {
                 StartCoroutine("ShowEyeReconnectionScreen");
             
             // GetComponent<Image>().enabled = !(GetComponent<Image>().enabled);
         }
+        */
             Vector2 temp = SMIGazeController.Instance.GetSample().averagedEye.gazePosInUnityScreenCoords();
            
             if (temp.x <= 10 || temp.y <= 6)
             {
                 edgeConfidence = true;
-                Debug.Log("EDGE CONFIDENCE ON THIS");
+            //    Debug.Log("EDGE CONFIDENCE ON THIS");
             }
             else
             {
                 edgeConfidence = false;
             }
-            
+            /*
             if (edgeConfidence)
             {
-                    StartCoroutine("CheckEyeDetection");
+                    StartCoroutine("ShowEyeReconnectionScreen");
                 
 
             }
-    
+    */
             screenGazePos = temp;
             //Debug.Log("SCREEN POS: " + screenGazePos);
             eyetrackerLogTrack.LogScreenGazePoint(screenGazePos, edgeConfidence, blinkConfidence);

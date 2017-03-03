@@ -100,8 +100,18 @@ namespace iView
         {
             int resultID = iV_Connect(new StringBuilder(sendIP), sendPort, new StringBuilder(receiveIP), receivePort);
             GetLogData(resultID, IDContainerIviewNG.STATE_CONNECT);
-
+            
             gazeModel.isStartingProcessOver = true;
+        }
+
+        public void ShowAccuracyImage(bool isActive)
+        {
+            if (isActive)
+            {
+                int resultID = iV_GetAccuracy(ref m_AccuracyData, 2);
+                SMIGazeController.Instance.PrintAccuracyResults(m_AccuracyData.deviationXLeft,m_AccuracyData.deviationYLeft,m_AccuracyData.deviationXRight,m_AccuracyData.deviationYRight);
+                //GetLogData(resultID, IDContainerIviewNG.);
+            }
         }
 
         /// <summary>
@@ -206,8 +216,6 @@ namespace iView
             //Start the calibration
             resultID = iV_Calibrate();
 
-            //show accuracy screen
-            resultID = iV_ShowAccuracyMonitor();
 
             //ErrorMessage
             GetLogData(resultID, IDContainerIviewNG.STATE_CALIBRATE);
@@ -219,8 +227,12 @@ namespace iView
         /// </summary>
         public void StartValidation()
         {
-            gazeModel.isValidationRunning = true;
+            gazeModel.isValidationRunning = false;
+            int resultID = iV_Validate();
+            GetLogData(resultID, IDContainerIviewNG.STATE_VALIDATE);
+            SMIGazeController.Instance.ShowAccuracyResults();
         }
+
 
         /// <summary>
         /// Write the SampleData into the gazeModel
@@ -285,7 +297,7 @@ namespace iView
 
         [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
         public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
-
+        
 
         // API Function definition. See the manual for further description. 
 
@@ -354,6 +366,11 @@ namespace iView
 
         [DllImport(dllName, EntryPoint = "iV_GetEvent")]
         private static extern int Unmanaged_GetEvent(ref EventStruct eventDataSample);
+
+        /* NOT IMPLEMENTED BY SMI DESPITE BEING DOCUMENTED IN THE MANUAL
+        [DllImport(dllName, EntryPoint = "iV_GetCalibrationQualityImage")]
+        private static extern int Unmanaged_GetCalibrationQualityImage(ref CalibrationStruct calibData);
+        */
 
         [DllImport(dllName, EntryPoint = "iV_GetFeatureKey")]
         private static extern int Unmanaged_GetFeatureKey(ref Int64 featureKey);
@@ -767,6 +784,7 @@ namespace iView
         {
             return Unmanaged_SetREDGeometry(ref redGeometry);
         }
+
 
         private int iV_ShowAccuracyMonitor()
         {
