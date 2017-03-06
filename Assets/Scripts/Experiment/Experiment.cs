@@ -25,6 +25,8 @@ public class Experiment : MonoBehaviour {
     public GazeFollower2D gazeController;
 	public static int sessionID;
 
+	public InputMic micTest;
+
 	public string SessionDirectory;
 	public static string sessionStartedFileName = "sessionStarted.txt";
 

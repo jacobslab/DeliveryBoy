@@ -19,6 +19,11 @@ public class InputMic : MonoBehaviour
     public Text beginExperimentText;
     private List<string> micList = new List<string>();
     //mic initialization
+	public CanvasGroup micCanvasGroup;
+	void Awake()
+	{
+		micCanvasGroup.alpha = 0f;
+	}
     void Start()
     {
         for (int i = 0; i < Microphone.devices.Length; i++)
@@ -64,8 +69,10 @@ public class InputMic : MonoBehaviour
 
     public IEnumerator RunMicTest()
     {
+		micCanvasGroup.alpha = 1f;
         yield return StartCoroutine("RotateWords");
         yield return new WaitForSeconds(1.5f);
+		micCanvasGroup.alpha = 0f;
         yield return null;
 
     }

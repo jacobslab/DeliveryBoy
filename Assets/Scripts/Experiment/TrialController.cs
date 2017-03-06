@@ -228,6 +228,10 @@ public class TrialController : MonoBehaviour {
 			//CREATE SESSION STARTED FILE!
 			exp.CreateSessionStartedFile();
 
+			//do mic test here
+
+			yield return StartCoroutine (exp.micTest.RunMicTest ());
+
 
 			//show video instructions
 			Debug.Log("ABOUT TO SHOW VIDEO INSTRUCTIONS");
