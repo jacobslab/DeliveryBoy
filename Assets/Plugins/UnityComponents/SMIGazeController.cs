@@ -91,6 +91,7 @@ namespace iView
         void Awake()
         {
 
+			#if EYETRACKER
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
             if (!instance)
             {
@@ -117,6 +118,9 @@ namespace iView
 #else
             Debug.LogError("You need Windows as operating system.");
 #endif
+			#else
+			gameObject.SetActive(false);
+			#endif
         }
 
         /// <summary>

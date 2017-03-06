@@ -173,10 +173,10 @@ public class InstructionsController : MonoBehaviour {
 		recapDeliveryInstructions_German.enabled = false;
 		finishedDeliveryInstructions_German.enabled = false;
 	}
-	public IEnumerator PlayVideoInstructions(){
+	public IEnumerator PlayVideoInstructions(bool autoPlay){
         yield return StartCoroutine(videoPlayer.SetVideoTexture());
         VideoInstructions.GetComponent<CanvasGroup> ().alpha = 1f;
-		yield return StartCoroutine (videoPlayer.Play());
+		yield return StartCoroutine (videoPlayer.Play(autoPlay));
 
 		VideoInstructions.GetComponent<CanvasGroup> ().alpha = 0f;
 		yield return null;

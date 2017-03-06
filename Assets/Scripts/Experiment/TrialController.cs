@@ -123,9 +123,12 @@ public class TrialController : MonoBehaviour {
         deliveryTimer.StartTimer();
         bool isDeliveryTimerRunning=deliveryTimer.IsRunning;
    
-        for (int i = 0;deliveryTimer.GetSecondsInt() < Config.numDelivTime; i++)
+		Debug.Log("Checking if enough items left");
+		yield return StartCoroutine(exp.storeController.CheckStoresAndItemsLeft());
+
+		for (int i = 0;deliveryTimer.GetSecondsInt() < (Config.numDelivTime*60f) && ExperimentSettings.sufficientItemsForDeliveryDay; i++)
 #else
-        for (int i = 0; i < Config.numDelivDays; i++)
+		for (int i = 0; i < Config.numDelivDays && ExperimentSettings.sufficientItemsForDeliveryDay; i++)
 #endif
         {
             numDelivDaysComplete = i;
@@ -179,10 +182,12 @@ public class TrialController : MonoBehaviour {
             }
 
             //check for eye reconnection
-
+		#if EYETRACKER
             if (exp.gazeController.edgeConfidence)
                 yield return StartCoroutine(exp.gazeController.ShowEyeReconnectionScreen());
+			#endif
         }
+
             exp.player.controls.ShouldLockControls = true;
             //show final instructions screen
 #if GERMAN
@@ -226,8 +231,17 @@ public class TrialController : MonoBehaviour {
 
 			//show video instructions
 			Debug.Log("ABOUT TO SHOW VIDEO INSTRUCTIONS");
-			//yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions());
+			#if HOSPITAL
+			if(isLearningSession)
+				yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(true));
+			else
+				yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(false));
+			#else
 
+			yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(false));
+			#endif
+
+			#if EYETRACKER
             exp.gazeController.EnableCalibrationUI(true);
             //wait till eyetracker finished calibration & validation procedure
             while(SMIGazeController.Instance.isDoingCalibration)
@@ -235,7 +249,9 @@ public class TrialController : MonoBehaviour {
                 yield return 0;
             }
 
+
             exp.gazeController.EnableCalibrationUI(false);
+			#endif
 
 			//show instructions for exploring, wait for the action button
 			//yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
@@ -643,7 +659,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				exp.recallInstructionsController.DisplayText("Please recall objects from all delivery days");
 			#endif
 				fileName = "ffr";
-				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalItemRecallInstructions, true, true, false, 0.0f));
+				//yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalItemRecallInstructions, true, true, false, 0.0f));
 				RecallUI.alpha = 1.0f;
 				//exp.recallInstructionsController.DisplayText ("Speak aloud all items that you remember.");
 				break;
@@ -657,7 +673,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				exp.recallInstructionsController.DisplayText("Please recall stores from all delivery days");
 			#endif
 				fileName = "sr";
-				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalStoreRecallInstructions, true, true, false, 0.0f));
+				//yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction(InstructionsController.finalStoreRecallInstructions, true, true, false, 0.0f));
 				RecallUI.alpha = 1.0f;
 				//exp.recallInstructionsController.DisplayText ("Speak aloud all stores that you remember.");
 				break;

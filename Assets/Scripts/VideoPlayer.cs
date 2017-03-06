@@ -26,6 +26,10 @@ public class VideoPlayer : MonoBehaviour {
         movieAudio = GetComponent<AudioSource>();
         if (rim != null) {
             if (rim.texture != null) {
+				#if HOSPITAL
+				rim.texture=hospitalLearningSessionVideo;
+				movieAudio.clip=hospitalLearningSessionAudio;
+				#else
 #if GERMAN
                 rim.texture=germanVideo;
                 movieAudio.clip=germanAudio;
@@ -33,9 +37,12 @@ public class VideoPlayer : MonoBehaviour {
                 rim.texture = englishVideo;
                 movieAudio.clip = englishAudio;
 #endif
+				#endif
                 movie = (MovieTexture)rim.mainTexture;
-            }
-        }
+			
+			}
+
+		}
         //	rim.color = new Color (0f, 0f, 0f, 0f);
     }
 
@@ -62,11 +69,14 @@ public class VideoPlayer : MonoBehaviour {
     }
 
 
-    public IEnumerator Play() {
+	public IEnumerator Play(bool autoPlay) {
         group.alpha = 0.0f;
         if (movie != null) {
             Debug.Log("playing instruction video");
-            yield return StartCoroutine(exp.instructionsController.AskIfShouldPlay());
+			if (!autoPlay)
+				yield return StartCoroutine (exp.instructionsController.AskIfShouldPlay ());
+			else
+				shouldPlay = true;
 
             if (shouldPlay) {
                 group.alpha = 1.0f;

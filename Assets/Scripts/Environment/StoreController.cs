@@ -258,6 +258,21 @@ public class StoreController : MonoBehaviour {
 		return distances;
 	}
 
+	public IEnumerator CheckStoresAndItemsLeft()
+	{
+
+		
+		for (int storeIndex = 0; storeIndex < stores.Length; storeIndex++) {
+			Store currStore = stores [storeIndex];
+			UnityEngine.Debug.Log (currStore.GetDisplayName () + " has " + currStore.audioLeftToUse.Count + " objects left");
+			if (currStore.audioLeftToUse.Count <=0) {
+				ExperimentSettings.sufficientItemsForDeliveryDay = false;
+			}
+		}
+
+		yield return null;
+	}
+
 	void RecordStoresAndItemsLeft(){
 		if (ExperimentSettings.isLogging) {
 			Debug.Log ("Recording stores & items left!");

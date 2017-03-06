@@ -39,6 +39,8 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public Toggle learningSessToggle;
 	public Toggle delivSessToggle;
 
+	public static bool sufficientItemsForDeliveryDay=true;
+
 	public enum SessionType
 	{
 		learningSession,
