@@ -49,6 +49,8 @@ public class TrialController : MonoBehaviour {
 	public Transform recallStorePresentationTransform;
 	public VisibilityToggler presentationBackgroundCube;
 
+	public Text pauseText;
+
 	int numRealTrials = 0; //used for logging trial ID's
 
 
@@ -61,6 +63,7 @@ public class TrialController : MonoBehaviour {
 		orderedItemsDelivered = new List<string>();
 		//disable player camera
 		exp.player.playerCam.enabled = false;
+		pauseText.enabled = false;
 		InitUIText ();
 	}
 
@@ -265,6 +268,10 @@ public class TrialController : MonoBehaviour {
 //				yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
 //			}
 //
+
+
+			//enable pause instruction again
+			pauseText.enabled=true;
 			if(isLearningSession){
 				//STORE PRESENTATION PHASE
 				if(Config.doPresentationPhase){

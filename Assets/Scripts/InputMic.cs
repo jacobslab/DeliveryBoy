@@ -57,7 +57,7 @@ public class InputMic : MonoBehaviour
                 currentWord++;
                 spokenWord.text = wordList[currentWord];
             }
-            if (MicLoudness > 0.5f)
+			if (MicLoudness > Config.micLoudnessThreshold)
             {
                 cannotHear = false;
                 marker.color = Color.green;

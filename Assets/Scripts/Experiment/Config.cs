@@ -37,6 +37,9 @@ public class Config : MonoBehaviour {
 	public static bool shouldDoBreak;	//TODO
 
 
+	//mic test
+	public static float micLoudnessThreshold=0.25f;
+
 	//SPECIFIC TASK VARIABLES:
 	public static float randomJitterMin = 0.0f;
 	public static float randomJitterMax = 0.2f;
