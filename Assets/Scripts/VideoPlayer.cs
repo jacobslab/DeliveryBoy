@@ -114,12 +114,23 @@ public class VideoPlayer : MonoBehaviour {
             //PLAY shorter video with only navigation
             rim.texture = hospitalLearningSessionVideo;
             movieAudio.clip = hospitalLearningSessionAudio;
-            movie = (MovieTexture)rim.texture;
 #endif
         }
+		else
+		{
+		#if GERMAN
+		rim.texture=germanVideo;
+		movieAudio.clip=germanAudio;
+		#else
+			rim.texture=englishVideo;
+			movieAudio.clip=englishAudio;
+		#endif
+		}
 #else
         // no need to change; as Start() has already set it properly
 #endif
+
+			movie=(MovieTexture)rim.texture;
             yield return null;
     }
 	

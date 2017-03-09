@@ -34,6 +34,8 @@ public class InstructionsController : MonoBehaviour {
 	public Image oculusBackground;
 	Color backgroundColorDefault;
 
+	public CanvasGroup instructionPanel;
+
 	public GameObject ScoreInstructions; //turn these on and off as necessary during the trial.......
 	public GameObject VideoInstructions;
 	public VideoPlayer videoPlayer;
@@ -262,7 +264,7 @@ public class InstructionsController : MonoBehaviour {
 
 	public IEnumerator ShowSingleInstruction(string line, bool isDark, bool waitForButton, bool addRandomPostJitter, float minDisplayTimeSeconds){
 		Experiment.Instance.trialController.GetComponent<TrialLogTrack> ().LogInstructionEvent ();
-
+		instructionPanel.alpha = 1f;
 		if(isDark){
 			SetInstructionsColorful();
 		}
@@ -280,6 +282,8 @@ public class InstructionsController : MonoBehaviour {
 		if (addRandomPostJitter) {
 			yield return StartCoroutine(UsefulFunctions.WaitForJitter ( Config.randomJitterMin, Config.randomJitterMax ) );
 		}
+
+		instructionPanel.alpha = 0f;
 		
 		TurnOffInstructions ();
 		exp.cameraController.SetInGame();
