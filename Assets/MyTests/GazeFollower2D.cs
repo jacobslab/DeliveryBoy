@@ -125,6 +125,8 @@ public class GazeFollower2D : MonoBehaviour
         Debug.Log("starting reconnection procedure");
         float leftDepth = 0f;
         float rightDepth = 0f;
+		float leftXPos = 0f;
+		float rightXPos = 0f;
         Vector2 leftPos, rightPos;
         reconnectionTitleText.enabled = true;
         reconnectionInstructionText.enabled = true;
@@ -135,14 +137,15 @@ public class GazeFollower2D : MonoBehaviour
         rightEye.enabled = true;
         while ((leftDepth > 70f && leftDepth < 60f && rightDepth < 60f && rightDepth > 70f) || (leftDepth == 0 || rightDepth == 0))
         {
-            if (leftDepth < 60f || rightDepth < 60f)
-            {
-                reconnectionInstructionText.text = "Please move closer to the screen";
-            }
-            else if(leftDepth>70f || rightDepth > 70f)
-            {
-                reconnectionInstructionText.text = "Please move further from the screen";
-            }
+			if (leftDepth < 60f || rightDepth < 60f) {
+				reconnectionInstructionText.text = "Please move closer to the screen";
+			} else if (leftDepth > 70f || rightDepth > 70f) {
+				reconnectionInstructionText.text = "Please move further from the screen";
+			} else if (leftXPos < 100f || rightXPos < 100f) {
+				reconnectionInstructionText.text = "Please move a bit to the right";
+			} else if (leftXPos > Screen.width - 100f || rightXPos > Screen.width - 100f) {
+				reconnectionInstructionText.text = " Please move a bit to the left";
+			}
             minTimer += Time.deltaTime;
             leftPos = SMIGazeController.Instance.GetSample().leftEye.gazePosInUnityScreenCoords();
             rightPos = SMIGazeController.Instance.GetSample().rightEye.gazePosInUnityScreenCoords();
@@ -151,6 +154,8 @@ public class GazeFollower2D : MonoBehaviour
             RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, rightPos, myCanvas.worldCamera, out right);
             leftEye.transform.position = myCanvas.transform.TransformPoint(left);
             rightEye.transform.position = myCanvas.transform.TransformPoint(right);
+			leftXPos = SMIGazeController.Instance.GetSample ().leftEye.eyePosition.x;
+			rightXPos = SMIGazeController.Instance.GetSample ().rightEye.eyePosition.x;
             leftDepth = SMIGazeController.Instance.GetSample().leftEye.eyePosition.z / 10f;
             rightDepth = SMIGazeController.Instance.GetSample().rightEye.eyePosition.z / 10f;
 
