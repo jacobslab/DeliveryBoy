@@ -36,9 +36,12 @@ public class InputMic : MonoBehaviour
     }
     void InitMic()
     {
-
-        if (_device == null) _device = Microphone.devices[micDrops.value];
-        _clipRecord = Microphone.Start(_device, true, 999, 44100);
+        micCanvasGroup.alpha = 0f;
+        if (_device == null && micDrops.value!=0)
+        {
+            _device = Microphone.devices[micDrops.value];
+            _clipRecord = Microphone.Start(_device, true, 999, 44100);
+        }
     }
     IEnumerator RotateWords()
     {
@@ -110,6 +113,9 @@ public class InputMic : MonoBehaviour
 
     void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.L))
+            cannotHear = false;
         // levelMax equals to the highest normalized value power 2, a small number because < 1
         // pass the value to a static var so we can access it from anywhere
         MicLoudness = LevelMax();

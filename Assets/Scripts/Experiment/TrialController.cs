@@ -136,6 +136,11 @@ public class TrialController : MonoBehaviour {
         {
             numDelivDaysComplete = i;
             exp.player.controls.ShouldLockControls = true;
+            //check for eye reconnection
+#if EYETRACKER
+            if (exp.gazeController.edgeConfidence)
+                yield return StartCoroutine(exp.gazeController.ShowEyeReconnectionScreen());
+#endif
 
             if (i == 0)
             {
@@ -184,11 +189,6 @@ public class TrialController : MonoBehaviour {
                 yield return StartCoroutine(DoRecallPhase(recallType, i));
             }
 
-            //check for eye reconnection
-		#if EYETRACKER
-            if (exp.gazeController.edgeConfidence)
-                yield return StartCoroutine(exp.gazeController.ShowEyeReconnectionScreen());
-			#endif
         }
 
             exp.player.controls.ShouldLockControls = true;
@@ -231,22 +231,8 @@ public class TrialController : MonoBehaviour {
 			//CREATE SESSION STARTED FILE!
 			exp.CreateSessionStartedFile();
 
-			//do mic test here
-
-			yield return StartCoroutine (exp.micTest.RunMicTest ());
 
 
-			//show video instructions
-			Debug.Log("ABOUT TO SHOW VIDEO INSTRUCTIONS");
-			#if HOSPITAL
-			if(isLearningSession)
-				yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(true));
-			else
-				yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(false));
-			#else
-
-			yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(false));
-			#endif
 
 			#if EYETRACKER
             exp.gazeController.EnableCalibrationUI(true);
@@ -258,20 +244,36 @@ public class TrialController : MonoBehaviour {
 
 
             exp.gazeController.EnableCalibrationUI(false);
-			#endif
+#endif
 
-			//show instructions for exploring, wait for the action button
-			//yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
+            //show instructions for exploring, wait for the action button
+            //yield return StartCoroutine (exp.instructionsController.PlayStartInstructions());
 
-			//learning phase/session instructions
-//			if(isLearningSession){
-//				yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
-//			}
-//
+            //learning phase/session instructions
+            //			if(isLearningSession){
+            //				yield return StartCoroutine(exp.instructionsController.PlayLearningInstructions());
+            //			}
+            //
 
 
-			//enable pause instruction again
-			pauseText.enabled=true;
+            //show video instructions
+            Debug.Log("ABOUT TO SHOW VIDEO INSTRUCTIONS");
+#if HOSPITAL
+			if(isLearningSession)
+				yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(true));
+			else
+				yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(false));
+#else
+
+            yield return StartCoroutine(exp.instructionsController.PlayVideoInstructions(false));
+#endif
+
+            //do mic test here
+
+            yield return StartCoroutine(exp.micTest.RunMicTest());
+
+            //enable pause instruction again
+            pauseText.enabled=true;
 			if(isLearningSession){
 				//STORE PRESENTATION PHASE
 				if(Config.doPresentationPhase){
