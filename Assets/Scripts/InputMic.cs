@@ -28,7 +28,7 @@ public class InputMic : MonoBehaviour
     {
         for (int i = 0; i < Microphone.devices.Length; i++)
         {
-            Debug.Log(Microphone.devices[i].ToString());
+            Debug.Log("length of mics is" + Microphone.devices.Length + "  and  " + Microphone.devices[i].ToString());
             micList.Add(Microphone.devices[i].ToString());
         }
         beginExperimentText.enabled = false;
@@ -37,9 +37,9 @@ public class InputMic : MonoBehaviour
     void InitMic()
     {
         micCanvasGroup.alpha = 0f;
-        if (_device == null && micDrops.value!=0)
+        if (_device == null)
         {
-            _device = Microphone.devices[micDrops.value];
+            _device = Microphone.devices[0];
             _clipRecord = Microphone.Start(_device, true, 999, 44100);
         }
     }
@@ -72,6 +72,7 @@ public class InputMic : MonoBehaviour
 
     public IEnumerator RunMicTest()
     {
+        InitMic();
 		micCanvasGroup.alpha = 1f;
         yield return StartCoroutine("RotateWords");
         yield return new WaitForSeconds(1.5f);
@@ -119,7 +120,7 @@ public class InputMic : MonoBehaviour
         // levelMax equals to the highest normalized value power 2, a small number because < 1
         // pass the value to a static var so we can access it from anywhere
         MicLoudness = LevelMax();
-
+        Debug.Log(MicLoudness);
         if (maxLoud < MicLoudness)
             maxLoud = MicLoudness;
         if (cannotHear)

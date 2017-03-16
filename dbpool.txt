@@ -127,7 +127,6 @@ beans
 blueberries
 bottled_water
 boxes
-carrots
 cash_register
 cereal
 cold_cuts
@@ -209,7 +208,6 @@ screws
 spackle
 tape_measure
 tile
-toolbox
 vacuum_cleaner
 washers
 wheel_barrow
@@ -309,7 +307,6 @@ cough_syrup
 ear_plugs
 eye_drops
 gauze
-gel
 hair_brush
 lotion
 nose_spray

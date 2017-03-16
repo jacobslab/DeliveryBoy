@@ -44,7 +44,7 @@ namespace iView
 
         void Update()
         {
-            ManageGazeInput();
+          //  ManageGazeInput();
         }
 
 
