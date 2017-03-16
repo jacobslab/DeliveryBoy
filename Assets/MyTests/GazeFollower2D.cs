@@ -110,13 +110,13 @@ public class GazeFollower2D : MonoBehaviour
         Debug.Log("waited for two seconds...TURNING things off");
         leftEye.enabled = false;
         rightEye.enabled = false;
-        reconnectionPanel.SetActive(false);
         Experiment.Instance.trialController.TogglePause();  //unpause now
         yield return new WaitForSeconds(2f);
         
         reconnectionInstructionText.enabled= false;
         reconnectionTitleText.enabled = false;
         reconnectionActive = false;
+        reconnectionPanel.SetActive(false);
         yield return null;
     }
 

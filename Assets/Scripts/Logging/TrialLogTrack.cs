@@ -247,7 +247,7 @@ public class TrialLogTrack : LogTrack {
 	}
 
 	
-	public void LogCuedRecallPresentation (string cue, string shouldRecall, bool isItemRecall, bool isAudioCue, bool isStarting){
+	public void LogCuedRecallPresentation (string cue, string shouldRecall, bool isItemRecall, bool isAudioCue, bool isStarting, int index){
 
 		string audioOrVisual = "audio"; //if not isAudio, it's visual! (and maybe audio too)
 		if (!isAudioCue) {
@@ -262,7 +262,7 @@ public class TrialLogTrack : LogTrack {
 		if (ExperimentSettings.isLogging) {
 			if(isStarting){
 				subjectLog.Log (GameClock.SystemTime_Milliseconds, subjectLog.GetFrameCount (), "Trial Event" + separator + "CUED_PRESENTATION_STARTED" + separator + itemOrStore + separator
-				                + "SHOULD_RECALL" + separator + shouldRecall + separator + "CUE" + separator + cue + separator + audioOrVisual);
+				                + "SHOULD_RECALL" + separator + shouldRecall + separator + "CUE" + separator + cue + separator + audioOrVisual + separator + index.ToString());
 				//Debug.Log ("Logged item presentation started event.");
 			}
 			else{

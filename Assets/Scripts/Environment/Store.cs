@@ -143,7 +143,7 @@ public class Store : MonoBehaviour {
 		if(audioDeliveryClip != null){
 			myAudioPlayer.clip = audioDeliveryClip;
 			myAudioPlayer.Play ();
-
+            exp.trialController.lstContents += myAudioPlayer.clip.name + "\n";
 			exp.eventLogger.LogItemDelivery(myAudioPlayer.clip.name, this, deliverySerialPosition, true, true); //TODO: move into trial controller if possible.
 
 			while(myAudioPlayer.isPlaying){

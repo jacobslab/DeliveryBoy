@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.IO;
 using UnityEngine.SceneManagement;
 using iView;
 public class TrialController : MonoBehaviour {
@@ -25,6 +26,9 @@ public class TrialController : MonoBehaviour {
 
 	//paused?!
 	public static bool isPaused = false;
+
+    //lst generation
+    public string lstContents = "";
 
 	//UI
 	public CanvasGroup PauseUI;
@@ -131,10 +135,11 @@ public class TrialController : MonoBehaviour {
 
 		for (int i = 0;deliveryTimer.GetSecondsInt() < (Config.numDelivTime*60f) && ExperimentSettings.sufficientItemsForDeliveryDay; i++)
 #else
-		for (int i = 0; i < Config.numDelivDays && ExperimentSettings.sufficientItemsForDeliveryDay; i++)
+        for (int i = 0; i < numDelivDays && ExperimentSettings.sufficientItemsForDeliveryDay; i++)
 #endif
         {
             numDelivDaysComplete = i;
+            UnityEngine.Debug.Log("in delivery day  " + i + " / " + numDelivDays);
             exp.player.controls.ShouldLockControls = true;
             //check for eye reconnection
 #if EYETRACKER
@@ -164,7 +169,7 @@ public class TrialController : MonoBehaviour {
 #if GERMAN
 						yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i + 1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
 #else
-                yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1) + "/" + ExperimentSettings.numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
+                yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1) + "/" + numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
 #endif
 #endif
             }
@@ -176,6 +181,19 @@ public class TrialController : MonoBehaviour {
             orderedItemsDelivered.Clear();
             yield return StartCoroutine(DoStoreDeliveryPhase(i));
 
+
+            //record all items delivered in LST for annotation later
+
+
+            // Make sure directory exists if user is saving to sub dir.
+            UnityEngine.Debug.Log("LST contents are: " + lstContents);
+            string trialLstName = exp.SessionDirectory + "audio/" + i.ToString() + ".lst";
+            Directory.CreateDirectory(Path.GetDirectoryName(trialLstName));
+  
+            //write contents
+            System.IO.File.WriteAllText(trialLstName, lstContents);
+            //reset lstContents for the next delivery day
+            lstContents = "";
             //RECALL
             //TODO: implement different kinds of recall phases
             Config.RecallType recallType = Config.RecallType.FreeThenCued;
@@ -299,9 +317,16 @@ public class TrialController : MonoBehaviour {
 
 				//LEARNING
 				if(Config.doLearningPhase){
+                    if (Config.doPresentationPhase)
+                    {
+                        Debug.Log("doing store presentation now");
+                        yield return StartCoroutine(DoStorePresentationPhase());
+                    }
+
+                    Debug.Log("finished store presentation now");
                     //do one familiarization trial
-					yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
-				}
+                    //	yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
+                }
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, false);
 #if HOSPITAL
                 yield return StartCoroutine(DoDeliveryDays(100)); //number of delivery days doesn't matter as it is constrained by Config.numDelivTime
@@ -418,10 +443,17 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 
 		presentationBackgroundCube.TurnVisible (true);
 		exp.mainCanvas.GetComponent<CanvasGroup> ().alpha = 0.0f;
+        List<int> presentationOrder = new List<int>();
+        for (int i=0;i<exp.storeController.stores.Length;i++)
+        {
+            presentationOrder.Add(i);
+        }
 		//exp.instructionsController.SetInstructionsColorful ();
 		//for each store, move it to the rotation location, rotate it for x seconds, return it to its original location
 		for (int i = 0; i < exp.storeController.stores.Length; i++) {
-			Store currStore = exp.storeController.stores[i];
+            int currentIndex = presentationOrder[Random.Range(0, presentationOrder.Count - 1)];
+			Store currStore = exp.storeController.stores[currentIndex];
+            presentationOrder.Remove(currentIndex);
 
 			exp.eventLogger.LogStoreLearningPresentation(currStore, true);
 
@@ -762,7 +794,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				cueName = orderedStores[index].name;
 				shouldRecallName = orderedItemsDelivered[index];
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true, i);
 #if GERMAN
 				exp.recallInstructionsController.DisplayText("Zu welchem Geschäft haben Sie diesen Gegenstand geliefert?");
 #else
@@ -773,7 +805,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				//storeImage = TurnOnStoreImage(cueName);
 				orderedStores[index].PresentSelf(recallStorePresentationTransform);
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName,shouldRecallName, true, false, false);
+				exp.eventLogger.LogCuedRecallPresentation(cueName,shouldRecallName, true, false, false, i);
 				SetServerStoreCueState(index, true);
 			}
 			else{	//item cued
@@ -782,7 +814,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				cueName = orderedItemsDelivered[index];
 				shouldRecallName = orderedStores[index].name;
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true, i);
 
 #if GERMAN
 				exp.recallInstructionsController.DisplayText ("Welchen Gegenstand haben Sie zu diesem Geschäft geliefert?");
@@ -795,7 +827,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 					yield return 0;
 				}
 
-				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, false);
+				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, false, i);
 				SetServerItemCueState(index, true);
 			}
 
