@@ -38,7 +38,7 @@ public class InstructionsController : MonoBehaviour {
 
 	public GameObject ScoreInstructions; //turn these on and off as necessary during the trial.......
 	public GameObject VideoInstructions;
-	public VideoPlayer videoPlayer;
+	public VideoPlay videoPlayer;
 
 	//INITIAL INSTRUCTIONS
 #if (!GERMAN)
