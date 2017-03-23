@@ -199,6 +199,8 @@ public class InstructionsController : MonoBehaviour {
 
 	public IEnumerator AskIfShouldPlay(){
 		SetInstructionsColorful ();
+		instructionPanel.alpha = 1f;
+		Debug.Log ("setting alpha to 1");
 		SetText ("Play instruction video? (y/n)");
 		Debug.Log("show instructions");
 		bool isValidInput = false;
@@ -214,7 +216,7 @@ public class InstructionsController : MonoBehaviour {
 			}
 			yield return 0;
 		}
-
+		instructionPanel.alpha = 0f;
 		SetInstructionsBlank ();
 		SetInstructionsTransparentOverlay ();
 	}
