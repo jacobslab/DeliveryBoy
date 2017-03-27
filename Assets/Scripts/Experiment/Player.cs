@@ -19,6 +19,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		objLogTrack = GetComponent<ObjectLogTrack> ();
+		playerCam.fieldOfView = Config.fieldOfView;
 	}
 	
 	// Update is called once per frame

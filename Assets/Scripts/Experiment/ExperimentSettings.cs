@@ -68,6 +68,9 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public Button returnMenuButton;
 	public Button quitButton;
 
+	public Slider fovSlider;
+	public Text fovVal;
+
 
 	//LOGGING
 	public static string defaultLoggingPath = ""; //SET IN RESETDEFAULTLOGGINGPATH();
@@ -124,6 +127,12 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 		else{
 			defaultLoggingPath = System.IO.Directory.GetCurrentDirectory() + "/TextFiles/";
 		}	
+	}
+
+	public void FoVChanged()
+	{
+		fovVal.text = fovSlider.value.ToString("F1");
+		Config.fieldOfView = fovSlider.value;
 	}
 	
 	void InitLoggingPath(){

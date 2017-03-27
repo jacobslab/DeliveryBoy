@@ -14,9 +14,12 @@ public class Config : MonoBehaviour {
 	public static Version BuildVersion = Version.DBoy3_1;
 	public static string VersionNumber = "3.0";
 	
-	public static bool isSyncbox = true;
+	public static bool isSyncbox = false;
 	public static bool isSystem2 = false;
 
+
+	//fov slider
+	public static float fieldOfView=60f;
 
 	//STORE AND WORD POOL FILE NAMES
 	public static string StoreFileName = "dbstores.txt";
@@ -89,7 +92,7 @@ public class Config : MonoBehaviour {
     public static float eyeDetectionToleranceTime = 10f;
 
 	public static int freeRecallTime = 90;
-	public static int cuedRecallTime = 6;
+	public static int cuedRecallTime = 8;
 	public static int finalFreeItemRecallTime = 300;
 	public static int finalStoreRecallTime = 90;
     public static float timeBetweenCuedRecalls = 1f;

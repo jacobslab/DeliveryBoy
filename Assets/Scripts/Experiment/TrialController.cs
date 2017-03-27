@@ -320,12 +320,12 @@ public class TrialController : MonoBehaviour {
                     if (Config.doPresentationPhase)
                     {
                         Debug.Log("doing store presentation now");
-                        yield return StartCoroutine(DoStorePresentationPhase());
+//                        yield return StartCoroutine(DoStorePresentationPhase());
                     }
 
                     Debug.Log("finished store presentation now");
                     //do one familiarization trial
-                    	yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
+//                    	yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
                 }
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, false);
 #if HOSPITAL
@@ -801,6 +801,8 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				exp.recallInstructionsController.DisplayText ("Which object did you deliver to this store?");
 #endif
 
+				yield return StartCoroutine (StartRecall());
+
 				//show image
 				//storeImage = TurnOnStoreImage(cueName);
 				orderedStores[index].PresentSelf(recallStorePresentationTransform);
@@ -821,6 +823,8 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 #else
 				exp.recallInstructionsController.DisplayText ("Which store did you deliver the spoken object to?");
 #endif
+
+				yield return StartCoroutine (StartRecall());
 				//play audio
 				orderedStores[index].PlayCurrentAudio();
 				while(orderedStores[index].GetIsAudioPlaying()){ //wait for audio to finish playing before proceeding
@@ -831,7 +835,6 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				SetServerItemCueState(index, true);
 			}
 
-			yield return StartCoroutine (StartRecall());
 
 			float timeBeforeEndBeep = Config.cuedRecallTime - Config.cuedEndBeepTimeBeforeEnd;
 			if (ExperimentSettings.isLogging) {
