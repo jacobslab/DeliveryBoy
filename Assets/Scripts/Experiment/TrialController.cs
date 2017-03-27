@@ -325,7 +325,7 @@ public class TrialController : MonoBehaviour {
 
                     Debug.Log("finished store presentation now");
                     //do one familiarization trial
-                    //	yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
+                    	yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
                 }
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, false);
 #if HOSPITAL

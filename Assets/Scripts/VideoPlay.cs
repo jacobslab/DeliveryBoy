@@ -6,6 +6,7 @@ public class VideoPlay : MonoBehaviour {
 
     Experiment exp { get { return Experiment.Instance; } }
 	public VideoClip hospitalLearningSessionVideo;
+	public VideoClip germanHospitalLearningSessionVideo;
 	public VideoClip englishVideo;
 	public VideoClip germanVideo;
 	private VideoClip currentClip;
@@ -91,6 +92,7 @@ public class VideoPlay : MonoBehaviour {
         {
 	#if GERMAN
             //put the german version of hospital learning session video here
+		currentClip = germanHospitalLearningSessionVideo;
 	#else
             //PLAY shorter video with only navigation
 			currentClip = hospitalLearningSessionVideo;
