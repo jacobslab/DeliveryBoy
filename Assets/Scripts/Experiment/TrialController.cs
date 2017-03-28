@@ -161,13 +161,13 @@ public class TrialController : MonoBehaviour {
 
 #if HOSPITAL
 #if GERMAN
-						yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i + 1) + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
+				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken sie (x) um mit Auslieferungs-Runde " + (i + 1) + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
 #else
                         yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1), true, true, false, Config.minDefaultInstructionTime));
 #endif
 #else
 #if GERMAN
-						yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken Sie (X) um mit der ersten Lieferphase " + (i + 1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
+				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken sie (x) um mit Auslieferungs-Runde " + (i + 1) + "/" + ExperimentSettings.numDelivDays + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
 #else
                 yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1) + "/" + numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
 #endif
@@ -200,6 +200,9 @@ public class TrialController : MonoBehaviour {
             if (recallType == Config.RecallType.FreeThenCued)
             {
                 yield return StartCoroutine(DoRecallPhase(Config.RecallType.FreeItemRecall, i));
+				RecallUI.alpha = 1f;
+				yield return new WaitForSeconds (2f); //wait for 2 seconds
+				RecallUI.alpha = 0f;
                 yield return StartCoroutine(DoRecallPhase(Config.RecallType.CuedRecall, i));
             }
             else
@@ -208,6 +211,9 @@ public class TrialController : MonoBehaviour {
             }
 
         }
+
+		if (!ExperimentSettings.sufficientItemsForDeliveryDay)
+			exp.EndExperiment ();
 
             exp.player.controls.ShouldLockControls = true;
             //show final instructions screen
@@ -320,12 +326,12 @@ public class TrialController : MonoBehaviour {
                     if (Config.doPresentationPhase)
                     {
                         Debug.Log("doing store presentation now");
-//                        yield return StartCoroutine(DoStorePresentationPhase());
+                        yield return StartCoroutine(DoStorePresentationPhase());
                     }
 
                     Debug.Log("finished store presentation now");
                     //do one familiarization trial
-//                    	yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
+                    	yield return StartCoroutine(DoLearningPhase(Config.numLearningIterationsPhase));
                 }
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, false);
 #if HOSPITAL
@@ -743,7 +749,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 		}
 
 		exp.player.controls.ShouldLockControls = false;
-
+		exp.recallInstructionsController.DisplayText ("");
 		RecallUI.alpha = 0.0f;
 
 		exp.eventLogger.LogRecallPhaseStarted (recallType, false);
@@ -796,7 +802,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true, i);
 #if GERMAN
-				exp.recallInstructionsController.DisplayText("Zu welchem Geschäft haben Sie diesen Gegenstand geliefert?");
+				exp.recallInstructionsController.DisplayText("Welchen Gegenstand haben Sie zu diesem Geschäft geliefert?");
 #else
 				exp.recallInstructionsController.DisplayText ("Which object did you deliver to this store?");
 #endif
@@ -819,7 +825,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true, i);
 
 #if GERMAN
-				exp.recallInstructionsController.DisplayText ("Welchen Gegenstand haben Sie zu diesem Geschäft geliefert?");
+				exp.recallInstructionsController.DisplayText ("Zu welchem Geschäft haben Sie diesen Gegenstand geliefert?");
 #else
 				exp.recallInstructionsController.DisplayText ("Which store did you deliver the spoken object to?");
 #endif
@@ -862,6 +868,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				SetServerItemCueState(index, false);
 			}
             //wait for one second before going onto next cue
+			exp.recallInstructionsController.DisplayText ("");
             yield return new WaitForSeconds(Config.timeBetweenCuedRecalls);
 		}
 
