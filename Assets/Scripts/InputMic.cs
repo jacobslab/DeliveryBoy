@@ -37,11 +37,12 @@ public class InputMic : MonoBehaviour
     void InitMic()
     {
         micCanvasGroup.alpha = 0f;
-        if (_device == null)
-        {
-            _device = Microphone.devices[0];
-            _clipRecord = Microphone.Start(_device, true, 999, 44100);
-        }
+		if (_device == null && Microphone.devices.Length > 0) {
+			_device = Microphone.devices [0];
+			_clipRecord = Microphone.Start (_device, true, 999, 44100);
+		} else {
+			spokenWord.text = "No microphone detected!";
+		}
     }
     IEnumerator RotateWords()
     {

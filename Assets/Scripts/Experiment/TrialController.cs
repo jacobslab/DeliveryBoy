@@ -806,7 +806,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 #else
 				exp.recallInstructionsController.DisplayText ("Which object did you deliver to this store?");
 #endif
-
+				exp.audioRecorder.recordText.color = Color.red;
 				yield return StartCoroutine (StartRecall());
 
 				//show image
@@ -830,6 +830,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				exp.recallInstructionsController.DisplayText ("Which store did you deliver the spoken object to?");
 #endif
 
+				exp.audioRecorder.recordText.color = Color.red;
 				yield return StartCoroutine (StartRecall());
 				//play audio
 				orderedStores[index].PlayCurrentAudio();
@@ -869,6 +870,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 			}
             //wait for one second before going onto next cue
 			exp.recallInstructionsController.DisplayText ("");
+			exp.audioRecorder.recordText.color = Color.white;
             yield return new WaitForSeconds(Config.timeBetweenCuedRecalls);
 		}
 

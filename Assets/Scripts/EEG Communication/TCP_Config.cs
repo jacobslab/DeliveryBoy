@@ -74,6 +74,11 @@ public class TCP_Config : MonoBehaviour {
 	//fill in how you see fit!
 	public enum DefineStates
 	{
+		EYETRACKER_CALIBRATION,
+		EYETRACKER_VALIDATION,
+		EYETRACKER_RESULTS,
+		MIC_TEST,
+		INSTRUCTION_VIDEO,
 		LEARNING_PRESENTATION_PHASE,
 		LEARNING_NAVIGATION_PHASE,
 		STORE_TARGET_0,

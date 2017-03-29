@@ -78,6 +78,7 @@ public class GazeFollower2D : MonoBehaviour
 
     void CalibrationStarted()
     {
+		
         ETStatus = true;
         eyetrackerLogTrack.LogCalibrationStarted(5);
         Debug.Log("CALIBRATION HAS STARTED");
