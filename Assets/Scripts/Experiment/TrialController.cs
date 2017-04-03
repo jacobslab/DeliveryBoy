@@ -238,7 +238,7 @@ public class TrialController : MonoBehaviour {
     public IEnumerator RunExperiment(){
 		if (!ExperimentSettings.isReplay) {
 			exp.player.controls.ShouldLockControls = true;
-			if(Config.isSystem2 || Config.isSyncbox){
+			if(Config.isSystem2 || Config.isSyncbox || Config.isSYS3){
 				yield return StartCoroutine( WaitForEEGHardwareConnection() );
 			}
 			else{
@@ -360,9 +360,9 @@ public class TrialController : MonoBehaviour {
 		isConnectingToHardware = true;
 
 		ConnectionUI.alpha = 1.0f;
-		if(Config.isSystem2){
+		if(Config.isSystem2 || Config.isSYS3){
 			while(!TCPServer.Instance.isConnected){
-				Debug.Log("Waiting for system 2 connection...");
+				Debug.Log("Waiting for system 2 or 3 connection...");
 				yield return 0;
 			}
 			ConnectionText.text = "Press START on host PC...";

@@ -121,7 +121,11 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	void ResetDefaultLoggingPath(){
 		if (Config.isSystem2) {
 			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_2.0/data";
-		} else if(Config.isSyncbox) {
+		}
+		else if (Config.isSYS3) {
+			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM_3.0/data";
+		}
+		else if(Config.isSyncbox) {
 			defaultLoggingPath = "/Users/" + System.Environment.UserName + "/RAM/data";
 		}
 		else{
@@ -142,7 +146,7 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			Directory.CreateDirectory(defaultLoggingPath);
 		}
 		
-		if(Config.isSyncbox || Config.isSystem2){ //only add the folder if it's not the demo version.
+		if(Config.isSyncbox || Config.isSYS3 || Config.isSystem2){ //only add the folder if it's not the demo version.
 			defaultLoggingPath += DB3Folder; //DB3Folder uses the build version!
 		}
 		
@@ -189,7 +193,11 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 				BuildType.text += "Sync Box";
 			} else if (Config.isSystem2) {
 				BuildType.text += "System 2";
-			} else {
+			}
+			else if (Config.isSYS3) {
+				BuildType.text += "SYS3.0";
+			}
+			else {
 				BuildType.text += "Demo";
 			}
 #if HOSPITAL
