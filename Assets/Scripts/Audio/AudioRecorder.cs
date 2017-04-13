@@ -30,7 +30,7 @@ public class AudioRecorder : MonoBehaviour {
 	private int amountSamples = 256; //increase to get better average, but will decrease performance. Best to leave it
 	private int minFreq, maxFreq; 
 
-	AudioSource audio;
+	public AudioSource audio;
 
 	void Start() {
 		audio = GetComponent<AudioSource> ();
@@ -92,6 +92,7 @@ public class AudioRecorder : MonoBehaviour {
 			yield return new WaitForSeconds(duration);
 		}
 	}
+
 
 	public void StartMicrophone (int duration) {
 		audio.clip = Microphone.Start(selectedDevice, true, duration, maxFreq);//Starts recording

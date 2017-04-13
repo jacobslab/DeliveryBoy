@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Reflection;
+using System;
 public class ExperimentSettings : MonoBehaviour { //should be in main menu AND experiment
 
 
@@ -78,6 +80,9 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public Text defaultLoggingPathDisplay;
 	public InputField loggingPathInputField;
 
+
+	//build info
+	public static string buildDate="";
 
 	//SINGLETON
 	private static ExperimentSettings _instance;
@@ -182,8 +187,12 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 	public Text BuildType;
 	public Text IsGermanText;
 	void InitMainMenuLabels(){
+
+		buildDate = 
+			new FileInfo(Assembly.GetExecutingAssembly().Location).LastWriteTime.ToString();
+		UnityEngine.Debug.Log (buildDate);
 		if (Application.loadedLevel == 0) {
-			ExpNameVersion.text = Config.BuildVersion.ToString () + "/" + Config.VersionNumber;
+			ExpNameVersion.text = Config.BuildVersion.ToString () + "/" + Config.VersionNumber + "/" + buildDate;
 #if EYETRACKER
             BuildType.text = "Eyetracker ";
 #else
@@ -210,6 +219,9 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			IsGermanText.enabled = true;
 #else
             IsGermanText.enabled = false;
+#endif
+#if FREIBURG
+			BuildType.text+=" Freiburg";
 #endif
 		}
 	}

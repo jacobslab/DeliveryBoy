@@ -11,7 +11,7 @@ using LabJack;
 	public class SyncboxControl : MonoBehaviour {
 		Experiment exp { get { return Experiment.Instance; } }
 
-#if GERMAN
+	#if FREIBURG
 	[DllImport ("FreiburgSyncboxPlugin")]
 	private static extern IntPtr OpenUSB();
 	[DllImport ("FreiburgSyncboxPlugin")]

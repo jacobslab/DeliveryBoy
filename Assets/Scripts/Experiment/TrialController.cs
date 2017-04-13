@@ -126,6 +126,8 @@ public class TrialController : MonoBehaviour {
     IEnumerator DoDeliveryDays(int numDelivDays)
     {
         int numDelivDaysComplete = 0;
+
+		bool doAnotherDeliveryDay = true;
 #if HOSPITAL
         deliveryTimer.StartTimer();
         bool isDeliveryTimerRunning=deliveryTimer.IsRunning;
@@ -133,37 +135,70 @@ public class TrialController : MonoBehaviour {
 		Debug.Log("Checking if enough items left");
 		yield return StartCoroutine(exp.storeController.CheckStoresAndItemsLeft());
 
-		for (int i = 0;deliveryTimer.GetSecondsInt() < (Config.numDelivTime*60f) && ExperimentSettings.sufficientItemsForDeliveryDay; i++)
+		for (int i = 0; ExperimentSettings.sufficientItemsForDeliveryDay; i++)
 #else
         for (int i = 0; i < numDelivDays && ExperimentSettings.sufficientItemsForDeliveryDay; i++)
 #endif
         {
-            numDelivDaysComplete = i;
-            UnityEngine.Debug.Log("in delivery day  " + i + " / " + numDelivDays);
-            exp.player.controls.ShouldLockControls = true;
-            //check for eye reconnection
+
+			bool validInput = false;
+			numDelivDaysComplete = i;
+			UnityEngine.Debug.Log ("in delivery day  " + i + " / " + numDelivDays);
+			exp.player.controls.ShouldLockControls = true;
+			//check for eye reconnection
 #if EYETRACKER
             if (exp.gazeController.edgeConfidence)
                 yield return StartCoroutine(exp.gazeController.ShowEyeReconnectionScreen());
 #endif
 
-            if (i == 0)
-            {
+			if (i == 0) {
 
 #if GERMAN
 						yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen (exp.instructionsController.recapDeliveryInstructions_German, true, false, Config.minDefaultInstructionTime));
 #else
-                yield return StartCoroutine(exp.instructionsController.ShowInstructionScreen(exp.instructionsController.recapDeliveryInstructions, true, false, Config.minDefaultInstructionTime));
+				yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen (exp.instructionsController.recapDeliveryInstructions, true, false, Config.minDefaultInstructionTime));
 #endif
-            }
-            else
-            {
+			} else {
 
 #if HOSPITAL
+
+				exp.instructionsController.instructionPanel.alpha = 1f;
 #if GERMAN
-				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken sie (x) um mit Auslieferungs-Runde " + (i + 1) + " zu beginnen.", true, true, false, Config.minDefaultInstructionTime));
+				exp.instructionsController.text.color=Color.white;
+				exp.instructionsController.text.text= "Drücken sie (X) um mit Auslieferungs-Runde " + (i + 1) + " zu beginnen. \n Drücken sie (A) zum Ende";
+
+				while (!validInput) {
+					if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown (KeyCode.JoystickButton0)) {
+						doAnotherDeliveryDay = true;
+						validInput = true;
+					} else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown (KeyCode.JoystickButton1)) {
+						doAnotherDeliveryDay = false;
+						validInput = true;
+					}
+					yield return 0;
+				}
+
+				exp.instructionsController.instructionPanel.alpha = 0f;
+				exp.instructionsController.text.text="";
+//				yield return StartCoroutine (exp.instructionsController.ShowSingleInstruction ("Drücken sie (X) um mit Auslieferungs-Runde " + (i + 1) + " zu beginnen. \n Drücken sie (A) zum Ende", true, true, false, Config.minDefaultInstructionTime));
 #else
-                        yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1), true, true, false, Config.minDefaultInstructionTime));
+				exp.instructionsController.text.color=Color.white;
+				exp.instructionsController.text.text= "Press (X) to begin delivery day number " + (i + 1) + " \n Press (A) to end delivery session and proceed to final recall";
+
+				while (!validInput) {
+					if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown (KeyCode.JoystickButton0)) {
+						doAnotherDeliveryDay = true;
+						validInput = true;
+					} else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown (KeyCode.JoystickButton1)) {
+						doAnotherDeliveryDay = false;
+						validInput = true;
+					}
+					yield return 0;
+				}
+
+				exp.instructionsController.instructionPanel.alpha = 0f;
+				exp.instructionsController.text.text="";
+//				yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1) + " \n Press (A) to end delivery session and proceed to final recall", true, true, false, Config.minDefaultInstructionTime));
 #endif
 #else
 #if GERMAN
@@ -172,66 +207,71 @@ public class TrialController : MonoBehaviour {
                 yield return StartCoroutine(exp.instructionsController.ShowSingleInstruction("Press (X) to begin delivery day number " + (i + 1) + "/" + numDelivDays + ".", true, true, false, Config.minDefaultInstructionTime));
 #endif
 #endif
-            }
+			}
+			if (doAnotherDeliveryDay) {
+				exp.player.controls.ShouldLockControls = false;
 
-            exp.player.controls.ShouldLockControls = false;
-
-            //DELIVERY DAY
-            orderedStores.Clear();
-            orderedItemsDelivered.Clear();
-            yield return StartCoroutine(DoStoreDeliveryPhase(i));
-
-
-            //record all items delivered in LST for annotation later
+				//DELIVERY DAY
+				orderedStores.Clear ();
+				orderedItemsDelivered.Clear ();
+				yield return StartCoroutine (DoStoreDeliveryPhase (i));
 
 
-            // Make sure directory exists if user is saving to sub dir.
-            UnityEngine.Debug.Log("LST contents are: " + lstContents);
-            string trialLstName = exp.SessionDirectory + "audio/" + i.ToString() + ".lst";
-            Directory.CreateDirectory(Path.GetDirectoryName(trialLstName));
+				//record all items delivered in LST for annotation later
+
+
+				// Make sure directory exists if user is saving to sub dir.
+				UnityEngine.Debug.Log ("LST contents are: " + lstContents);
+				string trialLstName = exp.SessionDirectory + "audio/" + i.ToString () + ".lst";
+				Directory.CreateDirectory (Path.GetDirectoryName (trialLstName));
   
-            //write contents
-            System.IO.File.WriteAllText(trialLstName, lstContents);
-            //reset lstContents for the next delivery day
-            lstContents = "";
-            //RECALL
-            //TODO: implement different kinds of recall phases
-            Config.RecallType recallType = Config.RecallType.FreeThenCued;
-            if (recallType == Config.RecallType.FreeThenCued)
-            {
-                yield return StartCoroutine(DoRecallPhase(Config.RecallType.FreeItemRecall, i));
-				RecallUI.alpha = 1f;
-				yield return new WaitForSeconds (2f); //wait for 2 seconds
-				RecallUI.alpha = 0f;
-                yield return StartCoroutine(DoRecallPhase(Config.RecallType.CuedRecall, i));
-            }
-            else
-            {
-                yield return StartCoroutine(DoRecallPhase(recallType, i));
-            }
+				//write contents
+				System.IO.File.WriteAllText (trialLstName, lstContents);
+				//reset lstContents for the next delivery day
+				lstContents = "";
+				//RECALL
+				//TODO: implement different kinds of recall phases
+				Config.RecallType recallType = Config.RecallType.FreeThenCued;
+				if (recallType == Config.RecallType.FreeThenCued) {
+					yield return StartCoroutine (DoRecallPhase (Config.RecallType.FreeItemRecall, i));
+					RecallUI.alpha = 1f;
+					#if GERMAN
+				exp.recallInstructionsController.DisplayText("Welchen Gegenstand haben Sie zu diesem Geschäft geliefert?");
+					#else
+					exp.recallInstructionsController.DisplayText ("Which object did you deliver to this store?");
+					#endif
+					yield return new WaitForSeconds (2f); //wait for 2 seconds
+					RecallUI.alpha = 0f;
+					exp.recallInstructionsController.DisplayText ("");
+					exp.audioRecorder.recordText.color = Color.red;
+					yield return StartCoroutine (DoRecallPhase (Config.RecallType.CuedRecall, i));
+				} else {
+					yield return StartCoroutine (DoRecallPhase (recallType, i));
+				}
 
-        }
+			} else
+				break;
+		}
 
-		if (!ExperimentSettings.sufficientItemsForDeliveryDay)
-			exp.EndExperiment ();
+		if (!ExperimentSettings.sufficientItemsForDeliveryDay || !doAnotherDeliveryDay) {
+			//exp.EndExperiment ();
 
-            exp.player.controls.ShouldLockControls = true;
-            //show final instructions screen
+			exp.player.controls.ShouldLockControls = true;
+			//show final instructions screen
 #if GERMAN
 				yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen(exp.instructionsController.finishedDeliveryInstructions_German,true,false,Config.minDefaultInstructionTime));
 #else
-            yield return StartCoroutine(exp.instructionsController.ShowInstructionScreen(exp.instructionsController.finishedDeliveryInstructions, true, false, Config.minDefaultInstructionTime));
+			yield return StartCoroutine (exp.instructionsController.ShowInstructionScreen (exp.instructionsController.finishedDeliveryInstructions, true, false, Config.minDefaultInstructionTime));
 #endif
-            //FINAL RECALL
-            if (Config.doFinalStoreRecall)
-            {
-                yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalStoreRecall, numDelivDaysComplete + 1)); //it's an extra recall phase! +1
-            }
+			//FINAL RECALL
+			if (Config.doFinalStoreRecall) {
+				yield return StartCoroutine (DoRecallPhase (Config.RecallType.FinalStoreRecall, numDelivDaysComplete + 1)); //it's an extra recall phase! +1
+			}
 
-            if (Config.doFinalItemRecall)
-            {
-                yield return StartCoroutine(DoRecallPhase(Config.RecallType.FinalItemRecall, numDelivDaysComplete + 1));
-            }
+			if (Config.doFinalItemRecall) {
+				yield return StartCoroutine (DoRecallPhase (Config.RecallType.FinalItemRecall, numDelivDaysComplete + 1));
+			}
+		}
     }
 
     //FILL THIS IN DEPENDING ON EXPERIMENT SPECIFICATIONS
@@ -293,8 +333,9 @@ public class TrialController : MonoBehaviour {
 #endif
 
             //do mic test here
-
+			exp.micTest.gameObject.SetActive (true);
             yield return StartCoroutine(exp.micTest.RunMicTest());
+			exp.micTest.gameObject.SetActive (false);
 
             //enable pause instruction again
             pauseText.enabled=true;
@@ -335,7 +376,7 @@ public class TrialController : MonoBehaviour {
                 }
 				exp.eventLogger.LogSessionStarted(Experiment.sessionID, false);
 #if HOSPITAL
-                yield return StartCoroutine(DoDeliveryDays(100)); //number of delivery days doesn't matter as it is constrained by Config.numDelivTime
+                yield return StartCoroutine(DoDeliveryDays(1000)); //number of delivery days doesn't matter as it is constrained by Config.numDelivTime
 #else
                 //do six delivery days for scalp
                 yield return StartCoroutine(DoDeliveryDays(Config.numDelivDays));          
@@ -771,12 +812,13 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 		//make list of 0's and 1's for store vs. item cue
 		List<int> storeOrItemCue = new List<int> ();
 		for (int i = 0; i < orderedItemsDelivered.Count; i++) {
-			if (i%2 == 0){
-				storeOrItemCue.Add(0);
-			}
-			else{
-				storeOrItemCue.Add(1);
-			}
+			storeOrItemCue.Add (0);
+//			if (i%2 == 0){
+//				storeOrItemCue.Add(0);
+//			}
+//			else{
+//				storeOrItemCue.Add(1);
+//			}
 		}
 
 		for(int i = 0; i < randomIndexOrder.Count; i++){
@@ -791,7 +833,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 			presentationBackgroundCube.TurnVisible (true);
 
 			//if divisible by 2, make it store cued
-			if(isStoreOrItem % 2 == 0){
+//			if(isStoreOrItem % 2 == 0){
 				Debug.Log ("cued recall happened");
 				exp.recallInstructionsController.background.color = new Color(0,0,0,0);
 
@@ -801,12 +843,7 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 				shouldRecallName = orderedItemsDelivered[index];
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, true, false, true, i);
-#if GERMAN
-				exp.recallInstructionsController.DisplayText("Welchen Gegenstand haben Sie zu diesem Geschäft geliefert?");
-#else
-				exp.recallInstructionsController.DisplayText ("Which object did you deliver to this store?");
-#endif
-				exp.audioRecorder.recordText.color = Color.red;
+
 				yield return StartCoroutine (StartRecall());
 
 				//show image
@@ -815,32 +852,32 @@ yield return StartCoroutine(exp.instructionsController.PlayCalibrationInstructio
 
 				exp.eventLogger.LogCuedRecallPresentation(cueName,shouldRecallName, true, false, false, i);
 				SetServerStoreCueState(index, true);
-			}
-			else{	//item cued
-				recordFileName = origFileName + i + "s"; //s - stores are being recalled! (items are cues)
-
-				cueName = orderedItemsDelivered[index];
-				shouldRecallName = orderedStores[index].name;
-
-				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true, i);
-
-#if GERMAN
-				exp.recallInstructionsController.DisplayText ("Zu welchem Geschäft haben Sie diesen Gegenstand geliefert?");
-#else
-				exp.recallInstructionsController.DisplayText ("Which store did you deliver the spoken object to?");
-#endif
-
-				exp.audioRecorder.recordText.color = Color.red;
-				yield return StartCoroutine (StartRecall());
-				//play audio
-				orderedStores[index].PlayCurrentAudio();
-				while(orderedStores[index].GetIsAudioPlaying()){ //wait for audio to finish playing before proceeding
-					yield return 0;
-				}
-
-				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, false, i);
-				SetServerItemCueState(index, true);
-			}
+//			}
+//			else{	//item cued
+//				recordFileName = origFileName + i + "s"; //s - stores are being recalled! (items are cues)
+//
+//				cueName = orderedItemsDelivered[index];
+//				shouldRecallName = orderedStores[index].name;
+//
+//				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, true, i);
+//
+//#if GERMAN
+//				exp.recallInstructionsController.DisplayText ("Zu welchem Geschäft haben Sie diesen Gegenstand geliefert?");
+//#else
+//				exp.recallInstructionsController.DisplayText ("Which store did you deliver the spoken object to?");
+//#endif
+//
+//				exp.audioRecorder.recordText.color = Color.red;
+//				yield return StartCoroutine (StartRecall());
+//				//play audio
+//				orderedStores[index].PlayCurrentAudio();
+//				while(orderedStores[index].GetIsAudioPlaying()){ //wait for audio to finish playing before proceeding
+//					yield return 0;
+//				}
+//
+//				exp.eventLogger.LogCuedRecallPresentation(cueName, shouldRecallName, false, true, false, i);
+//				SetServerItemCueState(index, true);
+//			}
 
 
 			float timeBeforeEndBeep = Config.cuedRecallTime - Config.cuedEndBeepTimeBeforeEnd;

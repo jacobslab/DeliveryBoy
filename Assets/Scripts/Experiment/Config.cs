@@ -14,7 +14,7 @@ public class Config : MonoBehaviour {
 	public static Version BuildVersion = Version.DBoy3_1;
 	public static string VersionNumber = "3.0";
 	
-	public static bool isSyncbox = false;
+	public static bool isSyncbox = true;
 	public static bool isSystem2 = false;
 	public static bool isSYS3=false;
 
@@ -129,6 +129,8 @@ public class Config : MonoBehaviour {
 	public static float driveSpeed = 10f;
     public static float reverseSpeed = 2.5f;
 
+
+
 	//object buffer variables
 
 	void Awake(){
@@ -136,7 +138,11 @@ public class Config : MonoBehaviour {
 	}
 
 	void Start(){
-
+//		System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
+//		System.DateTime startDate = new System.DateTime( 2000, 1, 1, 0, 0, 0 );
+//		System.TimeSpan span = new System.TimeSpan( version.Build, 0, 0, version.Revision * 2 );
+//		System.DateTime buildDate = startDate.Add( span );
+//		Debug.Log( buildDate.ToString() );
 	}
 
 }

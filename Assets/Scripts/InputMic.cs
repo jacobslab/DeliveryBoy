@@ -20,8 +20,13 @@ public class InputMic : MonoBehaviour
     private List<string> micList = new List<string>();
     //mic initialization
 	public CanvasGroup micCanvasGroup;
+	AudioSource recAudio;
+	public AudioRecorder recorder;
+
+	AudioClip _clipRecord = new AudioClip();
 	void Awake()
 	{
+		recAudio = GetComponent<AudioSource> ();
 		micCanvasGroup.alpha = 0f;
 	}
     void Start()
@@ -34,38 +39,51 @@ public class InputMic : MonoBehaviour
         beginExperimentText.enabled = false;
         micDrops.AddOptions(micList);
     }
-    void InitMic()
-    {
-        micCanvasGroup.alpha = 0f;
-		if (_device == null && Microphone.devices.Length > 0) {
-			_device = Microphone.devices [0];
-			_clipRecord = Microphone.Start (_device, true, 999, 44100);
-		} else {
-			spokenWord.text = "No microphone detected!";
-		}
-    }
     IEnumerator RotateWords()
     {
         spokenWord.text = wordList[0];
         float timer = 0f;
         while (cannotHear)
         {
-            timer += Time.deltaTime;
-            if (timer > 5f)
-            {
-                spokenWord.color = Color.red;
-                spokenWord.text = "Sorry, I cannot hear you! \n Please adjust microphone";
-                yield return new WaitForSeconds(1f);
-                spokenWord.color = Color.white;
-                timer = 0f;
-                currentWord++;
-                spokenWord.text = wordList[currentWord];
-            }
-			if (MicLoudness > Config.micLoudnessThreshold)
-            {
-                cannotHear = false;
-                marker.color = Color.green;
-            }
+
+			_clipRecord = new AudioClip ();
+//            	yield return StartCoroutine (Experiment.Instance.audioRecorder.Record(Experiment.Instance.SessionDirectory, "micTest.wav", 5));
+			if (_device == null && Microphone.devices.Length > 0) {
+				_device = Microphone.devices [0];
+				Debug.Log ("setting as " + Microphone.devices [0].ToString());
+				_clipRecord = Microphone.Start (_device, true, 5, 44100);
+			} else {
+				spokenWord.text = "No microphone detected!";
+			}
+			Debug.Log ("device is " + _device.ToString ());
+			micCanvasGroup.alpha = 1f;
+            spokenWord.color = Color.red;
+			spokenWord.color = Color.white;
+			timer = 0f;
+			currentWord++;
+			spokenWord.text = wordList[currentWord];
+			yield return new WaitForSeconds (5f);
+			Microphone.End (_device);
+			_device = null;
+			recAudio.PlayOneShot (_clipRecord);
+                spokenWord.text = "Playing back recorded audio...";
+                yield return new WaitForSeconds(5f);
+
+			bool givenResponse = false;
+
+			spokenWord.text = "Proceed (X) \n Retry (A)";
+			while (!givenResponse) {
+				if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown (KeyCode.JoystickButton0)) { // x button
+					cannotHear=false;
+					givenResponse = true;
+				} else if (Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.JoystickButton1)) { // a button
+					cannotHear=true;
+					givenResponse = true;
+				}
+				yield return 0;
+			}
+				
+
             yield return 0;
         }
         yield return null;
@@ -73,11 +91,12 @@ public class InputMic : MonoBehaviour
 
     public IEnumerator RunMicTest()
     {
-        InitMic();
+//        InitMic();
 		micCanvasGroup.alpha = 1f;
         yield return StartCoroutine("RotateWords");
         yield return new WaitForSeconds(1.5f);
 		micCanvasGroup.alpha = 0f;
+		StopMicrophone ();
         yield return null;
 
     }
@@ -88,26 +107,25 @@ public class InputMic : MonoBehaviour
     }
 
 
-    AudioClip _clipRecord = new AudioClip();
     int _sampleWindow = 128;
 
-    //get data from microphone into audioclip
+//    //get data from microphone into audioclip
     float LevelMax()
     {
         float levelMax = 0;
         float[] waveData = new float[_sampleWindow];
         int micPosition = Microphone.GetPosition(null) - (_sampleWindow + 1); // null means the first microphone
         if (micPosition < 0) return 0;
-        _clipRecord.GetData(waveData, micPosition);
-        // Getting a peak on the last 128 samples
-        for (int i = 0; i < _sampleWindow; i++)
-        {
-            float wavePeak = waveData[i] * waveData[i];
-            if (levelMax < wavePeak)
-            {
-                levelMax = wavePeak;
-            }
-        }
+		if (_clipRecord != null) {
+			_clipRecord.GetData (waveData, micPosition);
+			// Getting a peak on the last 128 samples
+			for (int i = 0; i < _sampleWindow; i++) {
+				float wavePeak = waveData [i] * waveData [i];
+				if (levelMax < wavePeak) {
+					levelMax = wavePeak;
+				}
+			}
+		}
         return levelMax;
     }
 
@@ -116,28 +134,35 @@ public class InputMic : MonoBehaviour
     void Update()
     {
 
+//		if (MicLoudness > Config.micLoudnessThreshold)
+//		{
+//			cannotHear = false;
+//			marker.color = Color.green;
+//		}
+
         if (Input.GetKeyDown(KeyCode.L))
             cannotHear = false;
         // levelMax equals to the highest normalized value power 2, a small number because < 1
         // pass the value to a static var so we can access it from anywhere
         MicLoudness = LevelMax();
-//        Debug.Log(MicLoudness);
+       // Debug.Log(MicLoudness);
         if (maxLoud < MicLoudness)
             maxLoud = MicLoudness;
         if (cannotHear)
             volProg.Value = MicLoudness;
-        else {
-            beginExperimentText.enabled = true;
-            spokenWord.color = Color.green;
-            spokenWord.text = "I heard you say " + wordList[currentWord];
-        }
+//        else {
+//            beginExperimentText.enabled = true;
+//            spokenWord.color = Color.green;
+//            spokenWord.text = "I heard you say " + wordList[currentWord];
+//        }
     }
 
     bool _isInitialized;
     // start mic when scene starts
     void OnEnable()
     {
-        InitMic();
+//        InitMic();
+
         _isInitialized = true;
     }
 
