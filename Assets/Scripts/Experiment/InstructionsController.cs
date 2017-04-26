@@ -176,6 +176,7 @@ public class InstructionsController : MonoBehaviour {
 		finishedDeliveryInstructions_German.enabled = false;
 	}
 	public IEnumerator PlayVideoInstructions(bool autoPlay){
+		VideoInstructions.transform.GetChild (0).gameObject.GetComponent<RawImage> ().enabled = false;
         yield return StartCoroutine(videoPlayer.SetVideoTexture());
         VideoInstructions.GetComponent<CanvasGroup> ().alpha = 1f;
 		yield return StartCoroutine (videoPlayer.Play(autoPlay));

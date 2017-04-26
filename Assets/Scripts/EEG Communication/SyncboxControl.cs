@@ -27,6 +27,8 @@ using LabJack;
 		private static extern IntPtr CloseUSB();
 		[DllImport ("ASimplePlugin")]
 		private static extern IntPtr TurnLEDOn();
+	[DllImport ("ASimplePlugin")]
+	private static extern int CheckUSB ();
 		[DllImport ("ASimplePlugin")]
 		private static extern IntPtr TurnLEDOff();
 		[DllImport ("ASimplePlugin")]
@@ -96,7 +98,7 @@ using LabJack;
 		
 		string connectionError = "";
 			while(!isUSBOpen){
-
+			UnityEngine.Debug.Log ("attempting to connect");
 			#if !UNITY_STANDALONE_WIN
 				string usbOpenFeedback = Marshal.PtrToStringAuto (OpenUSB());
 				UnityEngine.Debug.Log(usbOpenFeedback);
@@ -130,18 +132,62 @@ using LabJack;
 			#endif
 				yield return 0;
 			}
-
-			StartCoroutine (RunSyncPulseManual ());
+		ShouldSyncPulse = true;
+			StartCoroutine ("CheckSyncboxConnection");
+			StartCoroutine ("RunSyncPulseManual");
+		yield return null;
 		}
 
 		// Update is called once per frame
 		void Update () {
 			GetInput ();
+
+		if (Input.GetKeyDown (KeyCode.A)) {
+			int ok = CheckUSB ();
+
+			UnityEngine.Debug.Log (ok.ToString());
+		}
 		}
 
 		void GetInput(){
 			//use this for debugging if you'd like
 		}
+
+	IEnumerator CheckSyncboxConnection()
+	{
+		while (ShouldSyncPulse) {
+			int syncStatus = CheckUSB ();
+			if (syncStatus == 1) {
+				UnityEngine.Debug.Log ("Syncbox connected");
+			} else {
+				isUSBOpen = false;
+				UnityEngine.Debug.Log ("disconnected; initiating reconnection procedure");
+				StartCoroutine (ReconnectSyncbox ());
+			}
+			yield return new WaitForSeconds (2f); //check every 2 seconds
+			yield return 0;
+		}
+		yield return null;
+	}
+
+	IEnumerator ReconnectSyncbox()
+	{
+		//stop running coroutines
+		StopCoroutine ("RunSyncPulseManual");
+		StopCoroutine ("CheckSyncboxConnection");
+
+		//close any lingering USB handles
+		UnityEngine.Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
+
+		ShouldSyncPulse = false;
+
+		exp.trialController.TogglePause (); //pause the game
+//		yield return new WaitForSeconds(1f);
+		UnityEngine.Debug.Log ("attempting to reconnect");
+		yield return StartCoroutine(ConnectSyncbox());
+		exp.trialController.TogglePause (); //unpause the game
+		yield return null;
+	}
 
 		float syncPulseDuration = 0.05f;
 		float syncPulseInterval = 1.0f;
@@ -176,7 +222,7 @@ using LabJack;
 
 			while (ShouldSyncPulse) {
 				executionStopwatch.Reset();
-
+			UnityEngine.Debug.Log ("pulse running");
 
 				float jitter = UnityEngine.Random.Range(jitterMin, jitterMax);//syncPulseInterval - syncPulseDuration);
 				yield return StartCoroutine(WaitForShortTime(jitter));

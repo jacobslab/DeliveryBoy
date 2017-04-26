@@ -11,6 +11,9 @@ public class VideoPlay : MonoBehaviour {
 	public VideoClip germanVideo;
 	private VideoClip currentClip;
 	private VideoPlayer videoPlayer;
+	public AudioClip hospitalEnglishAudio;
+	public AudioClip englishAudio;
+	private AudioClip currentAudio;
 	public bool shouldPlay=false;
 	private bool movieSkipped=false;
 	private AudioSource audioSource;
@@ -30,15 +33,18 @@ public class VideoPlay : MonoBehaviour {
 			if (videoPlayer.isPlaying) {
                 if (Input.GetAxis("Action Button") > 0.2f) { //skip movie!
 					videoPlayer.Stop();
+					audioSource.Stop ();
 					videoPlayer.enabled=false;
 					movieSkipped = true;
                 }
                 if (TrialController.isPaused) {
 					videoPlayer.playbackSpeed = 0f;
+					audioSource.Pause ();
                 }
             }
             if (!TrialController.isPaused) {
 				videoPlayer.playbackSpeed = 1f;
+				audioSource.UnPause ();
             }
         }
         else {
@@ -57,6 +63,7 @@ public class VideoPlay : MonoBehaviour {
 				shouldPlay = true;
 
             if (shouldPlay) {
+				exp.instructionsController.VideoInstructions.transform.GetChild (0).gameObject.GetComponent<RawImage> ().enabled = true;
 					//Add VideoPlayer to the GameObject
 					videoPlayer = gameObject.AddComponent<VideoPlayer>();
 
@@ -70,12 +77,13 @@ public class VideoPlay : MonoBehaviour {
 					//We want to play from video clip not from url
 					videoPlayer.source = VideoSource.VideoClip;
 
+				audioSource.clip = currentAudio;
 					//Set Audio Output to AudioSource
-					videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+				videoPlayer.audioOutputMode = VideoAudioOutputMode.None;
 
 					//Assign the Audio from Video to AudioSource to be played
-					videoPlayer.EnableAudioTrack(0, true);
-					videoPlayer.SetTargetAudioSource(0, audioSource);
+//					videoPlayer.EnableAudioTrack(0, true);
+//					videoPlayer.SetTargetAudioSource(0, audioSource);
 
 					//Set video To Play then prepare Audio to prevent Buffering
 				videoPlayer.clip = currentClip;
@@ -130,6 +138,7 @@ public class VideoPlay : MonoBehaviour {
 	#else
             //PLAY shorter video with only navigation
 			currentClip = hospitalLearningSessionVideo;
+			currentAudio=hospitalEnglishAudio;
 	#endif
         }
 		else
@@ -138,6 +147,7 @@ public class VideoPlay : MonoBehaviour {
 		currentClip=germanVideo;
 		#else
 			currentClip=englishVideo;
+			currentAudio=englishAudio;
 		#endif
 		}
 #else
