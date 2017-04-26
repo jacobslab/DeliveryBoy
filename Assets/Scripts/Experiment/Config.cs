@@ -57,7 +57,7 @@ public class Config : MonoBehaviour {
 
 #if HOSPITAL
     //a learning session, for the first session unless skipped
-    public static int numLearningIterationsSession = 4;
+    public static int numLearningIterationsSession = 3;
 	public static int numLearningIterationsPhase = 1;
     public static float numDelivTime=45f;
 #else

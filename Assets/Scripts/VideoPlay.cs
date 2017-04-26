@@ -10,12 +10,13 @@ public class VideoPlay : MonoBehaviour {
 	public VideoClip englishVideo;
 	public VideoClip germanVideo;
 	private VideoClip currentClip;
-	private VideoPlayer vidPlayer;
+	private VideoPlayer videoPlayer;
 	public bool shouldPlay=false;
 	private bool movieSkipped=false;
+	private AudioSource audioSource;
+	public RawImage image;
     void Awake() {
 
-		vidPlayer = GetComponent<VideoPlayer> ();
     }
 
     // Use this for initialization
@@ -25,25 +26,24 @@ public class VideoPlay : MonoBehaviour {
 
     bool isMoviePaused = false;
     void Update() {
-		if (currentClip != null) {
-			if (vidPlayer.isPlaying) {
+		if (currentClip != null && videoPlayer!=null) {
+			if (videoPlayer.isPlaying) {
                 if (Input.GetAxis("Action Button") > 0.2f) { //skip movie!
-//					vidPlayer.Stop();
-					vidPlayer.enabled=false;
+					videoPlayer.Stop();
+					videoPlayer.enabled=false;
 					movieSkipped = true;
-//                    Stop();
                 }
                 if (TrialController.isPaused) {
-					vidPlayer.playbackSpeed = 0f;
+					videoPlayer.playbackSpeed = 0f;
                 }
             }
             if (!TrialController.isPaused) {
-				vidPlayer.playbackSpeed = 1f;
+				videoPlayer.playbackSpeed = 1f;
             }
         }
-        //else {
-        //Debug.Log("No movie attached! Can't update.");
-        //}
+        else {
+        Debug.Log("No movie attached! Can't update.");
+        }
     }
 
 
@@ -57,23 +57,57 @@ public class VideoPlay : MonoBehaviour {
 				shouldPlay = true;
 
             if (shouldPlay) {
-//                group.alpha = 1.0f;
-				Debug.Log("playing video now");
-//				vidPlayer.Stop();
-//                movieAudio.Play();
-				Debug.Log("current clip is: " + vidPlayer.clip);
-				vidPlayer.enabled = true;
-				Debug.Log (vidPlayer.isPlaying);
-				float timer = 0f;
-				while (timer<currentClip.length && !movieSkipped) {
-					timer += Time.deltaTime;
-                    yield return 0;
-                }
-				movieSkipped = false;
-				Debug.Log ("finished playing");
-//                isMoviePaused = false;
-//				vidPlayer.enabled=false;
-//                group.alpha = 0.0f;
+					//Add VideoPlayer to the GameObject
+					videoPlayer = gameObject.AddComponent<VideoPlayer>();
+
+					//Add AudioSource
+					audioSource = gameObject.AddComponent<AudioSource>();
+
+					//Disable Play on Awake for both Video and Audio
+					videoPlayer.playOnAwake = false;
+					audioSource.playOnAwake = false;
+
+					//We want to play from video clip not from url
+					videoPlayer.source = VideoSource.VideoClip;
+
+					//Set Audio Output to AudioSource
+					videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+
+					//Assign the Audio from Video to AudioSource to be played
+					videoPlayer.EnableAudioTrack(0, true);
+					videoPlayer.SetTargetAudioSource(0, audioSource);
+
+					//Set video To Play then prepare Audio to prevent Buffering
+				videoPlayer.clip = currentClip;
+					videoPlayer.Prepare();
+
+					//Wait until video is prepared
+					while (!videoPlayer.isPrepared)
+					{
+						Debug.Log("Preparing Video");
+						yield return null;
+					}
+
+					Debug.Log("Done Preparing Video");
+//				videoPlayer.renderMode = VideoRenderMode.CameraNearPlane;
+//				videoPlayer.targetCamera = Camera.main;
+					//Assign the Texture from Video to RawImage to be displayed
+					image.texture = videoPlayer.texture;
+
+					//Play Video
+					videoPlayer.Play();
+
+					//Play Sound
+					audioSource.Play();
+
+					Debug.Log("Playing Video");
+					while (videoPlayer.isPlaying)
+					{
+						Debug.LogWarning("Video Time: " + Mathf.FloorToInt((float)videoPlayer.time));
+						yield return null;
+					}
+
+					Debug.Log("Done Playing Video");
             }
             yield return 0;
         }
@@ -114,8 +148,6 @@ public class VideoPlay : MonoBehaviour {
 		currentClip=englishVideo;
 		#endif
 #endif
-		if (currentClip != null)
-			vidPlayer.clip = currentClip;
 		yield return null;
     }
 //	

@@ -182,28 +182,29 @@ public class StoreController : MonoBehaviour {
 		for(int i = 0; i < stores.Length - 1; i++){
 
 			//add the very first store to the list!
-			if(i == 0){
-				learningStores.Add(currStore);
-				//remove this store from possible next stores
-				possibleNextStores.RemoveAt(randStartStoreIndex);
-			}
-
-			// which of the closest stores
-			int nextDistWeight = randWeights[Random.Range(0,randWeights.Length)];
-
-			//sort distance vector
-			List<float> storeDistances = GetStoreDistances(currStore, possibleNextStores);
-			List<int> orderedStoreIndices = GetOrderedStoreIndicesByDistance(storeDistances);
-
-			//if we picked a larger weight index than stores left to choose, just pick the index with the largest distance.
-			if(nextDistWeight > orderedStoreIndices.Count){
-				nextDistWeight = orderedStoreIndices.Count;
-			}
-
-			//get the next store index
-			int nextStoreIndex = orderedStoreIndices[nextDistWeight - 1];
-
-			//save store to order list
+//			if(i == 0){
+//				learningStores.Add(currStore);
+//				//remove this store from possible next stores
+//				possibleNextStores.RemoveAt(randStartStoreIndex);
+//			}
+//
+//			// which of the closest stores
+//			int nextDistWeight = randWeights[Random.Range(0,randWeights.Length)];
+//
+//			//sort distance vector
+//			List<float> storeDistances = GetStoreDistances(currStore, possibleNextStores);
+//			List<int> orderedStoreIndices = GetOrderedStoreIndicesByDistance(storeDistances);
+//
+//			//if we picked a larger weight index than stores left to choose, just pick the index with the largest distance.
+//			if(nextDistWeight > orderedStoreIndices.Count){
+//				nextDistWeight = orderedStoreIndices.Count;
+//			}
+//
+//			//get the next store index
+//			int nextStoreIndex = orderedStoreIndices[nextDistWeight - 1];
+//
+//			//save store to order list
+			int nextStoreIndex= Random.Range(0,possibleNextStores.Count);
 			currStore = possibleNextStores[nextStoreIndex];
 			learningStores.Add(currStore);
 			//remove this store
