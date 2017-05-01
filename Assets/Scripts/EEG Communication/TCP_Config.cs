@@ -7,7 +7,7 @@ public class TCP_Config : MonoBehaviour {
 	public static float numSecondsBeforeAlignment = 10.0f;
 
 	public static string HostIPAddress = "192.168.137.200"; //"169.254.50.2" for Mac Pro Desktop.
-	public static int ConnectionPort = 8888; //8001 for Mac Pro Desktop communication
+	public static int ConnectionPort = 8889; //8001 for Mac Pro Desktop communication
 
 
 	public static char MSG_START = '{';

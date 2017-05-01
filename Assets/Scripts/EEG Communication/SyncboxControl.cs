@@ -20,6 +20,8 @@ using LabJack;
 	private static extern IntPtr TurnLEDOn();
 	[DllImport ("FreiburgSyncboxPlugin")]
 	private static extern IntPtr TurnLEDOff();
+	[DllImport ("FreiburgSyncboxPlugin")]
+	private static extern int CheckUSB ();
 #else
 		[DllImport ("ASimplePlugin")]
 		private static extern IntPtr OpenUSB();
