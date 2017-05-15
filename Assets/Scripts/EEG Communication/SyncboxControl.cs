@@ -159,9 +159,17 @@ using LabJack;
 	{
 		while (ShouldSyncPulse) {
 			int syncStatus = CheckUSB ();
+			UnityEngine.Debug.Log ("sync status is: " + syncStatus.ToString ());
+			#if FREIBURG
+			if (syncStatus == 0) {
+			UnityEngine.Debug.Log ("Syncbox connected");
+			} 
+			#else
 			if (syncStatus == 1) {
 				UnityEngine.Debug.Log ("Syncbox connected");
-			} else {
+			} 
+			#endif
+			else {
 				isUSBOpen = false;
 				UnityEngine.Debug.Log ("disconnected; initiating reconnection procedure");
 				StartCoroutine (ReconnectSyncbox ());
