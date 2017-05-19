@@ -144,11 +144,11 @@ using LabJack;
 		void Update () {
 			GetInput ();
 
-		if (Input.GetKeyDown (KeyCode.A)) {
-			int ok = CheckUSB ();
-
-			UnityEngine.Debug.Log (ok.ToString());
-		}
+//		if (Input.GetKeyDown (KeyCode.A)) {
+//			int ok = CheckUSB ();
+//
+//			UnityEngine.Debug.Log (ok.ToString());
+//		}
 		}
 
 		void GetInput(){

@@ -85,12 +85,13 @@ public class Store : MonoBehaviour {
 			audioLeftToUse = new List<AudioClip> ();
 
 		#if GERMAN
-			string folder = "StoreAudioGerman/" + FullGermanName; //just happens to be organized with the full name...
+			string folder = "StoreAudioGerman/" + GetDisplayName(); //just happens to be organized with the full name...
 		#else
 			string folder = "StoreAudioEnglish/" + GetDisplayName(); //just happens to be organized with the display name...
 		#endif
-
+			UnityEngine.Debug.Log ("searching for " + folder);
 			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
+			UnityEngine.Debug.Log ("found " + storeAudioClips.Length.ToString () + " clips in the folder");
 			for (int i = 0; i < storeAudioClips.Length; i++) {
 				audioLeftToUse.Add (storeAudioClips [i]);
 			}
