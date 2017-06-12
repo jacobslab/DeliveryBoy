@@ -37,6 +37,7 @@ public class TCP_Config : MonoBehaviour {
 		SYNC,
 		SYNCNP,
 		SYNCED,
+		READY,
 		STATE,
 		EXIT
 	}
@@ -76,6 +77,7 @@ public class TCP_Config : MonoBehaviour {
 	{
 		EYETRACKER_CALIBRATION,
 		EYETRACKER_VALIDATION,
+		EYETRACKER_RECONNECTION,
 		EYETRACKER_RESULTS,
 		MIC_TEST,
 		INSTRUCTION_VIDEO,
