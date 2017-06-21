@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-
+using System.IO;
 public class SceneController : MonoBehaviour { //there can be a separate scene controller in each scene
 
     public Image calibrationInstructions;
@@ -57,7 +57,7 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
     }
 
 
-    public void LoadMainMenu(){
+	public void LoadMainMenu(){
 		if(Experiment.Instance != null){
 			Experiment.Instance.OnExit();
 		}
@@ -67,19 +67,8 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 		Application.LoadLevel(0);
 	}
 
-    IEnumerator LoadExperimentTask()
-    {
-		#if EYETRACKER
-        yield return StartCoroutine(ShowCalibrationInstructions());
-		#endif
-        Application.LoadLevel(1);
-       // calibrationInstructions.enabled = false;
-        yield return null;
-    }
-
 	public void LoadExperiment(){
-
-        //should be no new data to record for the subject
+		//should be no new data to record for the subject
 		if(Experiment.Instance != null){
 			Experiment.Instance.OnExit();
 		}
@@ -101,10 +90,15 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 		}
 	}
 
+	public void ReturnToMainMenu()
+	{
+		Application.LoadLevel (0);
+	}
+
 	void LoadExperimentLevel(){
-        if (ExperimentSettings.currentSubject.trials < Config.numDelivDays) {
+		if (ExperimentSettings.currentSubject.trials < Config.numDelivDays) {
 			Debug.Log ("loading experiment!");
-            StartCoroutine("LoadExperimentTask");
+			Application.LoadLevel (1);
 		} else {
 			Debug.Log ("Subject has already finished all blocks! Loading end menu.");
 			Application.LoadLevel (2);
@@ -112,23 +106,27 @@ public class SceneController : MonoBehaviour { //there can be a separate scene c
 	}
 
 	public void LoadEndMenu(){
-		if(Experiment.Instance != null){
+		/*
+        if (Experiment.Instance != null){
 			Experiment.Instance.OnExit();
 		}
-
-		SubjectReaderWriter.Instance.RecordSubjects();
+    */
+		//SubjectReaderWriter.Instance.RecordSubjects();
 		Debug.Log("loading end menu!");
 		Application.LoadLevel(2);
 	}
 
 	public void Quit(){
-		Debug.Log ("trying to QUIT");
-		SubjectReaderWriter.Instance.RecordSubjects();
-		Application.Quit();
+
+		Debug.Log("trying to Quit!");
+		//		SubjectReaderWriter.Instance.RecordSubjects();
+		Experiment.Instance.OnExperimentEnd();
+		//		Application.Quit();
 	}
 
 	void OnApplicationQuit(){
+
 		Debug.Log("On Application Quit!");
-		SubjectReaderWriter.Instance.RecordSubjects();
+		//		SubjectReaderWriter.Instance.RecordSubjects();
 	}
 }

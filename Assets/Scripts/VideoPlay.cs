@@ -48,7 +48,7 @@ public class VideoPlay : MonoBehaviour {
             }
         }
         else {
-        Debug.Log("No movie attached! Can't update.");
+//        Debug.Log("No movie attached! Can't update.");
         }
     }
 

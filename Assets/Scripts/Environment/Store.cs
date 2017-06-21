@@ -24,7 +24,7 @@ public class Store : MonoBehaviour {
 	
 	public List<AudioClip> audioLeftToUse;
 	AudioSource myAudioPlayer;
-	
+	AudioClip[] storeAudioClips;
 	// Use this for initialization
 	void Awake () {
 		origPosition = transform.position;
@@ -90,22 +90,24 @@ public class Store : MonoBehaviour {
 			string folder = "StoreAudioEnglish/" + GetDisplayName(); //just happens to be organized with the display name...
 		#endif
 			UnityEngine.Debug.Log ("searching for " + folder);
-			AudioClip[] storeAudioClips = Resources.LoadAll<AudioClip> (folder);
+			storeAudioClips = Resources.LoadAll<AudioClip> (folder);
 			UnityEngine.Debug.Log ("found " + storeAudioClips.Length.ToString () + " clips in the folder");
-			for (int i = 0; i < storeAudioClips.Length; i++) {
-				audioLeftToUse.Add (storeAudioClips [i]);
-			}
+//			for (int i = 0; i < storeAudioClips.Length; i++) {
+//				audioLeftToUse.Add (storeAudioClips [i]);
+//			}
 		}
 	}
 
 	//used by StoreController for removing used audio.
 	public void CleanOutAudioLeft(List<string> audioNames){
-		int numAudioLeft = audioLeftToUse.Count;
+//		int numAudioLeft = audioLeftToUse.Count;
 		int audioLeftIndex = 0;
-		for (int i = 0; i < numAudioLeft; i++) {
-			if(!audioNames.Contains(audioLeftToUse[audioLeftIndex].name)){
-				audioLeftToUse.RemoveAt(audioLeftIndex);
-			}
+		for (int i = 0; i < storeAudioClips.Length; i++) {
+			if (audioNames.Contains (storeAudioClips [i].name))
+				audioLeftToUse.Add (storeAudioClips [i]);
+//			if(!audioNames.Contains(audioLeftToUse[audioLeftIndex].name)){
+//				audioLeftToUse.RemoveAt(audioLeftIndex);
+//			}
 			else{
 				audioLeftIndex++; //only increment the index if we didn't delete the item in that spot
 			}

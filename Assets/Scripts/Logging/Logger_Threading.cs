@@ -108,9 +108,8 @@ public class Logger_Threading : MonoBehaviour{
 
 	LoggerQueue myLoggerQueue;
 	LoggerWriter myLoggerWriter;
-	public bool isRunning=false;
+
 	long frameCount;
-	public StreamWriter logfile;
 
 	public string fileName;
 
@@ -118,10 +117,9 @@ public class Logger_Threading : MonoBehaviour{
 	{
 		if (ExperimentSettings.isLogging) {
 			myLoggerQueue = new LoggerQueue ();
-			StartCoroutine ("LogWriter");
-			//			myLoggerWriter = new LoggerWriter (fileName, myLoggerQueue);
-			//		
-			//			myLoggerWriter.Start ();
+			myLoggerWriter = new LoggerWriter (fileName, myLoggerQueue);
+
+			myLoggerWriter.Start ();
 
 			//	myLoggerWriter.log ("DATE: " + DateTime.Now.ToString ("M/d/yyyy")); //might not be needed
 		}
@@ -131,39 +129,18 @@ public class Logger_Threading : MonoBehaviour{
 		fileName = file;
 	}
 
-	IEnumerator LogWriter()
-	{
-		isRunning = true;
-
-		logfile = new StreamWriter ( fileName, true );
-		UnityEngine.Debug.Log ("running logwriter coroutine writing at " + fileName);
-		while (isRunning) {
-
-			while (myLoggerQueue.logQueue.Count > 0) {
-				string msg = myLoggerQueue.GetFromLogQueue ();
-
-//				UnityEngine.Debug.Log ("writing: " + msg);
-				logfile.WriteLine (msg);
-				yield return 0;
-			}
-			yield return 0;
-		}
-		UnityEngine.Debug.Log ("closing this");
-		yield return null;
-	}
-
 	//logging itself can happen in regular update. the rate at which ILoggable objects add to the log Queue should be in FixedUpdate for framerate independence.
 	void Update()
 	{
 		frameCount++;
-		//		if (myLoggerWriter != null)
-		//		{
-		//			if (myLoggerWriter.Update())
-		//			{
-		//				// Alternative to the OnFinished callback
-		//				myLoggerWriter = null;
-		//			}
-		//		}
+		if (myLoggerWriter != null)
+		{
+			if (myLoggerWriter.Update())
+			{
+				// Alternative to the OnFinished callback
+				myLoggerWriter = null;
+			}
+		}
 	}
 
 	public long GetFrameCount(){
@@ -182,20 +159,11 @@ public class Logger_Threading : MonoBehaviour{
 		}
 	}
 
-	void OnApplicationQuit()
-	{
-		isRunning = false;
-	}
-
 	//must be called by the experiment class OnApplicationQuit()
 	public void close(){
 		//Application stopped running -- close() was called
 		//applicationIsRunning = false;
-		UnityEngine.Debug.Log("is running will be false");
-		logfile.Flush ();
-		logfile.Close ();
-		isRunning=false;
-		//		myLoggerWriter.End ();
+		myLoggerWriter.End ();
 	}
 
 

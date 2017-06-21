@@ -244,7 +244,6 @@ public class Experiment : MonoBehaviour {
 	}
 
 
-
 	public void OnExit(){ //call in scene controller when switching to another scene!
 		if (ExperimentSettings.isLogging) {
 			subjectLog.close ();
@@ -252,11 +251,20 @@ public class Experiment : MonoBehaviour {
 		}
 	}
 
-	void OnApplicationQuit(){
+	public void OnExperimentEnd(){
 		if (ExperimentSettings.isLogging) {
 			subjectLog.close ();
 			eegLog.close ();
+			File.Copy ("/Users/" + System.Environment.UserName + "/Library/Logs/Unity/Player.log", SessionDirectory+"Player.log");
+			Application.Quit ();
 		}
+	}
+
+	void OnApplicationQuit()
+	{
+		subjectLog.close ();
+		eegLog.close ();
+		File.Copy ("/Users/" + System.Environment.UserName + "/Library/Logs/Unity/Player.log", SessionDirectory+"Player.log");
 	}
 
 

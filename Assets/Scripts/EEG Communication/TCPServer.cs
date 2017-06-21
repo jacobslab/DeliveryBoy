@@ -674,7 +674,7 @@ public class ThreadedServer : ThreadedJob
 
             case "ABORT":
                 //TODO: show message
-                Application.Quit();
+//                Application.Quit();
                 break;
 
             case "SYNC":
@@ -713,7 +713,7 @@ public class ThreadedServer : ThreadedJob
                 }
                 //TODO: show message
                 UnityEngine.Debug.Log("EXIT happened");
-                Application.Quit();
+//                Application.Quit();
                 break;
 
             default:
