@@ -91,20 +91,21 @@ public class Store : MonoBehaviour {
 		#endif
 			UnityEngine.Debug.Log ("searching for " + folder);
 			storeAudioClips = Resources.LoadAll<AudioClip> (folder);
-			UnityEngine.Debug.Log ("found " + storeAudioClips.Length.ToString () + " clips in the folder");
-//			for (int i = 0; i < storeAudioClips.Length; i++) {
-//				audioLeftToUse.Add (storeAudioClips [i]);
-//			}
+			UnityEngine.Debug.Log ("init audio " + storeAudioClips.Length.ToString () + " clips in the folder");
+			for (int i = 0; i < storeAudioClips.Length; i++) {
+				audioLeftToUse.Add (storeAudioClips [i]);
+			}
 		}
 	}
-
-	//used by StoreController for removing used audio.
+	//used by StoreController for adding unused audio.
 	public void CleanOutAudioLeft(List<string> audioNames){
 //		int numAudioLeft = audioLeftToUse.Count;
 		int audioLeftIndex = 0;
 		for (int i = 0; i < storeAudioClips.Length; i++) {
-			if (audioNames.Contains (storeAudioClips [i].name))
-				audioLeftToUse.Add (storeAudioClips [i]);
+			if (!audioNames.Contains (storeAudioClips [i].name)) {
+				UnityEngine.Debug.Log ("removing a clip");
+				audioLeftToUse.Remove (storeAudioClips [i]);
+			}
 //			if(!audioNames.Contains(audioLeftToUse[audioLeftIndex].name)){
 //				audioLeftToUse.RemoveAt(audioLeftIndex);
 //			}

@@ -120,7 +120,7 @@ public class StoreController : MonoBehaviour {
 			}
 		}
 		else{
-			Debug.Log("NO LAST SESSION STORE ITEM FILE");
+			Debug.Log("NO LAST SESSION STORE ITEM FILE for " + readLastSessionFilePath);
 			exp.eventLogger.LogUseLastSessionItemFile(false);
 		}
 	}

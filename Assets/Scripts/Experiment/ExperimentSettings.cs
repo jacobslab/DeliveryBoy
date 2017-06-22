@@ -241,10 +241,13 @@ public class ExperimentSettings : MonoBehaviour { //should be in main menu AND e
 			return Experiment.Instance.SessionDirectory + ExperimentSettings.currentSubject.name + "_STORE_AUDIO_LEFT_" + Experiment.sessionID + ".txt";
 		} 
 		else { //looking for a previous session!
+			UnityEngine.Debug.Log("looking for a previous session!");
 			int lastSessionID = Experiment.sessionID - 1;
 			if(lastSessionID >= 0){
 				//TODO: subtract 1 from the session directory
-				string oldSessionDirectory = Experiment.Instance.SessionDirectory.Replace ("_" + Experiment.sessionID, "_" + lastSessionID);
+				UnityEngine.Debug.Log(Experiment.Instance.SessionDirectory);
+				string oldSessionDirectory = Experiment.Instance.SessionDirectory.Replace ("session_" + Experiment.sessionID, "session_" + lastSessionID);
+				UnityEngine.Debug.Log ("old session:" + oldSessionDirectory);
 				return oldSessionDirectory + ExperimentSettings.currentSubject.name + "_STORE_AUDIO_LEFT_" + lastSessionID + ".txt";
 			}
 			else{
