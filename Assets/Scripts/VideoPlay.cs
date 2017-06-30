@@ -13,6 +13,8 @@ public class VideoPlay : MonoBehaviour {
 	private VideoPlayer videoPlayer;
 	public AudioClip hospitalEnglishAudio;
 	public AudioClip englishAudio;
+	public AudioClip hospitalGermanAudio;
+	public AudioClip germanAudio;
 	private AudioClip currentAudio;
 	public bool shouldPlay=false;
 	private bool movieSkipped=false;
@@ -135,6 +137,7 @@ public class VideoPlay : MonoBehaviour {
 	#if GERMAN
             //put the german version of hospital learning session video here
 		currentClip = germanHospitalLearningSessionVideo;
+			currentAudio=hospitalGermanAudio;
 	#else
             //PLAY shorter video with only navigation
 			currentClip = hospitalLearningSessionVideo;
@@ -145,6 +148,7 @@ public class VideoPlay : MonoBehaviour {
 		{
 		#if GERMAN
 		currentClip=germanVideo;
+			currentAudio=germanAudio;
 		#else
 			currentClip=englishVideo;
 			currentAudio=englishAudio;
