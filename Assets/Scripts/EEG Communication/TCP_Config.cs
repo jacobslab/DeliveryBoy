@@ -61,11 +61,11 @@ public class TCP_Config : MonoBehaviour {
 	
 	public static SessionType GetSessionType(){
 		switch (Config.BuildVersion) {
-		case Config.Version.DBoy3_1:
+		case Config.Version.DBoy1:
 			return SessionType.NO_STIM;
-		case Config.Version.DBoy3_2:
+		case Config.Version.DBoy2:
 			return SessionType.CLOSED_STIM ;//could change back to openstim... just use closedstim for now
-		case Config.Version.DBoy3_3:
+		case Config.Version.DBoy3:
 			return SessionType.CLOSED_STIM;
 		}
 

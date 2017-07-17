@@ -6,17 +6,17 @@ public class Config : MonoBehaviour {
 	public enum Version
 	{
 		//syncbox can be 1, demo can be 1, system 2.0 can be 1,2,3
-		DBoy3_1, //no stim
-		DBoy3_2, //open stim
-		DBoy3_3 //closed stim
+		DBoy1, //no stim
+		DBoy2, //open stim
+		DBoy3 //closed stim
 	}
 
-	public static Version BuildVersion = Version.DBoy3_1;
+	public static Version BuildVersion = Version.DBoy1;
 	public static string VersionNumber = "3.0";
 
-	public static bool isSyncbox = true;
+	public static bool isSyncbox = false;
 	public static bool isSystem2 = false;
-	public static bool isSYS3=false;
+	public static bool isSYS3=true;
 
 
 	//fov slider

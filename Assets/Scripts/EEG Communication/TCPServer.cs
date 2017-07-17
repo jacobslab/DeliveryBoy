@@ -642,7 +642,8 @@ public class ThreadedServer : ThreadedJob
                 //do nothing
                 break;
 
-			case "START":
+		case "START":
+			UnityEngine.Debug.Log ("RECEIVED START MESSAGE");
 				canStartGame = true;
 				break;
             

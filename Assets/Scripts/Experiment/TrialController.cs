@@ -411,6 +411,8 @@ public class TrialController : MonoBehaviour {
 				Debug.Log ("Waiting for system 2 start command...");
 				yield return 0;
 			}
+
+			ConnectionText.text = "Received START message. Proceeding...";
 		}
 		else if (Config.isSyncbox){
 			while(!SyncboxControl.Instance.isUSBOpen){
