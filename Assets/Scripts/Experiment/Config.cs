@@ -16,7 +16,7 @@ public class Config : MonoBehaviour {
 
 	public static bool isSyncbox = false;
 	public static bool isSystem2 = false;
-	public static bool isSYS3=true;
+	public static bool isSYS3 = false;
 
 
 	//fov slider

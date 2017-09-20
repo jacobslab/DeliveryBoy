@@ -29,8 +29,10 @@ public class PlayerControls : MonoBehaviour{
 	
 	// Update is called once per frame
 	void Update () {
-
 		if (exp.currentState == Experiment.ExperimentState.inExperiment) {
+
+			ShouldLockControls = false;
+
 			if(!ShouldLockControls){
 				GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationY; // TODO: on collision, don't allow a change in angular velocity?
 
