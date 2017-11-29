@@ -86,7 +86,7 @@ public class AudioRecorder : MonoBehaviour {
 			exp.eventLogger.LogRecording(false);
 			recordText.color = origTextColor;
 
-			SavWav.Save (filePath, fileName, audio.clip);
+			//SavWav.Save (filePath, fileName, audio.clip);
 		} else {
 			Debug.Log("No mic to record with!");
 			yield return new WaitForSeconds(duration);
