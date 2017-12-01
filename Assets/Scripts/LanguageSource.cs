@@ -5,7 +5,7 @@ using UnityEngine;
 public static class LanguageSource
 {
     private enum LANGUAGE { ENGLISH, GERMAN };
-    private LANGUAGE current_language;
+    private static LANGUAGE current_language;
 
 
 }
