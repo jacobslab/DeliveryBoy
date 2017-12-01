@@ -11,7 +11,7 @@ public class BeginExperiment : MonoBehaviour
 
     public void DoBeginExperiment()
     {
-        DeliveryExperiment.SetUseRamulator(useRamulatorToggle.isOn);
+        DeliveryExperiment.ConfigureExperiment(useRamulatorToggle.isOn, 1);
         SceneManager.LoadScene(scene_name);
     }
 }

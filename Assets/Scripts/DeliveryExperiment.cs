@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class DeliveryExperiment : MonoBehaviour
 {
-    private static bool useRamulator;
+    public RamulatorInterface ramulatorInterface;
 
-    public static void SetUseRamulator (bool newUseRamulator)
+    private static bool useRamulator;
+    private static int sessionNumber;
+
+    public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber)
     {
         useRamulator = newUseRamulator;
+        sessionNumber = newSessionNumber;
     }
 
 	void Start ()
@@ -16,8 +20,9 @@ public class DeliveryExperiment : MonoBehaviour
 		
 	}
 	
-	void Update ()
+	private IEnumerator ExperimentCoroutine()
     {
-		
-	}
+        if (useRamulator)
+            yield return ramulatorInterface.BeginNewSession(sessionNumber);
+    }
 }
