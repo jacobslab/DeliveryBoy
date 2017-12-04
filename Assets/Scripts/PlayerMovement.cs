@@ -13,9 +13,7 @@ public class PlayerMovement : MonoBehaviour
 	public float maxRotation = 30f;
 	void Update ()
 	{
-		//rotate, but only if we're moving.  This isn't a hovercraft.
-		if (Input.GetAxis ("Vertical") != 0)
-			this.gameObject.transform.Rotate(new Vector3(0, Input.GetAxis ("Horizontal")*turnSpeed, 0));
+		this.gameObject.transform.Rotate(new Vector3(0, Input.GetAxis ("Horizontal")*turnSpeed, 0));
 
 		//move forward or more slowly backward
 		if (Input.GetAxis ("Vertical") > 0)

@@ -6,8 +6,8 @@ public class DeliveryExperiment : MonoBehaviour
 {
     public RamulatorInterface ramulatorInterface;
 
+    private static int sessionNumber = -1;
     private static bool useRamulator;
-    private static int sessionNumber;
 
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber)
     {
@@ -17,11 +17,16 @@ public class DeliveryExperiment : MonoBehaviour
 
 	void Start ()
     {
-		
+        StartCoroutine(ExperimentCoroutine());
 	}
 	
 	private IEnumerator ExperimentCoroutine()
     {
+        if (sessionNumber == -1)
+        {
+            throw new UnityException("Please call ConfigureExperiment before beginning the experiment.");
+        }
+
         if (useRamulator)
             yield return ramulatorInterface.BeginNewSession(sessionNumber);
     }
