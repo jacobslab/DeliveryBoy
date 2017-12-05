@@ -11,11 +11,13 @@ public class DeliveryExperiment : MonoBehaviour
     private static bool useRamulator;
 
     private const int MICROPHONE_TEST_LENGTH = 5;
+    private const string dboy_version = "v4.0";
 
     public RamulatorInterface ramulatorInterface;
     public TextDisplayer textDisplayer;
     public SoundRecorder soundRecorder;
     public VideoControl videoPlayer;
+    public ScriptedEventReporter scriptedEventReporter;
 
     public AudioSource highBeep;
     public AudioSource lowBeep;
@@ -24,8 +26,10 @@ public class DeliveryExperiment : MonoBehaviour
     public AudioSource microphoneTestPlayback;
 
 
-    public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber)
+    public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
+        UnityEPL.AddParticipant(participantCode);
+        UnityEPL.SetExperimentName("Delivery Boy");
         useRamulator = newUseRamulator;
         sessionNumber = newSessionNumber;
     }
@@ -42,8 +46,34 @@ public class DeliveryExperiment : MonoBehaviour
             throw new UnityException("Please call ConfigureExperiment before beginning the experiment.");
         }
 
+        //write versions to logfile
+        Dictionary<string, object> versionsData = new Dictionary<string, object>();
+        versionsData.Add("UnityEPL version", Application.version);
+        versionsData.Add("Experiment version", dboy_version);
+        versionsData.Add("Logfile version", "1");
+        scriptedEventReporter.ReportScriptedEvent("versions", versionsData, 0);
+
         if (useRamulator)
             yield return ramulatorInterface.BeginNewSession(sessionNumber);
+
+        yield return DoIntroductionVideo();
+        yield return DoSubjectSessionQuitPrompt();
+        yield return DoMicrophoneTest();
+    }
+
+    private IEnumerator DoSubjectSessionQuitPrompt()
+    {
+        yield return null;
+        SetRamulatorState("WAITING", true, new Dictionary<string, object>());
+        textDisplayer.DisplayText("subject/session confirmation", "Running " + UnityEPL.GetParticipants()[0] + " in session " + sessionNumber.ToString() + " of " + UnityEPL.GetExperimentName() + ".\n Press Y to continue, N to quit.");
+        while (!Input.GetKeyDown(KeyCode.Y) && !Input.GetKeyDown(KeyCode.N))
+        {
+            yield return null;
+        }
+        textDisplayer.ClearText();
+        SetRamulatorState("WAITING", false, new Dictionary<string, object>());
+        if (Input.GetKey(KeyCode.N))
+            Quit();
     }
 
     private IEnumerator DoMicrophoneTest()

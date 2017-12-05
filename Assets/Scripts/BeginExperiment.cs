@@ -30,7 +30,10 @@ public class BeginExperiment : MonoBehaviour
 
     public void DoBeginExperiment()
     {
-        DeliveryExperiment.ConfigureExperiment(useRamulatorToggle.isOn, 1);
+        if (!IsValidParticipantName(participantCodeInput.text))
+            throw new UnityException("You are trying to start the experiment with an invalid participant name!");
+
+        DeliveryExperiment.ConfigureExperiment(useRamulatorToggle.isOn, 1, participantCodeInput.text);
         SceneManager.LoadScene(scene_name);
     }
 
