@@ -17,6 +17,8 @@ public class MessageImageDisplayer : MonoBehaviour
     private IEnumerator DisplayMessage (GameObject message)
     {
         message.SetActive(true);
-        yield return null;
+        while (!Input.GetButtonDown("x"))
+            yield return null;
+        message.SetActive(false);
     }
 }

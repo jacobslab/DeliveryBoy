@@ -18,13 +18,13 @@ public class DeliveryExperiment : MonoBehaviour
     public SoundRecorder soundRecorder;
     public VideoControl videoPlayer;
     public ScriptedEventReporter scriptedEventReporter;
+    public GameObject memoryWordCanvas;
 
     public AudioSource highBeep;
     public AudioSource lowBeep;
     public AudioSource lowerBeep;
     public GameObject microphoneTestMessage;
     public AudioSource microphoneTestPlayback;
-
 
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
@@ -59,6 +59,8 @@ public class DeliveryExperiment : MonoBehaviour
         yield return DoIntroductionVideo();
         yield return DoSubjectSessionQuitPrompt();
         yield return DoMicrophoneTest();
+
+        memoryWordCanvas.SetActive(false);
     }
 
     private IEnumerator DoSubjectSessionQuitPrompt()
