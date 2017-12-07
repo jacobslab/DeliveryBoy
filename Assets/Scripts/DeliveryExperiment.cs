@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct Environment
+{
+    public GameObject parent;
+    public GameObject[] stores;
+}
+
 public class DeliveryExperiment : MonoBehaviour
 {
     public delegate void StateChange(string stateName, bool on);
@@ -13,6 +20,7 @@ public class DeliveryExperiment : MonoBehaviour
     private const int MICROPHONE_TEST_LENGTH = 5;
     private const string dboy_version = "v4.0";
 
+    public MessageImageDisplayer messageImageDisplayer;
     public RamulatorInterface ramulatorInterface;
     public TextDisplayer textDisplayer;
     public SoundRecorder soundRecorder;
@@ -25,6 +33,8 @@ public class DeliveryExperiment : MonoBehaviour
     public AudioSource lowerBeep;
     public GameObject microphoneTestMessage;
     public AudioSource microphoneTestPlayback;
+
+    public Environment[] environments;
 
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
@@ -61,6 +71,12 @@ public class DeliveryExperiment : MonoBehaviour
         yield return DoMicrophoneTest();
 
         memoryWordCanvas.SetActive(false);
+
+        System.Random reliable_random = new System.Random(UnityEPL.GetParticipants()[0].GetHashCode());
+        Environment environment = environments[reliable_random.Next(environments.Length)];
+        environment.parent.SetActive(true);
+
+        messageImageDisplayer.DisplayFindTheBlahMessage("library");
     }
 
     private IEnumerator DoSubjectSessionQuitPrompt()
