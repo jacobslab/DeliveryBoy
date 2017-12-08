@@ -6,7 +6,7 @@ using UnityEngine;
 public struct Environment
 {
     public GameObject parent;
-    public GameObject[] stores;
+    public Store[] stores;
 }
 
 public class DeliveryExperiment : MonoBehaviour
@@ -74,12 +74,17 @@ public class DeliveryExperiment : MonoBehaviour
 
         Environment environment = EnableEnvironment();
 
-        yield return DoDeliveries();
+        yield return DoDeliveries(environment);
     }
 
-    private IEnumerator DoDeliveries()
+    private IEnumerator DoDeliveries(Environment environment)
     {
         messageImageDisplayer.DisplayFindTheBlahMessage("library");
+
+        for (int i = 0; i < environment.stores.Length; i++)
+        {
+            yield return null;
+        }
     }
 
     private Environment EnableEnvironment()
