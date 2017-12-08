@@ -6,7 +6,7 @@ using UnityEngine;
 public struct Environment
 {
     public GameObject parent;
-    public Store[] stores;
+    public StoreComponent[] stores;
 }
 
 public class DeliveryExperiment : MonoBehaviour
@@ -81,8 +81,12 @@ public class DeliveryExperiment : MonoBehaviour
     {
         messageImageDisplayer.DisplayFindTheBlahMessage("library");
 
+        List<StoreComponent> unvisitedStores = new List<StoreComponent>(environment.stores);
         for (int i = 0; i < environment.stores.Length; i++)
         {
+            int random_store_index = Random.Range(0, unvisitedStores.Count);
+            StoreComponent nextStore = unvisitedStores[random_store_index];
+            unvisitedStores.RemoveAt(random_store_index);
             yield return null;
         }
     }
