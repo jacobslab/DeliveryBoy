@@ -72,11 +72,22 @@ public class DeliveryExperiment : MonoBehaviour
 
         memoryWordCanvas.SetActive(false);
 
+        Environment environment = EnableEnvironment();
+
+        yield return DoDeliveries();
+    }
+
+    private IEnumerator DoDeliveries()
+    {
+        messageImageDisplayer.DisplayFindTheBlahMessage("library");
+    }
+
+    private Environment EnableEnvironment()
+    {
         System.Random reliable_random = new System.Random(UnityEPL.GetParticipants()[0].GetHashCode());
         Environment environment = environments[reliable_random.Next(environments.Length)];
         environment.parent.SetActive(true);
-
-        messageImageDisplayer.DisplayFindTheBlahMessage("library");
+        return environment;
     }
 
     private IEnumerator DoSubjectSessionQuitPrompt()
