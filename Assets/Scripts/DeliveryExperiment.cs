@@ -39,6 +39,7 @@ public class DeliveryExperiment : MonoBehaviour
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
         UnityEPL.AddParticipant(participantCode);
+        UnityEPL.SetSessionNumber(sessionNumber);
         UnityEPL.SetExperimentName("Delivery Boy");
         useRamulator = newUseRamulator;
         sessionNumber = newSessionNumber;
@@ -79,15 +80,15 @@ public class DeliveryExperiment : MonoBehaviour
 
     private IEnumerator DoDeliveries(Environment environment)
     {
-        messageImageDisplayer.DisplayFindTheBlahMessage("library");
-
         List<StoreComponent> unvisitedStores = new List<StoreComponent>(environment.stores);
         for (int i = 0; i < environment.stores.Length; i++)
         {
             int random_store_index = Random.Range(0, unvisitedStores.Count);
             StoreComponent nextStore = unvisitedStores[random_store_index];
             unvisitedStores.RemoveAt(random_store_index);
-            yield return null;
+            messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
+            while (!nextStore.PlayerInDeliveryBox())
+                yield return null;
         }
     }
 

@@ -31,6 +31,8 @@ public static class LanguageSource
 
     public static string GetLanguageString(string string_name)
     {
+        if (!language_string_dict.ContainsKey(string_name))
+            throw new UnityException("I don't have a language string called: " + string_name);
         return language_string_dict[string_name][(int)current_language];
     }
 }
