@@ -11,6 +11,7 @@ public class MessageImageDisplayer : MonoBehaviour
 
     public GameObject please_find_the_blah;
     public UnityEngine.UI.Text please_find_the_blah_text;
+    public UnityEngine.UI.Text please_find_the_blah_reminder;
 
     public void DisplayLanguageMessage(GameObject[] language_messages)
     {
@@ -27,7 +28,9 @@ public class MessageImageDisplayer : MonoBehaviour
 
     public void DisplayFindTheBlahMessage(string store_name)
     {
-        please_find_the_blah_text.text = LanguageSource.GetLanguageString("please find prompt") + " " + store_name;
+        string prompt_string = LanguageSource.GetLanguageString("please find prompt") + store_name;
+        please_find_the_blah_text.text = prompt_string;
+        please_find_the_blah_reminder.text = prompt_string;
         StartCoroutine(DisplayMessage(please_find_the_blah));
     }
 }
