@@ -109,7 +109,7 @@ public static class UnityEPL
     /// <summary>
     /// Gets the data output folder for the current experiment and participant.
     /// 
-    /// The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json.  If you have already overridden the default, however, this will throw a warning and return your specified path.
+    /// The default participant folder is the folder where the application is running, plus /data/experiment/participant/.  If you have already overridden the default, however, this will throw a warning and return your specified path.
     /// </summary>
     /// <returns>The participant folder.</returns>
     public static string GetParticipantFolder()
@@ -137,7 +137,7 @@ public static class UnityEPL
     }
 
     /// <summary>
-    /// Gets the file path to the current output log.
+    /// Gets the file path to the current output log folder.
     /// </summary>
     /// <returns>The data path.</returns>
     public static string GetDataPath()
@@ -168,6 +168,7 @@ public static class UnityEPL
     /// <param name="newSessionNumber">New session number.</param>
     public static void SetSessionNumber(int newSessionNumber)
     {
+        Debug.Log(newSessionNumber);
         sessionNumber = newSessionNumber;
     }
 }

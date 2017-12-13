@@ -19,7 +19,8 @@ public class BeginExperiment : MonoBehaviour
         {
             beginExperimentButton.SetActive(true);
             greyedOutButton.SetActive(false);
-            beginButtonText.text = "Begin session " + NextSessionNumber().ToString();
+            int nextSessionNumber = NextSessionNumber();
+            beginButtonText.text = "Begin session " + nextSessionNumber.ToString();
         }
         else
         {
@@ -33,7 +34,7 @@ public class BeginExperiment : MonoBehaviour
         if (!IsValidParticipantName(participantCodeInput.text))
             throw new UnityException("You are trying to start the experiment with an invalid participant name!");
 
-        DeliveryExperiment.ConfigureExperiment(useRamulatorToggle.isOn, 1, participantCodeInput.text);
+        DeliveryExperiment.ConfigureExperiment(useRamulatorToggle.isOn, NextSessionNumber(), participantCodeInput.text);
         SceneManager.LoadScene(scene_name);
     }
 

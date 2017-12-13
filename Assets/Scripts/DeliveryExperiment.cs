@@ -18,19 +18,23 @@ public class DeliveryExperiment : CoroutineExperiment
     private static bool useRamulator;
 
     private const string dboy_version = "v4.0";
+    private const int deliveries_per_trial = 13;
 
     public MessageImageDisplayer messageImageDisplayer;
     public RamulatorInterface ramulatorInterface;
+    public PlayerMovement playerMovement;
 
     public ScriptedEventReporter scriptedEventReporter;
     public GameObject memoryWordCanvas;
 
     public Environment[] environments;
 
+    private List<string> this_trial_presented_words = new List<string>();
+
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
         UnityEPL.AddParticipant(participantCode);
-        UnityEPL.SetSessionNumber(sessionNumber);
+        UnityEPL.SetSessionNumber(newSessionNumber);
         UnityEPL.SetExperimentName("Delivery Boy");
         useRamulator = newUseRamulator;
         sessionNumber = newSessionNumber;
@@ -66,13 +70,13 @@ public class DeliveryExperiment : CoroutineExperiment
 
         Environment environment = EnableEnvironment();
 
-        yield return DoDeliveries(environment);
+        yield return DoDelivery(environment, 0);
     }
 
-    private IEnumerator DoDeliveries(Environment environment)
+    private IEnumerator DoDelivery(Environment environment, int trialNumber)
     {
         List<StoreComponent> unvisitedStores = new List<StoreComponent>(environment.stores);
-        for (int i = 0; i < environment.stores.Length; i++)
+        for (int i = 0; i < deliveries_per_trial; i++)
         {
             int random_store_index = Random.Range(0, unvisitedStores.Count);
             StoreComponent nextStore = unvisitedStores[random_store_index];
@@ -80,6 +84,37 @@ public class DeliveryExperiment : CoroutineExperiment
             messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
             while (!nextStore.PlayerInDeliveryZone())
                 yield return null;
+
+            if (i != deliveries_per_trial - 1)
+            {
+                playerMovement.Freeze();
+                AudioClip deliveredItem = nextStore.PopItem();
+                string deliveredItemName = deliveredItem.name;
+                audioPlayback.clip = deliveredItem;
+                audioPlayback.Play();
+                AppendWordToLst(System.IO.Path.Combine(UnityEPL.GetDataPath(), trialNumber.ToString() + ".lst"), deliveredItemName);
+                this_trial_presented_words.Add(deliveredItemName);
+                yield return new WaitForSeconds(deliveredItem.length);
+                playerMovement.Unfreeze();
+            }
+        }
+    }
+
+    private void AppendWordToLst(string lstFilePath, string word)
+    {
+        System.IO.FileInfo lstFile = new System.IO.FileInfo(lstFilePath);
+        bool firstLine = lstFile.Exists;
+        if (firstLine)
+            lstFile.Directory.Create();
+        lstFile.Directory.Create();
+        using (var stream = System.IO.File.OpenWrite(lstFilePath))
+        {
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(stream))
+            {
+                if (!firstLine)
+                    writer.Write("\n");
+                writer.Write(word);
+            }
         }
     }
 

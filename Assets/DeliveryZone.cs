@@ -5,6 +5,7 @@ using UnityEngine;
 public class DeliveryZone : MonoBehaviour
 {
     private bool playerInDeliveryZone = false;
+    public GameObject pointerCircle;
 
     public bool PlayerInDeliveryZone()
     {

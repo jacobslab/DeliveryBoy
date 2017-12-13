@@ -12,7 +12,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
 
     public GameObject microphoneTestMessage;
 
-    public AudioSource microphoneTestPlayback;
+    public AudioSource audioPlayback;
     public AudioSource highBeep;
     public AudioSource lowBeep;
     public AudioSource lowerBeep;
@@ -55,8 +55,8 @@ public abstract class CoroutineExperiment : MonoBehaviour
             textDisplayer.DisplayText("microphone test playing", "Playing...");
             textDisplayer.ChangeColor(Color.green);
 
-            microphoneTestPlayback.clip = soundRecorder.GetLastClip();
-            microphoneTestPlayback.Play();
+            audioPlayback.clip = soundRecorder.GetLastClip();
+            audioPlayback.Play();
             yield return new WaitForSeconds(MICROPHONE_TEST_LENGTH);
             textDisplayer.ClearText();
             textDisplayer.OriginalColor();
@@ -109,7 +109,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
         while (replay);
     }
 
-    private IEnumerator PressAnyKey(string displayText)
+    protected IEnumerator PressAnyKey(string displayText)
     {
         SetRamulatorState("WAITING", true, new Dictionary<string, object>());
         yield return null;
@@ -121,7 +121,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
     }
 
 
-    private void Quit()
+    protected void Quit()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
