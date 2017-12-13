@@ -78,7 +78,7 @@ public class DeliveryExperiment : CoroutineExperiment
             StoreComponent nextStore = unvisitedStores[random_store_index];
             unvisitedStores.RemoveAt(random_store_index);
             messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
-            while (!nextStore.PlayerInDeliveryBox())
+            while (!nextStore.PlayerInDeliveryZone())
                 yield return null;
         }
     }
