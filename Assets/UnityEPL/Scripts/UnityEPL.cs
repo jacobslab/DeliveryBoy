@@ -168,7 +168,6 @@ public static class UnityEPL
     /// <param name="newSessionNumber">New session number.</param>
     public static void SetSessionNumber(int newSessionNumber)
     {
-        Debug.Log(newSessionNumber);
         sessionNumber = newSessionNumber;
     }
 }

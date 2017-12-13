@@ -17,9 +17,13 @@ public class BeginExperiment : MonoBehaviour
     {
         if (IsValidParticipantName(participantCodeInput.text))
         {
+            UnityEPL.ClearParticipants();
+            UnityEPL.AddParticipant(participantCodeInput.text);
+            UnityEPL.SetExperimentName("Delivery Boy");
             beginExperimentButton.SetActive(true);
             greyedOutButton.SetActive(false);
             int nextSessionNumber = NextSessionNumber();
+            UnityEPL.SetSessionNumber(NextSessionNumber());
             beginButtonText.text = "Begin session " + nextSessionNumber.ToString();
         }
         else
@@ -40,13 +44,13 @@ public class BeginExperiment : MonoBehaviour
 
     private int NextSessionNumber()
     {
-        string dataPath = UnityEPL.GetDataPath();
+        string dataPath = UnityEPL.GetParticipantFolder();
         string[] sessionFolders = System.IO.Directory.GetDirectories(dataPath);
         int mostRecentSessionNumber = -1;
         foreach (string folder in sessionFolders)
         {
             int thisSessionNumber = -1;
-            if (int.TryParse(folder, out thisSessionNumber) && thisSessionNumber > mostRecentSessionNumber)
+            if (int.TryParse(folder.Substring(folder.LastIndexOf('_')+1), out thisSessionNumber) && thisSessionNumber > mostRecentSessionNumber)
                 mostRecentSessionNumber = thisSessionNumber;
         }
         return mostRecentSessionNumber + 1;

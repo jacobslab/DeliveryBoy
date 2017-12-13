@@ -33,9 +33,6 @@ public class DeliveryExperiment : CoroutineExperiment
 
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
-        UnityEPL.AddParticipant(participantCode);
-        UnityEPL.SetSessionNumber(newSessionNumber);
-        UnityEPL.SetExperimentName("Delivery Boy");
         useRamulator = newUseRamulator;
         sessionNumber = newSessionNumber;
     }
@@ -103,19 +100,17 @@ public class DeliveryExperiment : CoroutineExperiment
     private void AppendWordToLst(string lstFilePath, string word)
     {
         System.IO.FileInfo lstFile = new System.IO.FileInfo(lstFilePath);
-        bool firstLine = lstFile.Exists;
+        bool firstLine = !lstFile.Exists;
         if (firstLine)
             lstFile.Directory.Create();
         lstFile.Directory.Create();
-        using (var stream = System.IO.File.OpenWrite(lstFilePath))
+        using (System.IO.StreamWriter w = System.IO.File.AppendText(lstFilePath))
         {
-            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(stream))
-            {
-                if (!firstLine)
-                    writer.Write("\n");
-                writer.Write(word);
-            }
+            if (!firstLine)
+                w.Write(System.Environment.NewLine);
+            w.Write(word);
         }
+
     }
 
     private Environment EnableEnvironment()
