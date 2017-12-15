@@ -19,7 +19,13 @@ public class DeliveryExperiment : CoroutineExperiment
 
     private const string dboy_version = "v4.0";
     private const int deliveries_per_trial = 13;
+    private const float min_familiarization_isi = 0.4f;
+    private const float max_familiarization_isi = 0.6f;
+    private const float familiarization_presentation_length = 1.5f;
 
+    public Camera regularCamera;
+    public Camera familiarizationCamera;
+    public Familiarizer familiarizer;
     public MessageImageDisplayer messageImageDisplayer;
     public RamulatorInterface ramulatorInterface;
     public PlayerMovement playerMovement;
@@ -65,9 +71,23 @@ public class DeliveryExperiment : CoroutineExperiment
 
         memoryWordCanvas.SetActive(false);
 
+        yield return DoFamiliarization();
+
         Environment environment = EnableEnvironment();
 
         yield return DoDelivery(environment, 0);
+    }
+
+    private IEnumerator DoFamiliarization()
+    {
+        regularCamera.enabled = false;
+        familiarizationCamera.enabled = true;
+
+        yield return messageImageDisplayer.DisplayLanguageMessage(messageImageDisplayer.store_images_presentation_messages);
+        yield return familiarizer.DoFamiliarization(min_familiarization_isi, max_familiarization_isi, familiarization_presentation_length);
+
+        regularCamera.enabled = true;
+        familiarizationCamera.enabled = false;
     }
 
     private IEnumerator DoDelivery(Environment environment, int trialNumber)
@@ -78,7 +98,9 @@ public class DeliveryExperiment : CoroutineExperiment
             int random_store_index = Random.Range(0, unvisitedStores.Count);
             StoreComponent nextStore = unvisitedStores[random_store_index];
             unvisitedStores.RemoveAt(random_store_index);
-            messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
+            playerMovement.Freeze();
+            yield return messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
+            playerMovement.Unfreeze();
             while (!nextStore.PlayerInDeliveryZone())
                 yield return null;
 
