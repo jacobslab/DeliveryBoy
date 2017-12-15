@@ -1997,7 +1997,197 @@ ModelImporter:
     4300630: db_TownHospital_Guardrails:pasted__pasted__pasted__polySurface8
     7400000: Take 001
     9500000: //RootNode
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Default_Material
+    second: {fileID: 2100000, guid: a4379c194c9ca48119c14418c8606dbd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_BoundingBox1
+    second: {fileID: 2100000, guid: 3fc41067a73dd42efb46c65b85b28a56, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_BrushedMetal
+    second: {fileID: 2100000, guid: 8b431103ede5946ecbcd8358b9c9e19f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_Grass
+    second: {fileID: 2100000, guid: 50ee686c5335f46be9f2dac24415a205, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert10
+    second: {fileID: 2100000, guid: eff2cb33b2e5446e49299501a15c5f12, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert11
+    second: {fileID: 2100000, guid: fe133bdbfdc2b44bd94be91220ec45ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert2
+    second: {fileID: 2100000, guid: 40984fcba3f054f2c909b2d90bfab4fa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert3
+    second: {fileID: 2100000, guid: 54e5ace333b0f45afa4ff2fca6e19edd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert4
+    second: {fileID: 2100000, guid: 2372b855c84e94f20aeabb0f94f42707, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert5
+    second: {fileID: 2100000, guid: 85c9783e749964dd7bf2a9251bfc4ae3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert6
+    second: {fileID: 2100000, guid: 7971ae108b7794b61af78ba8400e7cb4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert7
+    second: {fileID: 2100000, guid: ff20bfb805af24f6fbd257623b1c84d0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert8
+    second: {fileID: 2100000, guid: 2442fd519d10441cd83e8457e1054507, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_lambert9
+    second: {fileID: 2100000, guid: eff2cb33b2e5446e49299501a15c5f12, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_apartments_window
+    second: {fileID: 2100000, guid: b78a2a81cdbcb4f068becf0ca8d95df4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_build_officeComplex_Concrete_Cast_In
+    second: {fileID: 2100000, guid: 17c3749b78f87431a873e1f95bb3b43a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_concrete1
+    second: {fileID: 2100000, guid: 9f3ebbcf0e39a4feb998762e4c867516, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_grass_over
+    second: {fileID: 2100000, guid: d3814995d516f4d3ead0b2f9bf75593f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_lambert17
+    second: {fileID: 2100000, guid: f4e6f212f253d478781d32d4da1f0e74, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_lambert18
+    second: {fileID: 2100000, guid: eea6172ef3ef94d6c83d50b8921361a4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_lambert2
+    second: {fileID: 2100000, guid: b6f4555ab419846448da220efcf9903d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_leavesTex
+    second: {fileID: 2100000, guid: 395690cb727134a60933a2d3936efc8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_pasted__pasted__Material12
+    second: {fileID: 2100000, guid: f60a05f9a46b74bfa89355a31fd2882a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_pasted__pasted__pasted__Material16
+    second: {fileID: 2100000, guid: 9d7804ba8e63044d19735d687cc94b77, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_Bench_lambert2
+    second: {fileID: 2100000, guid: f5b3dc9034ae4428c9727f0cd5efa0d5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_Bush1_lambert2
+    second: {fileID: 2100000, guid: e307a0914542845fcaf95dbc7be7a818, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_Bush1_lambert3
+    second: {fileID: 2100000, guid: 395690cb727134a60933a2d3936efc8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_MailBox_lambert2
+    second: {fileID: 2100000, guid: 22b29934f8b384016887ee50bda177c6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_streetlamp_lambert2
+    second: {fileID: 2100000, guid: b9f821511e4894d3884803bb73431a4e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_trashcan_lambert2
+    second: {fileID: 2100000, guid: 55d88ede826a646069cc4982d84dcd31, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_tree1_trunk
+    second: {fileID: 2100000, guid: e818a5f7190be465f8fbdab41ac6f005, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_tree2_lambert4
+    second: {fileID: 2100000, guid: 9b8b306ae08734385bef87ca77624d80, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_prop_tree3_lambert4
+    second: {fileID: 2100000, guid: 74cb00064b6eb4565b3a5337c10b7c32, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_stoneWall
+    second: {fileID: 2100000, guid: 18de172ff20a842408753c761a5237bf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_tree2_leavesTex
+    second: {fileID: 2100000, guid: c00b3681a2359432c87ebe93119059fb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_tree2_treeTex
+    second: {fileID: 2100000, guid: e818a5f7190be465f8fbdab41ac6f005, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: db_TownHospital_Guardrails_treeTex
+    second: {fileID: 2100000, guid: e818a5f7190be465f8fbdab41ac6f005, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert1
+    second: {fileID: 2100000, guid: b52f842034cda482f9286ece3fedcf6a, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
