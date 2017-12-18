@@ -24,6 +24,9 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float familiarization_presentation_length = 1.5f;
     private const float recall_text_display_length = 1f;
     private const float free_recall_length = 30f;
+    private const float time_between_free_and_cued_recall = 2f;
+    private const float cued_recall_time_per_store = 5f;
+    private const float cued_recall_isi = 1f;
 
     public Camera regularCamera;
     public Camera familiarizationCamera;
@@ -104,6 +107,8 @@ public class DeliveryExperiment : CoroutineExperiment
     private IEnumerator DoRecall(int trial_number)
     {
         SetRamulatorState("RETRIEVAL", true, new Dictionary<string, object>());
+        DisplayTitle("Please recall objects from this delivery day.");
+
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
 
@@ -121,6 +126,11 @@ public class DeliveryExperiment : CoroutineExperiment
         textDisplayer.ClearText();
         lowBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
+
+        ClearTitle();
+
+
+
         SetRamulatorState("RETRIEVAL", false, new Dictionary<string, object>());
     }
 

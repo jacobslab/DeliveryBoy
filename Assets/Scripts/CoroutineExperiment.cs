@@ -10,7 +10,8 @@ public abstract class CoroutineExperiment : MonoBehaviour
     public TextDisplayer textDisplayer;
     public VideoControl videoPlayer;
 
-    public GameObject microphoneTestMessage;
+    public GameObject titleMessage;
+    public UnityEngine.UI.Text titleText;
 
     public AudioSource audioPlayback;
     public AudioSource highBeep;
@@ -36,7 +37,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
 
     protected IEnumerator DoMicrophoneTest()
     {
-        microphoneTestMessage.SetActive(true);
+        DisplayTitle("Microphone Test");
         bool repeat = false;
         string wavFilePath;
 
@@ -78,7 +79,18 @@ public abstract class CoroutineExperiment : MonoBehaviour
         if (!System.IO.File.Exists(wavFilePath + ".wav"))
             yield return PressAnyKey("WARNING: Wav output file not detected.  Sounds may not be successfully recorded to disk.");
 
-        microphoneTestMessage.SetActive(false);
+        ClearTitle();
+    }
+
+    protected void DisplayTitle(string title)
+    {
+        titleMessage.SetActive(true);
+        titleText.text = title;
+    }
+
+    protected void ClearTitle()
+    {
+        titleMessage.SetActive(false);
     }
 
     protected IEnumerator DoIntroductionVideo()
