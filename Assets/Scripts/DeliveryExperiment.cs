@@ -77,6 +77,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
         for (int trial_number = 0; trial_number < 12; trial_number++)
         {
+            ramulatorInterface.BeginNewTrial(trial_number);
             yield return DoDelivery(environment, trial_number);
             yield return DoRecall();
 
