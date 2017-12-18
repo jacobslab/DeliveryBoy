@@ -75,7 +75,35 @@ public class DeliveryExperiment : CoroutineExperiment
 
         Environment environment = EnableEnvironment();
 
-        yield return DoDelivery(environment, 0);
+        for (int trial_number = 0; trial_number < 12; trial_number++)
+        {
+            yield return DoDelivery(environment, trial_number);
+            yield return DoRecall();
+
+            memoryWordCanvas.SetActive(true);
+            SetRamulatorState("WAITING", true, new Dictionary<string, object>());
+            yield return null;
+            textDisplayer.DisplayText("proceed to next day prompt", "Press X to proceed to the next delivery day.");
+            while (!Input.GetButton("q (secret)") && !Input.GetButton("x (continue)"))
+                yield return null;
+            SetRamulatorState("WAITING", false, new Dictionary<string, object>());
+            textDisplayer.ClearText();
+            if (Input.GetButton("q (secret)"))
+                break;
+            memoryWordCanvas.SetActive(false);
+        }
+
+        yield return DoFinalRecall();
+    }
+
+    private IEnumerator DoRecall()
+    {
+        yield return null;
+    }
+
+    private IEnumerator DoFinalRecall()
+    {
+        yield return null;
     }
 
     private IEnumerator DoFamiliarization()

@@ -16,5 +16,6 @@ public class ControllerTest : MonoBehaviour {
         Debug.Log(Input.GetAxis("Vertical"));
         Debug.Log(Input.GetButton("x (continue)"));
         Debug.Log(Input.GetButton("b (pause)"));
+        Debug.Log(Input.GetButton("q (secret)"));
 	}
 }
