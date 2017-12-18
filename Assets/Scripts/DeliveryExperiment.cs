@@ -22,6 +22,8 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float min_familiarization_isi = 0.4f;
     private const float max_familiarization_isi = 0.6f;
     private const float familiarization_presentation_length = 1.5f;
+    private const float recall_text_display_length = 1f;
+    private const float free_recall_length = 30f;
 
     public Camera regularCamera;
     public Camera familiarizationCamera;
@@ -80,9 +82,10 @@ public class DeliveryExperiment : CoroutineExperiment
             if (useRamulator)
                 ramulatorInterface.BeginNewTrial(trial_number);
             yield return DoDelivery(environment, trial_number);
-            yield return DoRecall();
 
             memoryWordCanvas.SetActive(true);
+            yield return DoRecall(trial_number);
+
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
             yield return null;
             textDisplayer.DisplayText("proceed to next day prompt", "Press X to proceed to the next delivery day.");
@@ -98,9 +101,27 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return DoFinalRecall();
     }
 
-    private IEnumerator DoRecall()
+    private IEnumerator DoRecall(int trial_number)
     {
-        yield return null;
+        SetRamulatorState("RETRIEVAL", true, new Dictionary<string, object>());
+        highBeep.Play();
+        scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
+
+        textDisplayer.DisplayText("display recall text", "*******");
+        yield return new WaitForSeconds(recall_text_display_length);
+        textDisplayer.ClearText();
+
+        soundRecorder.StartRecording(Mathf.CeilToInt(free_recall_length));
+        yield return new WaitForSeconds(free_recall_length);
+
+        string output_directory = UnityEPL.GetDataPath();
+        string wavFilePath = System.IO.Path.Combine(output_directory, trial_number.ToString());
+
+        soundRecorder.StopRecording(wavFilePath);
+        textDisplayer.ClearText();
+        lowBeep.Play();
+        scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
+        SetRamulatorState("RETRIEVAL", false, new Dictionary<string, object>());
     }
 
     private IEnumerator DoFinalRecall()
