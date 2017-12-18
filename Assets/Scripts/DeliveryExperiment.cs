@@ -143,7 +143,9 @@ public class DeliveryExperiment : CoroutineExperiment
                 audioPlayback.Play();
                 AppendWordToLst(System.IO.Path.Combine(UnityEPL.GetDataPath(), trialNumber.ToString() + ".lst"), deliveredItemName);
                 this_trial_presented_words.Add(deliveredItemName);
+                SetRamulatorState("WORD", true, new Dictionary<string, object>() { { "word", deliveredItemName} });
                 yield return new WaitForSeconds(deliveredItem.length);
+                SetRamulatorState("WORD", false, new Dictionary<string, object>() { { "word", deliveredItemName } });
                 playerMovement.Unfreeze();
             }
         }
