@@ -7,8 +7,10 @@ public class StoreComponent : MonoBehaviour
     private static Dictionary<string, StoreComponent> storesByName = new Dictionary<string, StoreComponent>();
     private DeliveryZone deliveryZone;
     private List<AudioClip>[] itemLists;
+    private string last_popped_item_name;
 
     public string storeName;
+    public GameObject familiarization_object;
     public List<AudioClip> englishItems;
     public List<AudioClip> germanItems;
 
@@ -30,6 +32,12 @@ public class StoreComponent : MonoBehaviour
         int randomIndex = Random.Range(0, languageItems.Count);
         AudioClip randomItem = languageItems[randomIndex];
         languageItems.RemoveAt(randomIndex);
+        last_popped_item_name = randomItem.name;
         return randomItem;
+    }
+
+    public string GetLastPoppedItemName()
+    {
+        return last_popped_item_name;
     }
 }
