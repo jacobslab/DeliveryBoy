@@ -37,6 +37,12 @@ public class DeliveryExperiment : CoroutineExperiment
     public MessageImageDisplayer messageImageDisplayer;
     public RamulatorInterface ramulatorInterface;
     public PlayerMovement playerMovement;
+    public GameObject pointer;
+    public ParticleSystem pointerParticleSystem;
+    public GameObject pointerMessage;
+    public UnityEngine.UI.Text pointerText;
+
+    public float pointerRotationSpeed = 10f;
 
     public ScriptedEventReporter scriptedEventReporter;
     public GameObject memoryWordCanvas;
@@ -254,9 +260,12 @@ public class DeliveryExperiment : CoroutineExperiment
             int random_store_index = Random.Range(0, unvisitedStores.Count);
             StoreComponent nextStore = unvisitedStores[random_store_index];
             unvisitedStores.RemoveAt(random_store_index);
+
             playerMovement.Freeze();
             yield return messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
+            yield return DoPointingTask(nextStore);
             playerMovement.Unfreeze();
+
             while (!nextStore.PlayerInDeliveryZone())
                 yield return null;
             
@@ -278,6 +287,30 @@ public class DeliveryExperiment : CoroutineExperiment
         }
 
         messageImageDisplayer.please_find_the_blah_reminder.SetActive(false);
+    }
+
+    private IEnumerator DoPointingTask(StoreComponent nextStore)
+    {
+        pointer.SetActive(true);
+        pointerMessage.SetActive(true);
+        pointerText.text = "Please point to the " + LanguageSource.GetLanguageString(nextStore.storeName) + ".";
+        yield return null;
+        while (!Input.GetButtonDown("x (continue)"))
+        {
+            pointer.transform.eulerAngles = pointer.transform.eulerAngles + new Vector3(0, Input.GetAxis("Horizontal") * Time.deltaTime * pointerRotationSpeed, 0);
+            yield return null;
+        }
+
+        pointerParticleSystem.Play();
+
+        pointerText.text = "That was correct!";
+        yield return null;
+        while (!Input.GetButtonDown("x (continue)"))
+        {
+            yield return null;
+        }
+        pointer.SetActive(false);
+        pointerMessage.SetActive(false);
     }
 
     private void AppendWordToLst(string lstFilePath, string word)
