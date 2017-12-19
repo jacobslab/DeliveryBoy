@@ -27,7 +27,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float free_recall_length = 30f;
     private const float store_recall_length = 90f;
     private const float final_recall_length = 300f;
-    private const float time_between_free_and_cued_recall = 2f;
+    private const float time_between_different_recall_phases = 2f;
     private const float cued_recall_time_per_store = 5f;
     private const float cued_recall_isi = 1f;
 
@@ -92,14 +92,19 @@ public class DeliveryExperiment : CoroutineExperiment
             yield return DoDelivery(environment, trial_number);
 
             memoryWordCanvas.SetActive(true);
+            regularCamera.enabled = false;
+            familiarizationCamera.enabled = true;
             yield return DoRecall(trial_number);
 
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
             yield return null;
             textDisplayer.DisplayText("proceed to next day prompt", "Press X to proceed to the next delivery day.");
+
             while (!Input.GetButton("q (secret)") && !Input.GetButton("x (continue)"))
                 yield return null;
             SetRamulatorState("WAITING", false, new Dictionary<string, object>());
+            regularCamera.enabled = true;
+            familiarizationCamera.enabled = false;
             textDisplayer.ClearText();
             if (Input.GetButton("q (secret)"))
                 break;
@@ -116,9 +121,6 @@ public class DeliveryExperiment : CoroutineExperiment
     {
         SetRamulatorState("RETRIEVAL", true, new Dictionary<string, object>());
         DisplayTitle("Please recall objects from this delivery day.");
-
-        regularCamera.enabled = false;
-        familiarizationCamera.enabled = true;
 
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
@@ -143,7 +145,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
 
         this_trial_presented_stores.Shuffle();
-        yield return SkippableWait(cued_recall_isi);
+        yield return SkippableWait(time_between_different_recall_phases);
         DisplayTitle("Which object did you deliver to this store?");
         foreach (StoreComponent cueStore in this_trial_presented_stores)
         {
@@ -173,8 +175,7 @@ public class DeliveryExperiment : CoroutineExperiment
         ClearTitle();
         SetRamulatorState("RETRIEVAL", false, new Dictionary<string, object>());
 
-        regularCamera.enabled = true;
-        familiarizationCamera.enabled = false;
+
     }
 
     private IEnumerator DoFinalRecall(Environment environment)
@@ -204,6 +205,8 @@ public class DeliveryExperiment : CoroutineExperiment
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
 
         ClearTitle();
+
+        yield return SkippableWait(time_between_different_recall_phases);
 
         DisplayTitle("Please recall all the objects that you delivered.");
 
