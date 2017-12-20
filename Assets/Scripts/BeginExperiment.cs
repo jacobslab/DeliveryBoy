@@ -45,6 +45,7 @@ public class BeginExperiment : MonoBehaviour
     private int NextSessionNumber()
     {
         string dataPath = UnityEPL.GetParticipantFolder();
+		System.IO.Directory.CreateDirectory (dataPath);
         string[] sessionFolders = System.IO.Directory.GetDirectories(dataPath);
         int mostRecentSessionNumber = -1;
         foreach (string folder in sessionFolders)
