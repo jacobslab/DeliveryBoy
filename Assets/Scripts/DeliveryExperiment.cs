@@ -309,6 +309,7 @@ public class DeliveryExperiment : CoroutineExperiment
         {
             yield return null;
         }
+        pointerParticleSystem.Stop();
         pointer.SetActive(false);
         pointerMessage.SetActive(false);
     }
