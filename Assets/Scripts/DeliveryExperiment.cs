@@ -80,7 +80,7 @@ public class DeliveryExperiment : CoroutineExperiment
         if (useRamulator)
             yield return ramulatorInterface.BeginNewSession(sessionNumber);
 
-        yield return DoIntroductionVideo();
+        yield return DoIntroductionVideo("Press Y to continue to the first delivery day, \n Press N to replay instructional video.");
         yield return DoSubjectSessionQuitPrompt(sessionNumber);
         yield return DoMicrophoneTest();
 

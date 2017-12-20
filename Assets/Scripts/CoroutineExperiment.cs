@@ -93,7 +93,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
         titleMessage.SetActive(false);
     }
 
-    protected IEnumerator DoIntroductionVideo()
+    protected IEnumerator DoIntroductionVideo(string repeatPrompt)
     {
         yield return PressAnyKey("Press any key to play movie.");
 
@@ -108,7 +108,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
             SetRamulatorState("INSTRUCT", false, new Dictionary<string, object>());
 
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
-            textDisplayer.DisplayText("repeat video prompt", "Press Y to continue to practice list, \n Press N to replay instructional video.");
+            textDisplayer.DisplayText("repeat video prompt", repeatPrompt);
             while (!Input.GetKeyDown(KeyCode.Y) && !Input.GetKeyDown(KeyCode.N))
             {
                 yield return null;
