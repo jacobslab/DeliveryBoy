@@ -30,6 +30,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float time_between_different_recall_phases = 2f;
     private const float cued_recall_time_per_store = 5f;
     private const float cued_recall_isi = 1f;
+    private const float arrow_correction_time = 3f;
 
     public Camera regularCamera;
     public Camera familiarizationCamera;
@@ -263,7 +264,9 @@ public class DeliveryExperiment : CoroutineExperiment
 
             playerMovement.Freeze();
             yield return messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
+            messageImageDisplayer.please_find_the_blah_reminder.SetActive(false);
             yield return DoPointingTask(nextStore);
+            messageImageDisplayer.please_find_the_blah_reminder.SetActive(true);
             playerMovement.Unfreeze();
 
             while (!nextStore.PlayerInDeliveryZone())
@@ -301,10 +304,18 @@ public class DeliveryExperiment : CoroutineExperiment
             yield return null;
         }
 
-        pointerParticleSystem.Play();
-
-        pointerText.text = "That was correct!";
+        float pointerError = PointerError(nextStore.gameObject);
+        if (pointerError < Mathf.PI / 12)
+        {
+            pointerParticleSystem.Play();
+            pointerText.text = "That was correct to within " + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString() + " degrees. Good!";
+        }
+        else
+        {
+            pointerText.text = "That was off by " + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString() + " degrees.  The arrow will now show the exact direction.";
+        }
         yield return null;
+        yield return PointArrowToStore(nextStore.gameObject);
         while (!Input.GetButtonDown("x (continue)"))
         {
             yield return null;
@@ -312,6 +323,27 @@ public class DeliveryExperiment : CoroutineExperiment
         pointerParticleSystem.Stop();
         pointer.SetActive(false);
         pointerMessage.SetActive(false);
+    }
+
+    private float PointerError(GameObject toStore)
+    {
+        Vector3 lookDirection = toStore.transform.position - pointer.transform.position;
+        float correctYRotation = Quaternion.LookRotation(lookDirection).eulerAngles.y;
+        float actualYRotation = pointer.transform.eulerAngles.y;
+        float offByRads = Mathf.Abs(correctYRotation - actualYRotation) * Mathf.Deg2Rad;
+        return offByRads;
+    }
+
+    private IEnumerator PointArrowToStore(GameObject pointToStore)
+    {
+        float rotationSpeed = 1f;
+        float startTime = Time.time;
+        Vector3 lookDirection = pointToStore.transform.position - pointer.transform.position;
+        while (Time.time < startTime + arrow_correction_time)
+        {
+            pointer.transform.rotation = Quaternion.Slerp(pointer.transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * rotationSpeed);
+            yield return null;
+        }
     }
 
     private void AppendWordToLst(string lstFilePath, string word)
