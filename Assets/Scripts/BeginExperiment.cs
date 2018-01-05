@@ -24,7 +24,7 @@ public class BeginExperiment : MonoBehaviour
             greyedOutButton.SetActive(false);
             int nextSessionNumber = NextSessionNumber();
             UnityEPL.SetSessionNumber(NextSessionNumber());
-            beginButtonText.text = "Begin session " + nextSessionNumber.ToString();
+            beginButtonText.text = LanguageSource.GetLanguageString("begin session") + " " + nextSessionNumber.ToString();
         }
         else
         {

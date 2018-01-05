@@ -16,6 +16,8 @@ public class MessageImageDisplayer : MonoBehaviour
 
     public IEnumerator DisplayLanguageMessage(GameObject[] language_messages)
     {
+        Debug.Log(LanguageSource.current_language);
+        Debug.Log((int)LanguageSource.current_language);
         yield return DisplayMessage(language_messages[(int)LanguageSource.current_language]);
     }
 

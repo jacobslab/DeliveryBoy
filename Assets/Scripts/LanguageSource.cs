@@ -9,6 +9,7 @@ public static class LanguageSource
 
     private static Dictionary<string, string[]> language_string_dict = new Dictionary<string, string[]>()
     {
+        { "begin session", new string[] {"Begin session", "Sessionstarchts"} },
         { "please find prompt", new string[] {"please find the ", "bitte finden "} },
         { "bakery", new string[] {"bakery", "die Backerei"} },
         { "barber shop", new string[] {"barber shop", " den Friseur"} },
