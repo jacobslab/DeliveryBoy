@@ -331,6 +331,8 @@ public class DeliveryExperiment : CoroutineExperiment
         float correctYRotation = Quaternion.LookRotation(lookDirection).eulerAngles.y;
         float actualYRotation = pointer.transform.eulerAngles.y;
         float offByRads = Mathf.Abs(correctYRotation - actualYRotation) * Mathf.Deg2Rad;
+        if (offByRads > Mathf.PI)
+            offByRads = Mathf.PI * 2 - offByRads;
         return offByRads;
     }
 
