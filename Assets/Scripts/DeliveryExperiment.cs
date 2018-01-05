@@ -260,12 +260,15 @@ public class DeliveryExperiment : CoroutineExperiment
         {
             StoreComponent nextStore = null;
             int random_store_index = -1;
+            int tries = 0;
             do
             {
+                Debug.Log(tries.ToString());
+                tries++;
                 random_store_index = Random.Range(0, unvisitedStores.Count);
                 nextStore = unvisitedStores[random_store_index];
             }
-            while (nextStore.IsVisible());
+            while (nextStore.IsVisible() && tries < 17);
             unvisitedStores.RemoveAt(random_store_index);
 
 
