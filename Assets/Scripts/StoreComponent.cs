@@ -21,6 +21,11 @@ public class StoreComponent : MonoBehaviour
         itemLists = new List<AudioClip>[] { englishItems, germanItems };
     }
 
+    public bool IsVisible()
+    {
+        return GetComponentInChildren<Renderer>().isVisible;
+    }
+
     public bool PlayerInDeliveryZone()
     {
         return deliveryZone.PlayerInDeliveryZone();

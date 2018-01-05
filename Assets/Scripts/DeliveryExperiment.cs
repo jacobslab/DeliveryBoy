@@ -258,9 +258,16 @@ public class DeliveryExperiment : CoroutineExperiment
         List<StoreComponent> unvisitedStores = new List<StoreComponent>(environment.stores);
         for (int i = 0; i < deliveries_per_trial; i++)
         {
-            int random_store_index = Random.Range(0, unvisitedStores.Count);
-            StoreComponent nextStore = unvisitedStores[random_store_index];
+            StoreComponent nextStore = null;
+            int random_store_index = -1;
+            do
+            {
+                random_store_index = Random.Range(0, unvisitedStores.Count);
+                nextStore = unvisitedStores[random_store_index];
+            }
+            while (nextStore.IsVisible());
             unvisitedStores.RemoveAt(random_store_index);
+
 
             playerMovement.Freeze();
             yield return messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
