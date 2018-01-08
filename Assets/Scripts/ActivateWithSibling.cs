@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class ActivateWithSibling : MonoBehaviour
 {
-    public GameObject sibling;
+    public GameObject siblingFollower;
+    public GameObject siblingLeader;
 
 	void Update ()
     {
-        gameObject.SetActive(sibling.activeSelf);
+        siblingFollower.gameObject.SetActive(siblingLeader.activeSelf);
 	}
 }
