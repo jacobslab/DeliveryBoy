@@ -26,7 +26,7 @@ public class StoreComponent : MonoBehaviour
         return GetComponentInChildren<Renderer>().isVisible;
     }
 
-    public bool PlayerInDeliveryZone()
+    public bool PlayerInDeliveryPosition()
     {
         return deliveryZone.PlayerInDeliveryZone();
     }

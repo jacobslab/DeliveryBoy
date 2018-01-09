@@ -279,7 +279,7 @@ public class DeliveryExperiment : CoroutineExperiment
             messageImageDisplayer.please_find_the_blah_reminder.SetActive(true);
             playerMovement.Unfreeze();
 
-            while (!nextStore.PlayerInDeliveryZone())
+            while (!nextStore.PlayerInDeliveryPosition())
                 yield return null;
             
             if (i != deliveries_per_trial - 1)
