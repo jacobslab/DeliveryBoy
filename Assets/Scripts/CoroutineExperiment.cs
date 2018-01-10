@@ -20,11 +20,11 @@ public abstract class CoroutineExperiment : MonoBehaviour
 
     protected abstract void SetRamulatorState(string stateName, bool state, Dictionary<string, object> extraData);
 
-    protected IEnumerator DoSubjectSessionQuitPrompt(int sessionNumber)
+    protected IEnumerator DoSubjectSessionQuitPrompt(int sessionNumber, string message)
     {
         yield return null;
         SetRamulatorState("WAITING", true, new Dictionary<string, object>());
-        textDisplayer.DisplayText("subject/session confirmation", "Running " + UnityEPL.GetParticipants()[0] + " in session " + sessionNumber.ToString() + " of " + UnityEPL.GetExperimentName() + ".\n Press Y to continue, N to quit.");
+        textDisplayer.DisplayText("subject/session confirmation", message);
         while (!Input.GetKeyDown(KeyCode.Y) && !Input.GetKeyDown(KeyCode.N))
         {
             yield return null;
@@ -35,7 +35,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
             Quit();
     }
 
-    protected IEnumerator DoMicrophoneTest()
+    protected IEnumerator DoMicrophoneTest(string press_any_key, string recording, string playing, string confirmation)
     {
         DisplayTitle("Microphone Test");
         bool repeat = false;
@@ -43,9 +43,9 @@ public abstract class CoroutineExperiment : MonoBehaviour
 
         do
         {
-            yield return PressAnyKey("Press any key to record a sound after the beep.");
+            yield return PressAnyKey(press_any_key);
             lowBeep.Play();
-            textDisplayer.DisplayText("microphone test recording", "Recording...");
+            textDisplayer.DisplayText("microphone test recording", recording);
             textDisplayer.ChangeColor(Color.red);
             yield return new WaitForSeconds(lowBeep.clip.length);
             soundRecorder.StartRecording(MICROPHONE_TEST_LENGTH);
@@ -53,7 +53,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
             wavFilePath = System.IO.Path.Combine(UnityEPL.GetDataPath(), "microphone_test_" + DataReporter.RealWorldTime().ToString("yyyy-MM-dd_HH_mm_ss"));
             soundRecorder.StopRecording(wavFilePath);
 
-            textDisplayer.DisplayText("microphone test playing", "Playing...");
+            textDisplayer.DisplayText("microphone test playing", playing);
             textDisplayer.ChangeColor(Color.green);
 
             audioPlayback.clip = soundRecorder.GetLastClip();
@@ -63,7 +63,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
             textDisplayer.OriginalColor();
 
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
-            textDisplayer.DisplayText("microphone test confirmation", "Did you hear the recording? \n(Y=Continue / N=Try Again / C=Cancel).");
+            textDisplayer.DisplayText("microphone test confirmation", confirmation);
             while (!Input.GetKeyDown(KeyCode.Y) && !Input.GetKeyDown(KeyCode.N) && !Input.GetKeyDown(KeyCode.C))
             {
                 yield return null;
@@ -93,9 +93,9 @@ public abstract class CoroutineExperiment : MonoBehaviour
         titleMessage.SetActive(false);
     }
 
-    protected IEnumerator DoIntroductionVideo(string repeatPrompt)
+    protected IEnumerator DoIntroductionVideo(string playPrompt, string repeatPrompt)
     {
-        yield return PressAnyKey("Press any key to play movie.");
+        yield return PressAnyKey(playPrompt);
 
         bool replay = false;
         do

@@ -81,9 +81,13 @@ public class DeliveryExperiment : CoroutineExperiment
         if (useRamulator)
             yield return ramulatorInterface.BeginNewSession(sessionNumber);
 
-        yield return DoIntroductionVideo("Press Y to continue to the first delivery day, \n Press N to replay instructional video.");
-        yield return DoSubjectSessionQuitPrompt(sessionNumber);
-        yield return DoMicrophoneTest();
+        yield return DoIntroductionVideo(LanguageSource.GetLanguageString("play movie"), LanguageSource.GetLanguageString("first day"));
+        yield return DoSubjectSessionQuitPrompt(sessionNumber,
+                                                LanguageSource.GetLanguageString("running participant"));
+        yield return DoMicrophoneTest(LanguageSource.GetLanguageString("after the beep"),
+                                      LanguageSource.GetLanguageString("recording"),
+                                      LanguageSource.GetLanguageString("playing"),
+                                      LanguageSource.GetLanguageString("recording confirmation"));
 
         memoryWordCanvas.SetActive(false);
 
@@ -105,7 +109,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
             yield return null;
-            textDisplayer.DisplayText("proceed to next day prompt", "Press X to proceed to the next delivery day.");
+            textDisplayer.DisplayText("proceed to next day prompt", LanguageSource.GetLanguageString("next day"));
 
             while (!Input.GetButton("q (secret)") && !Input.GetButton("x (continue)"))
                 yield return null;
@@ -121,7 +125,7 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return DoFinalRecall(environment);
 
         int delivered_objects = trial_number == 12 ? (trial_number) * 12 : (trial_number + 1) * 12;
-        textDisplayer.DisplayText("end text", "Congratulations, you delivered " + delivered_objects.ToString() + " objects!  The game is over." );
+        textDisplayer.DisplayText("end text", LanguageSource.GetLanguageString("end message") + delivered_objects.ToString() );
     }
 
     private IEnumerator DoRecall(int trial_number)
@@ -191,7 +195,7 @@ public class DeliveryExperiment : CoroutineExperiment
         regularCamera.enabled = false;
         familiarizationCamera.enabled = true;
 
-        DisplayTitle("Please recall all the stores that you delivered objects to.");
+        DisplayTitle(LanguageSource.GetLanguageString("all stores recall"));
 
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
@@ -215,7 +219,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
         yield return SkippableWait(time_between_different_recall_phases);
 
-        DisplayTitle("Please recall all the objects that you delivered.");
+        DisplayTitle("all objects recall");
 
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
@@ -280,7 +284,10 @@ public class DeliveryExperiment : CoroutineExperiment
             playerMovement.Unfreeze();
 
             while (!nextStore.PlayerInDeliveryPosition())
+            {
+                Debug.Log(nextStore.IsVisible());
                 yield return null;
+            }
             
             if (i != deliveries_per_trial - 1)
             {
@@ -306,7 +313,7 @@ public class DeliveryExperiment : CoroutineExperiment
     {
         pointer.SetActive(true);
         pointerMessage.SetActive(true);
-        pointerText.text = "Please point to the " + LanguageSource.GetLanguageString(nextStore.storeName) + ".";
+        pointerText.text = LanguageSource.GetLanguageString("please point") + LanguageSource.GetLanguageString(nextStore.storeName) + ".";
         yield return null;
         while (!Input.GetButtonDown("x (continue)"))
         {
@@ -318,11 +325,11 @@ public class DeliveryExperiment : CoroutineExperiment
         if (pointerError < Mathf.PI / 12)
         {
             pointerParticleSystem.Play();
-            pointerText.text = "That was correct to within " + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString() + " degrees. Good!";
+            pointerText.text = LanguageSource.GetLanguageString("correct to within") + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString();
         }
         else
         {
-            pointerText.text = "That was off by " + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString() + " degrees.  The arrow will now show the exact direction.";
+            pointerText.text = LanguageSource.GetLanguageString("wrong by") + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString();
         }
         yield return null;
         yield return PointArrowToStore(nextStore.gameObject);
