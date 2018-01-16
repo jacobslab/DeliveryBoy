@@ -25,8 +25,8 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float familiarization_presentation_length = 1.5f;
     private const float recall_text_display_length = 1f;
     private const float free_recall_length = 30f;
-    private const float store_recall_length = 90f;
-    private const float final_recall_length = 300f;
+    private const float store_recall_length = 60f;
+    private const float final_recall_length = 120f;
     private const float time_between_different_recall_phases = 2f;
     private const float cued_recall_time_per_store = 5f;
     private const float cued_recall_isi = 1f;
@@ -219,7 +219,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
         yield return SkippableWait(time_between_different_recall_phases);
 
-        DisplayTitle("all objects recall");
+        DisplayTitle(LanguageSource.GetLanguageString("all objects recall"));
 
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
