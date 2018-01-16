@@ -267,7 +267,7 @@ public class DeliveryExperiment : CoroutineExperiment
             int tries = 0;
             do
             {
-                Debug.Log(tries.ToString());
+                //Debug.Log(tries.ToString());
                 tries++;
                 random_store_index = Random.Range(0, unvisitedStores.Count);
                 nextStore = unvisitedStores[random_store_index];
@@ -277,15 +277,15 @@ public class DeliveryExperiment : CoroutineExperiment
 
 
             playerMovement.Freeze();
-            yield return messageImageDisplayer.DisplayFindTheBlahMessage(LanguageSource.GetLanguageString(nextStore.storeName));
             messageImageDisplayer.please_find_the_blah_reminder.SetActive(false);
+            yield return messageImageDisplayer.DisplayFindTheBlahMessage(nextStore.storeName);
             yield return DoPointingTask(nextStore);
             messageImageDisplayer.please_find_the_blah_reminder.SetActive(true);
             playerMovement.Unfreeze();
 
             while (!nextStore.PlayerInDeliveryPosition())
             {
-                Debug.Log(nextStore.IsVisible());
+                //Debug.Log(nextStore.IsVisible());
                 yield return null;
             }
             

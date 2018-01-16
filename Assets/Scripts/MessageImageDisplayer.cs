@@ -30,10 +30,11 @@ public class MessageImageDisplayer : MonoBehaviour
 
     public IEnumerator DisplayFindTheBlahMessage(string store_name)
     {
-        string prompt_string = LanguageSource.GetLanguageString("please find prompt") + store_name;
+        Debug.Log(store_name);
+        string prompt_string = LanguageSource.GetLanguageString("please find prompt") + LanguageSource.GetLanguageString(store_name);
         please_find_the_blah_text.text = prompt_string;
+        Debug.Log(please_find_the_blah_text.text);
         please_find_the_blah_reminder_text.text = prompt_string;
-        please_find_the_blah_reminder.SetActive(true);
         yield return DisplayMessage(please_find_the_blah);
     }
 }
