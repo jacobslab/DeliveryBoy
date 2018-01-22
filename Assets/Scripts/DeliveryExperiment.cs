@@ -31,6 +31,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float cued_recall_time_per_store = 5f;
     private const float cued_recall_isi = 1f;
     private const float arrow_correction_time = 3f;
+    private const float points_per_point = 10f;
 
     public Camera regularCamera;
     public Camera familiarizationCamera;
@@ -333,11 +334,11 @@ public class DeliveryExperiment : CoroutineExperiment
         {
             pointerText.text = LanguageSource.GetLanguageString("wrong by") + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString() + ". ";
         }
-        int pointsEarned = Mathf.RoundToInt(10 * pointerError / Mathf.PI);
+        int pointsEarned = Mathf.RoundToInt(points_per_point - points_per_point * pointerError / Mathf.PI);
         score += pointsEarned;
         pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you earn points") + pointsEarned.ToString() + ". ";
         pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you now have") + score.ToString() + ".";
-        Debug.Log(score);
+
         yield return null;
         yield return PointArrowToStore(nextStore.gameObject);
         while (!Input.GetButtonDown("x (continue)"))
