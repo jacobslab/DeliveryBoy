@@ -52,6 +52,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
     private List<StoreComponent> this_trial_presented_stores = new List<StoreComponent>();
     private List<string> all_presented_objects = new List<string>();
+    private int score = 0;
 
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
@@ -312,6 +313,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private IEnumerator DoPointingTask(StoreComponent nextStore)
     {
         pointer.SetActive(true);
+        pointer.transform.eulerAngles = new Vector3(pointer.transform.eulerAngles.x, Random.Range(0, 360), pointer.transform.eulerAngles.z);
         pointerMessage.SetActive(true);
         pointerText.text = LanguageSource.GetLanguageString("please point") + LanguageSource.GetLanguageString(nextStore.storeName) + ".";
         yield return null;
@@ -325,12 +327,17 @@ public class DeliveryExperiment : CoroutineExperiment
         if (pointerError < Mathf.PI / 12)
         {
             pointerParticleSystem.Play();
-            pointerText.text = LanguageSource.GetLanguageString("correct to within") + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString();
+            pointerText.text = LanguageSource.GetLanguageString("correct to within") + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString() + ". ";
         }
         else
         {
-            pointerText.text = LanguageSource.GetLanguageString("wrong by") + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString();
+            pointerText.text = LanguageSource.GetLanguageString("wrong by") + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString() + ". ";
         }
+        int pointsEarned = Mathf.RoundToInt(10 * pointerError / Mathf.PI);
+        score += pointsEarned;
+        pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you earn points") + pointsEarned.ToString() + ". ";
+        pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you now have") + score.ToString() + ".";
+        Debug.Log(score);
         yield return null;
         yield return PointArrowToStore(nextStore.gameObject);
         while (!Input.GetButtonDown("x (continue)"))
