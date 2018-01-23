@@ -31,7 +31,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float cued_recall_time_per_store = 5f;
     private const float cued_recall_isi = 1f;
     private const float arrow_correction_time = 3f;
-    private const float points_per_point = 10f;
+    private const float points_per_point = 5f;
 
     public Camera regularCamera;
     public Camera familiarizationCamera;
@@ -53,7 +53,8 @@ public class DeliveryExperiment : CoroutineExperiment
 
     private List<StoreComponent> this_trial_presented_stores = new List<StoreComponent>();
     private List<string> all_presented_objects = new List<string>();
-    private int score = 0;
+    private float score = 0;
+    private float pointing_attempts_count = 0f;
 
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
@@ -310,9 +311,16 @@ public class DeliveryExperiment : CoroutineExperiment
         messageImageDisplayer.please_find_the_blah_reminder.SetActive(false);
     }
 
+    private void ColorPointer(Color color)
+    {
+        foreach (Renderer eachRenderer in pointer.GetComponentsInChildren<Renderer>())
+            eachRenderer.material.SetColor("_Color", color);
+    }
+
     private IEnumerator DoPointingTask(StoreComponent nextStore)
     {
         pointer.SetActive(true);
+        ColorPointer(new Color(0.5f, 0.5f, 1f));
         pointer.transform.eulerAngles = new Vector3(pointer.transform.eulerAngles.x, Random.Range(0, 360), pointer.transform.eulerAngles.z);
         pointerMessage.SetActive(true);
         pointerText.text = LanguageSource.GetLanguageString("next package prompt") +
@@ -338,12 +346,12 @@ public class DeliveryExperiment : CoroutineExperiment
         }
         int pointsEarned = Mathf.RoundToInt(points_per_point - points_per_point * pointerError / Mathf.PI);
         score += pointsEarned;
+        pointing_attempts_count += 1;
         pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you earn points") + pointsEarned.ToString() + ". ";
         pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you now have") + score.ToString() + ".";
 
         float redness = pointerError / Mathf.PI;
-        foreach (Renderer eachRenderer in pointer.GetComponentsInChildren<Renderer>())
-            eachRenderer.material.SetColor("_Color", new Color(redness, 1-redness, .2f));
+        ColorPointer(new Color(redness, 1 - redness, .2f));
 
         yield return null;
         yield return PointArrowToStore(nextStore.gameObject);
