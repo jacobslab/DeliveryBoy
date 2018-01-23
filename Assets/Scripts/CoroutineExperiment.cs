@@ -35,9 +35,9 @@ public abstract class CoroutineExperiment : MonoBehaviour
             Quit();
     }
 
-    protected IEnumerator DoMicrophoneTest(string press_any_key, string recording, string playing, string confirmation)
+    protected IEnumerator DoMicrophoneTest(string title, string press_any_key, string recording, string playing, string confirmation)
     {
-        DisplayTitle("Microphone Test");
+        DisplayTitle(title);
         bool repeat = false;
         string wavFilePath;
 

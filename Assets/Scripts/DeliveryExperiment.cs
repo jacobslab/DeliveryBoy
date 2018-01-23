@@ -86,7 +86,8 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return DoIntroductionVideo(LanguageSource.GetLanguageString("play movie"), LanguageSource.GetLanguageString("first day"));
         yield return DoSubjectSessionQuitPrompt(sessionNumber,
                                                 LanguageSource.GetLanguageString("running participant"));
-        yield return DoMicrophoneTest(LanguageSource.GetLanguageString("after the beep"),
+        yield return DoMicrophoneTest(LanguageSource.GetLanguageString("microphone test"),
+                                      LanguageSource.GetLanguageString("after the beep"),
                                       LanguageSource.GetLanguageString("recording"),
                                       LanguageSource.GetLanguageString("playing"),
                                       LanguageSource.GetLanguageString("recording confirmation"));
@@ -133,7 +134,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private IEnumerator DoRecall(int trial_number)
     {
         SetRamulatorState("RETRIEVAL", true, new Dictionary<string, object>());
-        DisplayTitle("Please recall objects from this delivery day.");
+        DisplayTitle(LanguageSource.GetLanguageString("day objects recall"));
 
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
@@ -159,16 +160,14 @@ public class DeliveryExperiment : CoroutineExperiment
 
         this_trial_presented_stores.Shuffle();
         yield return SkippableWait(time_between_different_recall_phases);
-        DisplayTitle("Which object did you deliver to this store?");
+        DisplayTitle(LanguageSource.GetLanguageString("store cue recall"));
+        highBeep.Play();
+        scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
+        textDisplayer.DisplayText("display recall text", recall_text);
+        yield return SkippableWait(recall_text_display_length);
+        textDisplayer.ClearText();
         foreach (StoreComponent cueStore in this_trial_presented_stores)
         {
-            highBeep.Play();
-            scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
-
-            textDisplayer.DisplayText("display recall text", recall_text);
-            yield return SkippableWait(recall_text_display_length);
-            textDisplayer.ClearText();
-
             cueStore.familiarization_object.SetActive(true);
             soundRecorder.StartRecording(Mathf.CeilToInt(cued_recall_time_per_store));
             yield return SkippableWait(cued_recall_time_per_store);
@@ -179,10 +178,10 @@ public class DeliveryExperiment : CoroutineExperiment
             string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
             soundRecorder.StopRecording(wavFilePath);
             AppendWordToLst(lstFilepath, cueStore.GetLastPoppedItemName());
-
             textDisplayer.ClearText();
             lowBeep.Play();
             scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
+
             yield return SkippableWait(cued_recall_isi);
         }
         ClearTitle();
@@ -280,7 +279,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
             playerMovement.Freeze();
             messageImageDisplayer.please_find_the_blah_reminder.SetActive(false);
-            yield return messageImageDisplayer.DisplayFindTheBlahMessage(nextStore.storeName);
+            messageImageDisplayer.SetReminderText(nextStore.storeName);
             yield return DoPointingTask(nextStore);
             messageImageDisplayer.please_find_the_blah_reminder.SetActive(true);
             playerMovement.Unfreeze();
@@ -316,7 +315,10 @@ public class DeliveryExperiment : CoroutineExperiment
         pointer.SetActive(true);
         pointer.transform.eulerAngles = new Vector3(pointer.transform.eulerAngles.x, Random.Range(0, 360), pointer.transform.eulerAngles.z);
         pointerMessage.SetActive(true);
-        pointerText.text = LanguageSource.GetLanguageString("please point") + LanguageSource.GetLanguageString(nextStore.storeName) + ".";
+        pointerText.text = LanguageSource.GetLanguageString("next package prompt") +
+                           LanguageSource.GetLanguageString(nextStore.storeName) + ". " +
+                           LanguageSource.GetLanguageString("please point") +
+                           LanguageSource.GetLanguageString(nextStore.storeName) + ".";
         yield return null;
         while (!Input.GetButtonDown("x (continue)"))
         {
@@ -338,6 +340,10 @@ public class DeliveryExperiment : CoroutineExperiment
         score += pointsEarned;
         pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you earn points") + pointsEarned.ToString() + ". ";
         pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you now have") + score.ToString() + ".";
+
+        float redness = pointerError / Mathf.PI;
+        foreach (Renderer eachRenderer in pointer.GetComponentsInChildren<Renderer>())
+            eachRenderer.material.SetColor("_Color", new Color(redness, 1-redness, .2f));
 
         yield return null;
         yield return PointArrowToStore(nextStore.gameObject);
