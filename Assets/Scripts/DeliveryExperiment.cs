@@ -113,23 +113,33 @@ public class DeliveryExperiment : CoroutineExperiment
 
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
             yield return null;
-            textDisplayer.DisplayText("proceed to next day prompt", LanguageSource.GetLanguageString("next day"));
 
-            while (!Input.GetButton("q (secret)") && !Input.GetButton("x (continue)"))
-                yield return null;
+            if (!DeliveryItems.ItemsExhausted())
+            {
+                textDisplayer.DisplayText("proceed to next day prompt", LanguageSource.GetLanguageString("next day"));
+                while (!Input.GetButton("q (secret)") && !Input.GetButton("x (continue)"))
+                    yield return null;
+                regularCamera.enabled = true;
+                familiarizationCamera.enabled = false;
+                textDisplayer.ClearText();
+                if (Input.GetButton("q (secret)"))
+                    break;
+            }
+            else
+            {
+                yield return PressAnyKey(LanguageSource.GetLanguageString("final recall"));
+            }
             SetRamulatorState("WAITING", false, new Dictionary<string, object>());
-            regularCamera.enabled = true;
-            familiarizationCamera.enabled = false;
-            textDisplayer.ClearText();
-            if (Input.GetButton("q (secret)"))
-                break;
             memoryWordCanvas.SetActive(false);
         }
 
         yield return DoFinalRecall(environment);
 
+        memoryWordCanvas.SetActive(true);
         int delivered_objects = trial_number == 12 ? (trial_number) * 12 : (trial_number + 1) * 12;
-        textDisplayer.DisplayText("end text", LanguageSource.GetLanguageString("end message") + delivered_objects.ToString() );
+        textDisplayer.DisplayText("end text", LanguageSource.GetLanguageString("end message") + score.ToString() );
+        memoryWordCanvas.SetActive(false);
+
     }
 
     private IEnumerator DoRecall(int trial_number)
@@ -174,7 +184,7 @@ public class DeliveryExperiment : CoroutineExperiment
             yield return SkippableWait(cued_recall_time_per_store);
             cueStore.familiarization_object.SetActive(false);
 
-            string output_file_name = trial_number.ToString() + "-" + cueStore.storeName;
+            string output_file_name = trial_number.ToString() + "-" + cueStore.GetStoreName();
             wavFilePath = System.IO.Path.Combine(output_directory, output_file_name);
             string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
             soundRecorder.StopRecording(wavFilePath);
@@ -212,7 +222,7 @@ public class DeliveryExperiment : CoroutineExperiment
         string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
         soundRecorder.StopRecording(wavFilePath);
         foreach (StoreComponent store in environment.stores)
-            AppendWordToLst(lstFilepath, store.storeName);
+            AppendWordToLst(lstFilepath, store.GetStoreName());
         textDisplayer.ClearText();
         lowBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
@@ -280,7 +290,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
             playerMovement.Freeze();
             messageImageDisplayer.please_find_the_blah_reminder.SetActive(false);
-            messageImageDisplayer.SetReminderText(nextStore.storeName);
+            messageImageDisplayer.SetReminderText(nextStore.GetStoreName());
             yield return DoPointingTask(nextStore);
             messageImageDisplayer.please_find_the_blah_reminder.SetActive(true);
             playerMovement.Unfreeze();
@@ -324,9 +334,9 @@ public class DeliveryExperiment : CoroutineExperiment
         pointer.transform.eulerAngles = new Vector3(pointer.transform.eulerAngles.x, Random.Range(0, 360), pointer.transform.eulerAngles.z);
         pointerMessage.SetActive(true);
         pointerText.text = LanguageSource.GetLanguageString("next package prompt") +
-                           LanguageSource.GetLanguageString(nextStore.storeName) + ". " +
+                           LanguageSource.GetLanguageString(nextStore.GetStoreName()) + ". " +
                            LanguageSource.GetLanguageString("please point") +
-                           LanguageSource.GetLanguageString(nextStore.storeName) + ".";
+                           LanguageSource.GetLanguageString(nextStore.GetStoreName()) + ".";
         yield return null;
         while (!Input.GetButtonDown("x (continue)"))
         {

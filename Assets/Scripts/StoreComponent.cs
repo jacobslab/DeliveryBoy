@@ -4,21 +4,22 @@ using UnityEngine;
 
 public class StoreComponent : MonoBehaviour
 {
-    private static Dictionary<string, StoreComponent> storesByName = new Dictionary<string, StoreComponent>();
     private DeliveryZone deliveryZone;
-    private List<AudioClip>[] itemLists;
-    private string last_popped_item_name;
+    private string storeName;
 
-    public string storeName;
+    public DeliveryItems deliveryItems;
     public GameObject familiarization_object;
-    public List<AudioClip> englishItems;
-    public List<AudioClip> germanItems;
+
+    public string GetStoreName()
+    {
+        return storeName;
+    }
 
     void Start()
     {
         deliveryZone = GetComponentInChildren<DeliveryZone>();
-        storesByName[storeName] = this;
-        itemLists = new List<AudioClip>[] { englishItems, germanItems };
+
+        storeName = deliveryItems.PopStoreName();
     }
 
     public bool IsVisible()
@@ -33,16 +34,11 @@ public class StoreComponent : MonoBehaviour
 
     public AudioClip PopItem()
     {
-        List<AudioClip> languageItems = itemLists[(int)LanguageSource.current_language];
-        int randomIndex = Random.Range(0, languageItems.Count);
-        AudioClip randomItem = languageItems[randomIndex];
-        languageItems.RemoveAt(randomIndex);
-        last_popped_item_name = randomItem.name;
-        return randomItem;
+        return deliveryItems.PopItem(storeName);
     }
 
     public string GetLastPoppedItemName()
     {
-        return last_popped_item_name;
+        return deliveryItems.MostRecentlyPoppedItem(storeName);
     }
 }
