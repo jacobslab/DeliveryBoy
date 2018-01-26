@@ -2,34 +2,64 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class DeliveryItems : MonoBehaviour
 {
-    private static string[] storeNames = new string[] { "barber shop",
-                                                        "bakery",
-                                                        "bike shop",
-                                                        "cafe",
-                                                        "clothing store",
-                                                        "dentist",
-                                                        "craft shop",
-                                                        "grocery store",
-                                                        "jewelry store",
-                                                        "florist",
-                                                        "hardware store",
-                                                        "gym",
-                                                        "pizzeria",
-                                                        "pet store",
-                                                        "music store",
-                                                        "pharmacy",
-                                                        "toy store" };
-    private static List<string> unused_store_names = new List<string>(storeNames);
+    [System.Serializable]
+    public struct StoreAudio 
+    {
+        public string storeName;
+        public AudioClip[] englishAudio;
+        public AudioClip[] germanAudio;
+    }
+
+    private static List<string> unused_store_names = new List<string>();
+    private string mostRecentlyPoppedItem = null;
 
     private System.Random random;
 
-    public Dictionary<string, List<AudioClip>> storeNamesToItems;
+    public StoreAudio[] storeNamesToItems;
 
-    void Start()
+    private string RemainingItemsPath(string storeName)
+    {
+        return System.IO.Path.Combine(UnityEPL.GetParticipantFolder(), "remaining_items", storeName);
+    }
+
+    private void WriteRemainingItemsFiles()
+    {
+        foreach (StoreAudio storeAudio in storeNamesToItems)
+        {
+            string remainingItemsPath = RemainingItemsPath(storeAudio.storeName);
+            if (!System.IO.File.Exists(remainingItemsPath))
+            {
+                System.IO.File.Create(remainingItemsPath);
+                AudioClip[] languageAudio;
+                if (LanguageSource.current_language.Equals(LanguageSource.LANGUAGE.ENGLISH))
+                {
+                    languageAudio = storeAudio.englishAudio;
+                }
+                else
+                {
+                    languageAudio = storeAudio.germanAudio;
+                }
+                foreach (AudioClip clip in languageAudio)
+                {
+                    System.IO.File.AppendAllLines(remainingItemsPath, new string[] { clip.name });
+                }
+            }
+        }
+    }
+
+    void Awake()
     {
         random = new System.Random(UnityEPL.GetParticipants()[0].GetHashCode());
+
+        WriteRemainingItemsFiles();
+
+        foreach (StoreAudio storeAudio in storeNamesToItems)
+        {
+            unused_store_names.Add(storeAudio.storeName);
+        }
     }
 
     public string PopStoreName()
@@ -46,12 +76,54 @@ public class DeliveryItems : MonoBehaviour
 
     public AudioClip PopItem(string storeName)
     {
-        return new AudioClip();
+        //get the item
+        string remainingItemsPath = RemainingItemsPath(storeName);
+        string[] remainingItems = System.IO.File.ReadAllLines(remainingItemsPath);
+        int randomItemIndex = UnityEngine.Random.Range(0, remainingItems.Length);
+        string randomItemName = remainingItems[randomItemIndex];
+        AudioClip randomItem = null;
+        foreach (StoreAudio storeAudio in storeNamesToItems)
+        {
+            AudioClip[] languageAudio;
+            if (LanguageSource.current_language.Equals(LanguageSource.LANGUAGE.ENGLISH))
+            {
+                languageAudio = storeAudio.englishAudio;
+            }
+            else
+            {
+                languageAudio = storeAudio.germanAudio;
+            }
+            foreach (AudioClip clip in languageAudio)
+            {
+                if (clip.name.Equals(randomItemName))
+                {
+                    randomItem = clip;
+                }
+            }
+        }
+        if (randomItem == null)
+            throw new UnityException("I couldn't find an item for: " + storeName);
+
+        //delete it from remaining items
+        string[] remainingItemsMinusRandomItem = new string[remainingItems.Length - 1];
+        for (int i = 0; i < remainingItems.Length; i++)
+        {
+            if (i < randomItemIndex)
+                remainingItemsMinusRandomItem[i] = remainingItems[i];
+            if (i > randomItemIndex)
+                remainingItemsMinusRandomItem[i - 1] = remainingItems[i];
+        }
+        System.IO.File.WriteAllLines(remainingItemsPath, remainingItemsMinusRandomItem);
+
+        //return the item
+        return randomItem;
     }
 
     public string MostRecentlyPoppedItem(string storeName)
     {
-        return "";
+        if (mostRecentlyPoppedItem == null)
+            throw new UnityException("No items have been popped yet.");
+        return mostRecentlyPoppedItem;
     }
 
     public static bool ItemsExhausted()
