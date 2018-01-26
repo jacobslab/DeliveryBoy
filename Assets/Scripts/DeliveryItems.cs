@@ -23,7 +23,14 @@ public class DeliveryItems : MonoBehaviour
                                                         "toy store" };
     private static List<string> unused_store_names = new List<string>(storeNames);
 
+    private System.Random random;
+
     public Dictionary<string, List<AudioClip>> storeNamesToItems;
+
+    void Start()
+    {
+        random = new System.Random(UnityEPL.GetParticipants()[0].GetHashCode());
+    }
 
     public string PopStoreName()
     {
@@ -31,7 +38,7 @@ public class DeliveryItems : MonoBehaviour
         {
             throw new UnityException("I ran out of store names!");
         }
-        unused_store_names.Shuffle();
+        unused_store_names.Shuffle(random);
         string storeName = unused_store_names[0];
         unused_store_names.RemoveAt(0);
         return storeName;
@@ -39,12 +46,12 @@ public class DeliveryItems : MonoBehaviour
 
     public AudioClip PopItem(string storeName)
     {
-        
+        return new AudioClip();
     }
 
     public string MostRecentlyPoppedItem(string storeName)
     {
-        
+        return "";
     }
 
     public static bool ItemsExhausted()

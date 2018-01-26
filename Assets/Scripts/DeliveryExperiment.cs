@@ -169,7 +169,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
 
 
-        this_trial_presented_stores.Shuffle();
+        this_trial_presented_stores.Shuffle(new System.Random());
         yield return SkippableWait(time_between_different_recall_phases);
         DisplayTitle(LanguageSource.GetLanguageString("store cue recall"));
         highBeep.Play();
@@ -447,13 +447,13 @@ public static class IListExtensions
     /// <summary>
     /// Shuffles the element order of the specified list.
     /// </summary>
-    public static void Shuffle<T>(this IList<T> ts)
+    public static void Shuffle<T>(this IList<T> ts, System.Random random)
     {
         var count = ts.Count;
         var last = count - 1;
         for (var i = 0; i < last; ++i)
         {
-            var r = UnityEngine.Random.Range(i, count);
+            var r = random.Next(i, count);
             var tmp = ts[i];
             ts[i] = ts[r];
             ts[r] = tmp;
