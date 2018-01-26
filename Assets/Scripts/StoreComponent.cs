@@ -20,6 +20,12 @@ public class StoreComponent : MonoBehaviour
         deliveryZone = GetComponentInChildren<DeliveryZone>();
 
         storeName = deliveryItems.PopStoreName();
+        DrawSigns();
+    }
+
+    void DrawSigns()
+    {
+        write this
     }
 
     public bool IsVisible()

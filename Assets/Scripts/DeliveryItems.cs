@@ -32,7 +32,8 @@ public class DeliveryItems : MonoBehaviour
             string remainingItemsPath = RemainingItemsPath(storeAudio.storeName);
             if (!System.IO.File.Exists(remainingItemsPath))
             {
-                System.IO.File.Create(remainingItemsPath);
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(remainingItemsPath));
+                System.IO.File.Create(remainingItemsPath).Close();
                 AudioClip[] languageAudio;
                 if (LanguageSource.current_language.Equals(LanguageSource.LANGUAGE.ENGLISH))
                 {
