@@ -25,7 +25,11 @@ public class StoreComponent : MonoBehaviour
 
     void DrawSigns()
     {
-        write this
+		List<UnityEngine.TextMesh> updateUs = new List<UnityEngine.TextMesh>();
+		updateUs.AddRange (gameObject.GetComponentsInChildren<UnityEngine.TextMesh> ());
+		updateUs.AddRange (familiarization_object.GetComponentsInChildren<UnityEngine.TextMesh> ());
+		foreach (UnityEngine.TextMesh textComponent in updateUs)
+			textComponent.text = storeName.ToUpper();
     }
 
     public bool IsVisible()
