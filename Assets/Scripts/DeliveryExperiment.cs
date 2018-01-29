@@ -331,7 +331,7 @@ public class DeliveryExperiment : CoroutineExperiment
     {
         pointer.SetActive(true);
         ColorPointer(new Color(0.5f, 0.5f, 1f));
-        pointer.transform.eulerAngles = new Vector3(pointer.transform.eulerAngles.x, Random.Range(0, 360), pointer.transform.eulerAngles.z);
+        pointer.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
         pointerMessage.SetActive(true);
         pointerText.text = LanguageSource.GetLanguageString("next package prompt") +
                            LanguageSource.GetLanguageString(nextStore.GetStoreName()) + ". " +

@@ -28,8 +28,19 @@ public class StoreComponent : MonoBehaviour
 		List<UnityEngine.TextMesh> updateUs = new List<UnityEngine.TextMesh>();
 		updateUs.AddRange (gameObject.GetComponentsInChildren<UnityEngine.TextMesh> ());
 		updateUs.AddRange (familiarization_object.GetComponentsInChildren<UnityEngine.TextMesh> ());
-		foreach (UnityEngine.TextMesh textComponent in updateUs)
-			textComponent.text = storeName.ToUpper();
+        foreach (UnityEngine.TextMesh textComponent in updateUs)
+        {
+            string displayString = storeName.ToUpper();
+            if (displayString.Equals("GROCERY STORE"))
+                displayString = "GROCERY";
+            if (displayString.Equals("HARDWARE STORE"))
+                displayString = "HARDWARE";
+            if (displayString.Equals("CLOTHING STORE"))
+                displayString = "CLOTHING";
+            if (displayString.Equals("JEWELRY STORE"))
+                displayString = "JEWELRY";
+            textComponent.text = displayString;
+        }
     }
 
     public bool IsVisible()
