@@ -80,7 +80,6 @@ public class DeliveryExperiment : CoroutineExperiment
         versionsData.Add("UnityEPL version", Application.version);
         versionsData.Add("Experiment version", dboy_version);
         versionsData.Add("Logfile version", "1");
-        scriptedEventReporter.ReportScriptedEvent("versions", versionsData, 0);
 
         if (useRamulator)
             yield return ramulatorInterface.BeginNewSession(sessionNumber);
@@ -100,6 +99,16 @@ public class DeliveryExperiment : CoroutineExperiment
 
         Environment environment = EnableEnvironment();
         starSystem.gameObject.SetActive(true);
+        scriptedEventReporter.ReportScriptedEvent("versions", versionsData, 0);
+        Dictionary<string, object> storeMappings = new Dictionary<string, object>();
+        foreach (StoreComponent store in environment.stores)
+        {
+            storeMappings.Add(store.GetStoreName(), store.gameObject.name);
+            storeMappings.Add(store.GetStoreName() + " position X", store.transform.position.x);
+            storeMappings.Add(store.GetStoreName() + " position Y", store.transform.position.y);
+            storeMappings.Add(store.GetStoreName() + " position Z", store.transform.position.z);
+        }
+        scriptedEventReporter.ReportScriptedEvent("store mappings", storeMappings);
 
         int trial_number = 0;
         for (trial_number = 0; trial_number < 12; trial_number++)
@@ -301,7 +310,8 @@ public class DeliveryExperiment : CoroutineExperiment
                 //Debug.Log(nextStore.IsVisible());
                 yield return null;
             }
-            
+
+            ///AUDIO PRESENTATION OF OBJECT///
             if (i != deliveries_per_trial - 1)
             {
                 playerMovement.Freeze();
@@ -309,12 +319,20 @@ public class DeliveryExperiment : CoroutineExperiment
                 string deliveredItemName = deliveredItem.name;
                 audioPlayback.clip = deliveredItem;
                 audioPlayback.Play();
+                scriptedEventReporter.ReportScriptedEvent("object presentation begins",
+                                                          new Dictionary<string, object>() { {"item name", deliveredItemName},
+                                                                                             {"store name", nextStore.GetStoreName()},
+                                                                                             {"serial position", i+1},
+                                                                                             {"player position", playerMovement.transform.position.ToString()},
+                                                                                             {"store position", nextStore.transform.position.ToString()}});
                 AppendWordToLst(System.IO.Path.Combine(UnityEPL.GetDataPath(), trialNumber.ToString() + ".lst"), deliveredItemName);
                 this_trial_presented_stores.Add(nextStore);
                 all_presented_objects.Add(deliveredItemName);
                 SetRamulatorState("WORD", true, new Dictionary<string, object>() { { "word", deliveredItemName} });
                 yield return SkippableWait(deliveredItem.length);
                 SetRamulatorState("WORD", false, new Dictionary<string, object>() { { "word", deliveredItemName } });
+                scriptedEventReporter.ReportScriptedEvent("audio presentation finished",
+                                                          new Dictionary<string, object>());
                 playerMovement.Unfreeze();
             }
         }
@@ -386,6 +404,10 @@ public class DeliveryExperiment : CoroutineExperiment
         float offByRads = Mathf.Abs(correctYRotation - actualYRotation) * Mathf.Deg2Rad;
         if (offByRads > Mathf.PI)
             offByRads = Mathf.PI * 2 - offByRads;
+
+        scriptedEventReporter.ReportScriptedEvent("pointing finished", new Dictionary<string, object>() { {"correct direction (degrees)", correctYRotation},
+                                                                                                          {"pointed direction (degrees)", actualYRotation} });
+
         return offByRads;
     }
 
