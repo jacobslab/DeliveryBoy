@@ -44,6 +44,7 @@ public class DeliveryExperiment : CoroutineExperiment
     public GameObject pointerMessage;
     public UnityEngine.UI.Text pointerText;
     public StarSystem starSystem;
+    public DeliveryItems deliveryItems;
 
     public float pointerRotationSpeed = 10f;
 
@@ -125,7 +126,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
             yield return null;
-            if (!DeliveryItems.ItemsExhausted())
+            if (!deliveryItems.ItemsExhausted())
             {
                 textDisplayer.DisplayText("proceed to next day prompt", LanguageSource.GetLanguageString("next day"));
                 while (!Input.GetButton("q (secret)") && !Input.GetButton("x (continue)"))

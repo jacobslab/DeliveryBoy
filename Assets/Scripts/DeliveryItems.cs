@@ -130,8 +130,17 @@ public class DeliveryItems : MonoBehaviour
         return mostRecentlyPoppedItem;
     }
 
-    public static bool ItemsExhausted()
+    public bool ItemsExhausted()
     {
-        return true;
+        bool itemsExhausted = false;
+        foreach (StoreAudio storeAudio in storeNamesToItems)
+        {
+            string remainingItemsPath = RemainingItemsPath(storeAudio.storeName);
+            string[] itemsRemaining = System.IO.File.ReadAllLines(remainingItemsPath);
+            bool storeExhausted = itemsRemaining.Length == 0;
+            if (storeExhausted)
+                itemsExhausted = true;
+        }
+        return itemsExhausted;
     }
 }
