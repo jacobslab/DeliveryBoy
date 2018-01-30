@@ -218,7 +218,7 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return SkippableWait(store_recall_length);
         string output_directory = UnityEPL.GetDataPath();
         string output_file_name = "store recall";
-        string wavFilePath = System.IO.Path.Combine(output_directory, output_file_name);
+        string wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
         string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
         soundRecorder.StopRecording(Mathf.CeilToInt(store_recall_length), wavFilePath);
         foreach (StoreComponent store in environment.stores)
@@ -241,7 +241,7 @@ public class DeliveryExperiment : CoroutineExperiment
         soundRecorder.StartRecording();
         yield return SkippableWait(final_recall_length);
         output_file_name = "final recall";
-        wavFilePath = System.IO.Path.Combine(output_directory, output_file_name);
+        wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
         lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
         soundRecorder.StopRecording(Mathf.CeilToInt(final_recall_length), wavFilePath);
         foreach (string deliveredObject in all_presented_objects)
