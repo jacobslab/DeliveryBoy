@@ -45,7 +45,15 @@ public class StoreComponent : MonoBehaviour
 
     public bool IsVisible()
     {
-        return GetComponentInChildren<Renderer>().isVisible;
+        bool thisIsVisible = false;
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        List<bool> renderesVisible = new List<bool>();
+        foreach (Renderer theRenderer in renderers)
+            renderesVisible.Add(theRenderer.isVisible);
+        foreach (bool isVisible in renderesVisible)
+            thisIsVisible |= isVisible;
+        Debug.Log(storeName + " is visible: " + thisIsVisible.ToString());
+        return thisIsVisible;
     }
 
     public bool PlayerInDeliveryPosition()
