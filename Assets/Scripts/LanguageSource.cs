@@ -17,6 +17,7 @@ public static class LanguageSource
         { "you now have", new string[] {"You now have points: ", "Zie habe points: "} },
         { "you earn points", new string[] {"You earned points: ", "Zie gette points: "} },
         { "please point", new string[] {"Please point to the ", "Bitte pointen du "} },
+        { "joystick", new string[] {"Use the joystick to adjust the arrow, then press (x) to continue.", "Stickystick."} },
         { "wrong by", new string[] {"Not quite. The arrow will now show the exact direction. That was off by degrees: ", "Nien Good! Das ist correct die clost: "} },
         { "correct to within", new string[] {"Good! That was correct to within degrees: ", "Good! Das ist correct die clost: "} },
         { "all objects recall", new string[] {"Please recall all the objects that you delivered.", "Bitte rembers Alldustuffs."} },

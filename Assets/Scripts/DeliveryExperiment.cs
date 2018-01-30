@@ -111,11 +111,11 @@ public class DeliveryExperiment : CoroutineExperiment
             memoryWordCanvas.SetActive(true);
             regularCamera.enabled = false;
             familiarizationCamera.enabled = true;
+            starSystem.gameObject.SetActive(false);
             yield return DoRecall(trial_number);
 
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
             yield return null;
-
             if (!DeliveryItems.ItemsExhausted())
             {
                 textDisplayer.DisplayText("proceed to next day prompt", LanguageSource.GetLanguageString("next day"));
@@ -123,6 +123,7 @@ public class DeliveryExperiment : CoroutineExperiment
                     yield return null;
                 regularCamera.enabled = true;
                 familiarizationCamera.enabled = false;
+                starSystem.gameObject.SetActive(true);
                 textDisplayer.ClearText();
                 if (Input.GetButton("q (secret)"))
                     break;
@@ -336,7 +337,8 @@ public class DeliveryExperiment : CoroutineExperiment
         pointerText.text = LanguageSource.GetLanguageString("next package prompt") +
                            LanguageSource.GetLanguageString(nextStore.GetStoreName()) + ". " +
                            LanguageSource.GetLanguageString("please point") +
-                           LanguageSource.GetLanguageString(nextStore.GetStoreName()) + ".";
+                           LanguageSource.GetLanguageString(nextStore.GetStoreName()) + "." + "\n\n" + 
+                           LanguageSource.GetLanguageString("joystick");
         yield return null;
         while (!Input.GetButtonDown("x (continue)"))
         {

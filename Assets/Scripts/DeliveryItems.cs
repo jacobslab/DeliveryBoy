@@ -119,6 +119,7 @@ public class DeliveryItems : MonoBehaviour
         Debug.Log("Items remaining: " + remainingItemsMinusRandomItem.Length.ToString());
 
         //return the item
+        mostRecentlyPoppedItem = randomItemName;
         return randomItem;
     }
 
