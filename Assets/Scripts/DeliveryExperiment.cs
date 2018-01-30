@@ -121,21 +121,24 @@ public class DeliveryExperiment : CoroutineExperiment
                 textDisplayer.DisplayText("proceed to next day prompt", LanguageSource.GetLanguageString("next day"));
                 while (!Input.GetButton("q (secret)") && !Input.GetButton("x (continue)"))
                     yield return null;
-                regularCamera.enabled = true;
-                familiarizationCamera.enabled = false;
-                starSystem.gameObject.SetActive(true);
+                
                 textDisplayer.ClearText();
                 if (Input.GetButton("q (secret)"))
                     break;
             }
             else
             {
-                yield return PressAnyKey(LanguageSource.GetLanguageString("final recall"));
+                break;
             }
+
             SetRamulatorState("WAITING", false, new Dictionary<string, object>());
+            regularCamera.enabled = true;
+            familiarizationCamera.enabled = false;
+            starSystem.gameObject.SetActive(true);
             memoryWordCanvas.SetActive(false);
         }
 
+        yield return PressAnyKey(LanguageSource.GetLanguageString("final recall"));
         yield return DoFinalRecall(environment);
 
         memoryWordCanvas.SetActive(true);
@@ -189,12 +192,12 @@ public class DeliveryExperiment : CoroutineExperiment
             string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
             soundRecorder.StopRecording(Mathf.CeilToInt(cued_recall_time_per_store), wavFilePath);
             AppendWordToLst(lstFilepath, cueStore.GetLastPoppedItemName());
-            textDisplayer.ClearText();
 
             lowBeep.Play();
             scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", highBeep.clip.length.ToString() } });
             textDisplayer.DisplayText("display recall text", recall_text);
             yield return SkippableWait(recall_text_display_length);
+            textDisplayer.ClearText();
         }
 
         SetRamulatorState("RETRIEVAL", false, new Dictionary<string, object>());
