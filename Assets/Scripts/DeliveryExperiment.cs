@@ -141,11 +141,8 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return PressAnyKey(LanguageSource.GetLanguageString("final recall"));
         yield return DoFinalRecall(environment);
 
-        memoryWordCanvas.SetActive(true);
-        int delivered_objects = trial_number == 12 ? (trial_number) * 12 : (trial_number + 1) * 12;
+        //int delivered_objects = trial_number == 12 ? (trial_number) * 12 : (trial_number + 1) * 12;
         textDisplayer.DisplayText("end text", LanguageSource.GetLanguageString("end message") + score.ToString() );
-        memoryWordCanvas.SetActive(false);
-
     }
 
     private IEnumerator DoRecall(int trial_number)
