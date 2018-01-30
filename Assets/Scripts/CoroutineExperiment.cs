@@ -50,7 +50,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
             yield return new WaitForSeconds(lowBeep.clip.length);
             soundRecorder.StartRecording();
             yield return new WaitForSeconds(MICROPHONE_TEST_LENGTH);
-            wavFilePath = System.IO.Path.Combine(UnityEPL.GetDataPath(), "microphone_test_" + DataReporter.RealWorldTime().ToString("yyyy-MM-dd_HH_mm_ss"));
+            wavFilePath = System.IO.Path.Combine(UnityEPL.GetDataPath(), "microphone_test_" + DataReporter.RealWorldTime().ToString("yyyy-MM-dd_HH_mm_ss") + ".wav");
             soundRecorder.StopRecording(MICROPHONE_TEST_LENGTH, wavFilePath);
 
             textDisplayer.DisplayText("microphone test playing", playing);

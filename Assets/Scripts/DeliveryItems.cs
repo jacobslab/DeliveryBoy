@@ -53,7 +53,6 @@ public class DeliveryItems : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log("AWAKE");
         random = new System.Random(UnityEPL.GetParticipants()[0].GetHashCode());
 
         WriteRemainingItemsFiles();
@@ -82,9 +81,6 @@ public class DeliveryItems : MonoBehaviour
         string remainingItemsPath = RemainingItemsPath(storeName);
         string[] remainingItems = System.IO.File.ReadAllLines(remainingItemsPath);
         int randomItemIndex = UnityEngine.Random.Range(0, remainingItems.Length);
-        foreach (string item in remainingItems)
-            Debug.Log("items");
-        Debug.Log(randomItemIndex);
         string randomItemName = remainingItems[randomItemIndex];
         AudioClip randomItem = null;
         foreach (StoreAudio storeAudio in storeNamesToItems)
@@ -119,6 +115,8 @@ public class DeliveryItems : MonoBehaviour
                 remainingItemsMinusRandomItem[i - 1] = remainingItems[i];
         }
         System.IO.File.WriteAllLines(remainingItemsPath, remainingItemsMinusRandomItem);
+
+        Debug.Log("Items remaining: " + remainingItemsMinusRandomItem.Length.ToString());
 
         //return the item
         return randomItem;
