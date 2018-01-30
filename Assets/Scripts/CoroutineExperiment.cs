@@ -76,7 +76,7 @@ public abstract class CoroutineExperiment : MonoBehaviour
         }
         while (repeat);
 
-        if (!System.IO.File.Exists(wavFilePath + ".wav"))
+        if (!System.IO.File.Exists(wavFilePath))
             yield return PressAnyKey("WARNING: Wav output file not detected.  Sounds may not be successfully recorded to disk.");
 
         ClearTitle();
