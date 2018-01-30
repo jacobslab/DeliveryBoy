@@ -11,7 +11,7 @@ public static class LanguageSource
     {
         { "final recall", new string[] {"All items exhausted. Press any key to proceed to final recall.", "Dooooooomsprechen"} },
         { "store cue recall", new string[] {"Please recall which object you delivered to the store shown on the screen.", "Recallen"} },
-        { "day objects recall", new string[] {"After the beep, please recall all objects from this delivery day. \n \n Press any button to continue.", "Recallen"} },
+        { "day objects recall", new string[] {"After the beep, please recall all objects from this delivery day. \n Press any button to continue.", "Recallen"} },
         { "microphone test", new string[] {"Microphone Test", "Microphotesten"} },
         { "next package prompt", new string[] {"The next package has to be delivered to the ", "bitte finden "} },
         { "you now have", new string[] {"You now have points: ", "Zie habe points: "} },
