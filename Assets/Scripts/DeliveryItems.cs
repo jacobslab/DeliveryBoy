@@ -53,6 +53,7 @@ public class DeliveryItems : MonoBehaviour
 
     void Awake()
     {
+        Debug.Log("AWAKE");
         random = new System.Random(UnityEPL.GetParticipants()[0].GetHashCode());
 
         WriteRemainingItemsFiles();
@@ -80,7 +81,7 @@ public class DeliveryItems : MonoBehaviour
         //get the item
         string remainingItemsPath = RemainingItemsPath(storeName);
         string[] remainingItems = System.IO.File.ReadAllLines(remainingItemsPath);
-        int randomItemIndex = UnityEngine.Random.Range( 0, remainingItems.Length);
+        int randomItemIndex = UnityEngine.Random.Range(0, remainingItems.Length);
         foreach (string item in remainingItems)
             Debug.Log("items");
         Debug.Log(randomItemIndex);

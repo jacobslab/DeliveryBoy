@@ -48,15 +48,15 @@ public abstract class CoroutineExperiment : MonoBehaviour
             textDisplayer.DisplayText("microphone test recording", recording);
             textDisplayer.ChangeColor(Color.red);
             yield return new WaitForSeconds(lowBeep.clip.length);
-            soundRecorder.StartRecording(MICROPHONE_TEST_LENGTH);
+            soundRecorder.StartRecording();
             yield return new WaitForSeconds(MICROPHONE_TEST_LENGTH);
             wavFilePath = System.IO.Path.Combine(UnityEPL.GetDataPath(), "microphone_test_" + DataReporter.RealWorldTime().ToString("yyyy-MM-dd_HH_mm_ss"));
-            soundRecorder.StopRecording(wavFilePath);
+            soundRecorder.StopRecording(MICROPHONE_TEST_LENGTH, wavFilePath);
 
             textDisplayer.DisplayText("microphone test playing", playing);
             textDisplayer.ChangeColor(Color.green);
 
-            audioPlayback.clip = soundRecorder.GetLastClip();
+            audioPlayback.clip = soundRecorder.AudioClipFromDatapath(wavFilePath);
             audioPlayback.Play();
             yield return new WaitForSeconds(MICROPHONE_TEST_LENGTH);
             textDisplayer.ClearText();
