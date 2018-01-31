@@ -20,7 +20,7 @@ public class DeliveryItems : MonoBehaviour
 
     public StoreAudio[] storeNamesToItems;
 
-    private string RemainingItemsPath(string storeName)
+    private static string RemainingItemsPath(string storeName)
     {
         return System.IO.Path.Combine(UnityEPL.GetParticipantFolder(), "remaining_items", storeName);
     }
@@ -130,12 +130,15 @@ public class DeliveryItems : MonoBehaviour
         return mostRecentlyPoppedItem;
     }
 
-    public bool ItemsExhausted()
+    public static bool ItemsExhausted()
     {
         bool itemsExhausted = false;
-        foreach (StoreAudio storeAudio in storeNamesToItems)
+        string remainingItemsDirectory = RemainingItemsPath("");
+        if (!System.IO.Directory.Exists(remainingItemsDirectory))
+            return false;
+        string[] remainingItemsPaths = System.IO.Directory.GetFiles(remainingItemsDirectory);
+        foreach (string remainingItemsPath in remainingItemsPaths)
         {
-            string remainingItemsPath = RemainingItemsPath(storeAudio.storeName);
             string[] itemsRemaining = System.IO.File.ReadAllLines(remainingItemsPath);
             bool storeExhausted = itemsRemaining.Length == 0;
             if (storeExhausted)

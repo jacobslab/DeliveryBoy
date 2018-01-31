@@ -7,6 +7,7 @@ public class BeginExperiment : MonoBehaviour
 {
     public UnityEngine.GameObject greyedOutButton;
     public UnityEngine.GameObject beginExperimentButton;
+    public UnityEngine.GameObject finishedButton;
     public UnityEngine.UI.InputField participantCodeInput;
     public UnityEngine.UI.Toggle useRamulatorToggle;
     public UnityEngine.UI.Text beginButtonText;
@@ -30,6 +31,11 @@ public class BeginExperiment : MonoBehaviour
         {
             greyedOutButton.SetActive(true);
             beginExperimentButton.SetActive(false);
+        }
+        if (DeliveryItems.ItemsExhausted())
+        {
+            beginExperimentButton.SetActive(false);
+            finishedButton.SetActive(true);
         }
     }
 
