@@ -170,7 +170,7 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return SkippableWait(free_recall_length);
 
         string output_directory = UnityEPL.GetDataPath();
-        string wavFilePath = System.IO.Path.Combine(output_directory, trial_number.ToString());
+        string wavFilePath = System.IO.Path.Combine(output_directory, trial_number.ToString()) + ".wav";
 
         soundRecorder.StopRecording(Mathf.CeilToInt(free_recall_length), wavFilePath);
         textDisplayer.ClearText();
@@ -195,7 +195,7 @@ public class DeliveryExperiment : CoroutineExperiment
             cueStore.familiarization_object.SetActive(false);
 
             string output_file_name = trial_number.ToString() + "-" + cueStore.GetStoreName();
-            wavFilePath = System.IO.Path.Combine(output_directory, output_file_name);
+            wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
             string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
             soundRecorder.StopRecording(Mathf.CeilToInt(cued_recall_time_per_store), wavFilePath);
             AppendWordToLst(lstFilepath, cueStore.GetLastPoppedItemName());
