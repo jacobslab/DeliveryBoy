@@ -20,7 +20,7 @@ public class BeginExperiment : MonoBehaviour
         {
             UnityEPL.ClearParticipants();
             UnityEPL.AddParticipant(participantCodeInput.text);
-            UnityEPL.SetExperimentName("Delivery Boy");
+            UnityEPL.SetExperimentName("DBOY1");
             beginExperimentButton.SetActive(true);
             greyedOutButton.SetActive(false);
             int nextSessionNumber = NextSessionNumber();
