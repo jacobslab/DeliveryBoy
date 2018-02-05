@@ -31,7 +31,6 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float cued_recall_time_per_store = 5f;
     private const float cued_recall_isi = 1f;
     private const float arrow_correction_time = 3f;
-    private const float points_per_point = 5f;
 
     public Camera regularCamera;
     public Camera blackScreenCamera;
@@ -55,8 +54,6 @@ public class DeliveryExperiment : CoroutineExperiment
 
     private List<StoreComponent> this_trial_presented_stores = new List<StoreComponent>();
     private List<string> all_presented_objects = new List<string>();
-    private float score = 0;
-    private float pointing_attempts_count = 0f;
 
     public static void ConfigureExperiment(bool newUseRamulator, int newSessionNumber, string participantCode)
     {
@@ -66,6 +63,8 @@ public class DeliveryExperiment : CoroutineExperiment
 
 	void Start ()
     {
+        Cursor.visible = false;
+
         StartCoroutine(ExperimentCoroutine());
 	}
 	
@@ -120,6 +119,7 @@ public class DeliveryExperiment : CoroutineExperiment
             WorldScreen();
             if (useRamulator)
                 ramulatorInterface.BeginNewTrial(trial_number);
+            yield return null;
             yield return DoDelivery(environment, trial_number);
 
             BlackScreen();
@@ -139,18 +139,17 @@ public class DeliveryExperiment : CoroutineExperiment
             }
             else
             {
+                yield return PressAnyKey(LanguageSource.GetLanguageString("final recall"));
                 break;
             }
             SetRamulatorState("WAITING", false, new Dictionary<string, object>());
         }
 
-        BlackScreen();
         yield return messageImageDisplayer.DisplayLanguageMessage(messageImageDisplayer.final_recall_messages);
-        yield return PressAnyKey(LanguageSource.GetLanguageString("final recall"));
         yield return DoFinalRecall(environment);
 
         //int delivered_objects = trial_number == 12 ? (trial_number) * 12 : (trial_number + 1) * 12;
-        textDisplayer.DisplayText("end text", LanguageSource.GetLanguageString("end message") + score.ToString() );
+        textDisplayer.DisplayText("end text", LanguageSource.GetLanguageString("end message") + starSystem.CumulativeRating().ToString("+#.##;-#.##") );
     }
 
     private void BlackScreen()
@@ -384,16 +383,16 @@ public class DeliveryExperiment : CoroutineExperiment
         {
             pointerText.text = LanguageSource.GetLanguageString("wrong by") + Mathf.RoundToInt(pointerError * Mathf.Rad2Deg).ToString() + ". ";
         }
-        int pointsEarned = Mathf.RoundToInt(points_per_point - points_per_point * pointerError / Mathf.PI);
-        score += pointsEarned;
-        pointing_attempts_count += 1;
-        pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you earn points") + pointsEarned.ToString() + ". ";
-        pointerText.text = pointerText.text + LanguageSource.GetLanguageString("you now have") + score.ToString() + ".";
-
 
         float wrongness = pointerError / Mathf.PI;
         ColorPointer(new Color(wrongness, 1 - wrongness, .2f));
-        starSystem.ReportScore(1 - wrongness);
+        bool improvement = starSystem.ReportScore(1 - wrongness);
+
+        if (improvement)
+        {
+            pointerText.text = pointerText.text + LanguageSource.GetLanguageString("rating improved");
+        }
+
 
         yield return null;
         yield return PointArrowToStore(nextStore.gameObject);
