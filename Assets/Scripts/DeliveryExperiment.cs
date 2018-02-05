@@ -34,7 +34,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float points_per_point = 5f;
 
     public Camera regularCamera;
-    public Camera familiarizationCamera;
+    public Camera blackScreenCamera;
     public Familiarizer familiarizer;
     public MessageImageDisplayer messageImageDisplayer;
     public RamulatorInterface ramulatorInterface;
@@ -81,10 +81,12 @@ public class DeliveryExperiment : CoroutineExperiment
         versionsData.Add("UnityEPL version", Application.version);
         versionsData.Add("Experiment version", dboy_version);
         versionsData.Add("Logfile version", "1");
+        scriptedEventReporter.ReportScriptedEvent("versions", versionsData, 0);
 
         if (useRamulator)
             yield return ramulatorInterface.BeginNewSession(sessionNumber);
 
+        BlackScreen();
         yield return DoIntroductionVideo(LanguageSource.GetLanguageString("play movie"), LanguageSource.GetLanguageString("first day"));
         yield return DoSubjectSessionQuitPrompt(sessionNumber,
                                                 LanguageSource.GetLanguageString("running participant"));
@@ -94,13 +96,14 @@ public class DeliveryExperiment : CoroutineExperiment
                                       LanguageSource.GetLanguageString("playing"),
                                       LanguageSource.GetLanguageString("recording confirmation"));
 
-        memoryWordCanvas.SetActive(false);
-
         yield return DoFamiliarization();
 
+        yield return messageImageDisplayer.DisplayLanguageMessage(messageImageDisplayer.delivery_restart_messages);
+
+
+
         Environment environment = EnableEnvironment();
-        starSystem.gameObject.SetActive(true);
-        scriptedEventReporter.ReportScriptedEvent("versions", versionsData, 0);
+
         Dictionary<string, object> storeMappings = new Dictionary<string, object>();
         foreach (StoreComponent store in environment.stores)
         {
@@ -114,14 +117,12 @@ public class DeliveryExperiment : CoroutineExperiment
         int trial_number = 0;
         for (trial_number = 0; trial_number < 12; trial_number++)
         {
+            WorldScreen();
             if (useRamulator)
                 ramulatorInterface.BeginNewTrial(trial_number);
             yield return DoDelivery(environment, trial_number);
 
-            memoryWordCanvas.SetActive(true);
-            regularCamera.enabled = false;
-            familiarizationCamera.enabled = true;
-            starSystem.gameObject.SetActive(false);
+            BlackScreen();
             yield return DoRecall(trial_number);
 
             SetRamulatorState("WAITING", true, new Dictionary<string, object>());
@@ -140,20 +141,34 @@ public class DeliveryExperiment : CoroutineExperiment
             {
                 break;
             }
-
             SetRamulatorState("WAITING", false, new Dictionary<string, object>());
-            regularCamera.enabled = true;
-            familiarizationCamera.enabled = false;
-            starSystem.gameObject.SetActive(true);
-            memoryWordCanvas.SetActive(false);
         }
 
+        BlackScreen();
+        yield return messageImageDisplayer.DisplayLanguageMessage(messageImageDisplayer.final_recall_messages);
         yield return PressAnyKey(LanguageSource.GetLanguageString("final recall"));
         yield return DoFinalRecall(environment);
 
         //int delivered_objects = trial_number == 12 ? (trial_number) * 12 : (trial_number + 1) * 12;
         textDisplayer.DisplayText("end text", LanguageSource.GetLanguageString("end message") + score.ToString() );
     }
+
+    private void BlackScreen()
+    {
+        memoryWordCanvas.SetActive(true);
+        regularCamera.enabled = false;
+        blackScreenCamera.enabled = true;
+        starSystem.gameObject.SetActive(false);
+    }
+
+    private void WorldScreen()
+    {
+        regularCamera.enabled = true;
+        blackScreenCamera.enabled = false;
+        starSystem.gameObject.SetActive(true);
+        memoryWordCanvas.SetActive(false);
+    }
+
 
     private IEnumerator DoRecall(int trial_number)
     {
@@ -215,8 +230,6 @@ public class DeliveryExperiment : CoroutineExperiment
     private IEnumerator DoFinalRecall(Environment environment)
     {
         SetRamulatorState("RETRIEVAL", true, new Dictionary<string, object>());
-        regularCamera.enabled = false;
-        familiarizationCamera.enabled = true;
 
         DisplayTitle(LanguageSource.GetLanguageString("all stores recall"));
 
@@ -267,18 +280,13 @@ public class DeliveryExperiment : CoroutineExperiment
 
     private IEnumerator DoFamiliarization()
     {
-        regularCamera.enabled = false;
-        familiarizationCamera.enabled = true;
-
         yield return messageImageDisplayer.DisplayLanguageMessage(messageImageDisplayer.store_images_presentation_messages);
         yield return familiarizer.DoFamiliarization(min_familiarization_isi, max_familiarization_isi, familiarization_presentation_length);
-
-        regularCamera.enabled = true;
-        familiarizationCamera.enabled = false;
     }
 
     private IEnumerator DoDelivery(Environment environment, int trialNumber)
     {
+        SetRamulatorState("ENCODING", true, new Dictionary<string, object>());
         messageImageDisplayer.please_find_the_blah_reminder.SetActive(true);
 
         this_trial_presented_stores = new List<StoreComponent>();
@@ -339,6 +347,7 @@ public class DeliveryExperiment : CoroutineExperiment
         }
 
         messageImageDisplayer.please_find_the_blah_reminder.SetActive(false);
+        SetRamulatorState("ENCODING", false, new Dictionary<string, object>());
     }
 
     private void ColorPointer(Color color)
