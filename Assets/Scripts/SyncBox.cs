@@ -1,66 +1,52 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
+using LibUsbDotNet;
+using LibUsbDotNet.Info;
+using LibUsbDotNet.Main;
+using System.Collections.ObjectModel;
 
-public class Syncbox : MonoBehaviour
+public class SyncBox : MonoBehaviour
 {
-    public enum SynboxType { FREIBURG, JEFF };
-    public static SynboxType currentSyncboxType;
-
-
-    IEnumerator RunSyncPulseManual()
+    void Start()
     {
-        float syncPulseDuration = 0.05f;
-        float syncPulseInterval = 1.0f;
+        UsbDevice MyUsbDevice;
 
-        float jitterMin = 0.1f;
-        float jitterMax = syncPulseInterval - syncPulseDuration;
-
-        while (true)
+        // Dump all devices and descriptor information to console output.
+        UsbRegDeviceList allDevices = UsbDevice.AllDevices;
+        //Debug.Log(allDevices.Count);
+        foreach (UsbRegistry usbRegistry in allDevices)
         {
-            UnityEngine.Debug.Log("pulse running");
-
-            float jitter = UnityEngine.Random.Range(jitterMin, jitterMax);//syncPulseInterval - syncPulseDuration);
-            yield return StartCoroutine(WaitForShortTime(jitter));
-
-            //ToggleLEDOn();
-            yield return StartCoroutine(WaitForShortTime(syncPulseDuration));
-            //ToggleLEDOff();
-
-            float timeToWait = (syncPulseInterval - syncPulseDuration) - jitter;
-            if (timeToWait < 0)
+            if (usbRegistry.Open(out MyUsbDevice))
             {
-                timeToWait = 0;
+                if ((MyUsbDevice.Info.ProductString != null) && MyUsbDevice.Info.ProductString.Equals("LabJack U3"))
+                {
+                    IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
+                    if (!ReferenceEquals(wholeUsbDevice, null))
+                    {
+                        // This is a "whole" USB device. Before it can be used, 
+                        // the desired configuration and interface must be selected.
+
+                        // Select config #1
+                        wholeUsbDevice.SetConfiguration(1);
+
+                        // Claim interface #0.
+                        wholeUsbDevice.ClaimInterface(0);
+                    }
+
+                    // open read endpoint 1.
+                    UsbEndpointReader reader = MyUsbDevice.OpenEndpointReader(ReadEndpointID.Ep01);
+
+                    // open write endpoint 1.
+                    UsbEndpointWriter writer = MyUsbDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
+
+                    int bytesWritten;
+                    Debug.Log(writer.Write(short.MaxValue, 0, out bytesWritten));
+                    Debug.Log(bytesWritten);
+                }
             }
-
-            yield return StartCoroutine(WaitForShortTime(timeToWait));
-        }
-    }
-
-
-    long GetMicroseconds(long ticks)
-    {
-        long microseconds = ticks / (TimeSpan.TicksPerMillisecond / 1000);
-        return microseconds;
-    }
-
-    IEnumerator WaitForShortTime(float jitter)
-    {
-        float currentTime = 0.0f;
-        while (currentTime < jitter)
-        {
-            currentTime += Time.deltaTime;
-            yield return 0;
         }
 
+        // Free usb resources.
+        // This is necessary for libusb-1.0 and Linux compatibility.
+        // UsbDevice.Exit();
     }
-
-
-    void OnApplicationQuit()
-    {
-        //UnityEngine.Debug.Log(Marshal.PtrToStringAuto(CloseUSB()));
-    }
-
 }
