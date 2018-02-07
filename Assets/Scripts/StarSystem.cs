@@ -47,7 +47,7 @@ public class StarSystem : MonoBehaviour
         float sum = 0;
         for (int i = 0; i < sumMe.Count; i++)
         {
-            Debug.Log(i.ToString() + ": " + sumMe[i].ToString());
+            //Debug.Log(i.ToString() + ": " + sumMe[i].ToString());
             sum += sumMe[i];
         }
         return sum;
