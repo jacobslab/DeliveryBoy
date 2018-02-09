@@ -80,7 +80,7 @@ public class DeliveryExperiment : CoroutineExperiment
         versionsData.Add("UnityEPL version", Application.version);
         versionsData.Add("Experiment version", dboy_version);
         versionsData.Add("Logfile version", "1");
-        scriptedEventReporter.ReportScriptedEvent("versions", versionsData, 0);
+        scriptedEventReporter.ReportScriptedEvent("versions", versionsData);
 
         if (useRamulator)
             yield return ramulatorInterface.BeginNewSession(sessionNumber);
