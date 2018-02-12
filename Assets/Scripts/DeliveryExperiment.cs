@@ -25,8 +25,8 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float familiarization_presentation_length = 1.5f;
     private const float recall_text_display_length = 1f;
     private const float free_recall_length = 30f;
-    private const float store_recall_length = 60f;
-    private const float final_recall_length = 120f;
+    private const float store_final_recall_length = 90f;
+    private const float final_recall_length = 300f;
     private const float time_between_different_recall_phases = 2f;
     private const float cued_recall_time_per_store = 5f;
     private const float cued_recall_isi = 1f;
@@ -238,12 +238,12 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return SkippableWait(recall_text_display_length);
         textDisplayer.ClearText();
         soundRecorder.StartRecording();
-        yield return SkippableWait(store_recall_length);
+        yield return SkippableWait(store_final_recall_length);
         string output_directory = UnityEPL.GetDataPath();
         string output_file_name = "store recall";
         string wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
         string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
-        soundRecorder.StopRecording(Mathf.CeilToInt(store_recall_length), wavFilePath);
+        soundRecorder.StopRecording(Mathf.CeilToInt(store_final_recall_length), wavFilePath);
         foreach (StoreComponent store in environment.stores)
             AppendWordToLst(lstFilepath, store.GetStoreName());
         textDisplayer.ClearText();
