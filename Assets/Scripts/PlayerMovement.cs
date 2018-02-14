@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 	public float forwardSpeed = 1f;
 	public float backwardSpeed = 0.5f;
 	public float turnSpeed = 1f;
+    public float turnThreshhold = 0f;
 
 	public GameObject rotateMe;
 	public float maxRotation = 30f;
@@ -14,9 +15,14 @@ public class PlayerMovement : MonoBehaviour
     private bool frozen;
 	void Update ()
 	{
+        float turnAmount = Input.GetAxis("Horizontal");
+        Debug.Log(turnAmount);
+        if (Mathf.Abs(turnAmount) < turnThreshhold)
+            turnAmount = 0;
+        turnAmount = turnAmount * turnSpeed * Time.deltaTime;
         if (!frozen)
         {
-            this.gameObject.transform.Rotate(new Vector3(0, Input.GetAxis("Horizontal") * turnSpeed * Time.deltaTime, 0));
+            this.gameObject.transform.Rotate(new Vector3(0, turnAmount, 0));
 
             //move forward or more slowly backward
             if (Input.GetAxis("Vertical") > 0)
