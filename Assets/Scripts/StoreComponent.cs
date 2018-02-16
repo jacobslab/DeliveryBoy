@@ -6,6 +6,7 @@ public class StoreComponent : MonoBehaviour
 {
     private DeliveryZone deliveryZone;
     private string storeName;
+    private string mostRecentlyPoppedItem;
 
     public DeliveryItems deliveryItems;
     public GameObject familiarization_object;
@@ -63,11 +64,13 @@ public class StoreComponent : MonoBehaviour
 
     public AudioClip PopItem()
     {
-        return deliveryItems.PopItem(storeName);
+        AudioClip item = deliveryItems.PopItem(storeName);
+        mostRecentlyPoppedItem = item.name;
+        return item;
     }
 
     public string GetLastPoppedItemName()
     {
-        return deliveryItems.MostRecentlyPoppedItem(storeName);
+        return mostRecentlyPoppedItem;
     }
 }

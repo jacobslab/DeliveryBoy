@@ -14,7 +14,6 @@ public class DeliveryItems : MonoBehaviour
     }
 
     private static List<string> unused_store_names = new List<string>();
-    private string mostRecentlyPoppedItem = null;
 
     private System.Random random;
 
@@ -119,15 +118,7 @@ public class DeliveryItems : MonoBehaviour
         Debug.Log("Items remaining: " + remainingItemsMinusRandomItem.Length.ToString());
 
         //return the item
-        mostRecentlyPoppedItem = randomItemName;
         return randomItem;
-    }
-
-    public string MostRecentlyPoppedItem(string storeName)
-    {
-        if (mostRecentlyPoppedItem == null)
-            throw new UnityException("No items have been popped yet.");
-        return mostRecentlyPoppedItem;
     }
 
     public static bool ItemsExhausted()
