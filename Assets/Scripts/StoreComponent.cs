@@ -31,7 +31,7 @@ public class StoreComponent : MonoBehaviour
 		updateUs.AddRange (familiarization_object.GetComponentsInChildren<UnityEngine.TextMesh> ());
         foreach (UnityEngine.TextMesh textComponent in updateUs)
         {
-            string displayString = storeName.ToUpper();
+            string displayString = LanguageSource.GetLanguageString(storeName).ToUpper();
             if (displayString.Equals("GROCERY STORE"))
                 displayString = "GROCERY";
             if (displayString.Equals("HARDWARE STORE"))
@@ -40,6 +40,17 @@ public class StoreComponent : MonoBehaviour
                 displayString = "CLOTHING";
             if (displayString.Equals("JEWELRY STORE"))
                 displayString = "JEWELRY";
+            if (LanguageSource.current_language == LanguageSource.LANGUAGE.GERMAN)
+            {
+                string[] germanWords = displayString.Split(' ');
+                if (germanWords.Length == 2)
+                    displayString = germanWords[1];
+                displayString = displayString[0].ToString().ToUpper() + displayString.Substring(1).ToLower();
+            }
+            if (displayString.Equals("Kleidungsgeschäft"))
+                displayString = "Kleidung";
+            if (displayString.Equals("Spielwarenladen"))
+                displayString = "Spielwaren";
             textComponent.text = displayString;
         }
     }

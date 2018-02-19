@@ -23,6 +23,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float min_familiarization_isi = 0.4f;
     private const float max_familiarization_isi = 0.6f;
     private const float familiarization_presentation_length = 1.5f;
+    private const float recall_message_display_length = 6f;
     private const float recall_text_display_length = 1f;
     private const float free_recall_length = 30f;
     private const float store_final_recall_length = 90f;
@@ -173,7 +174,9 @@ public class DeliveryExperiment : CoroutineExperiment
     {
         SetRamulatorState("RETRIEVAL", true, new Dictionary<string, object>());
 
-        yield return PressAnyKey(LanguageSource.GetLanguageString("day objects recall"));
+        textDisplayer.DisplayText("display day objects recall prompt", LanguageSource.GetLanguageString("day objects recall"));
+        yield return SkippableWait(recall_message_display_length);
+        textDisplayer.ClearText();
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
         textDisplayer.DisplayText("display recall text", recall_text);
@@ -195,7 +198,9 @@ public class DeliveryExperiment : CoroutineExperiment
 
         this_trial_presented_stores.Shuffle(new System.Random());
 
-        yield return PressAnyKey(LanguageSource.GetLanguageString("store cue recall"));
+        textDisplayer.DisplayText("display day cued recall prompt", LanguageSource.GetLanguageString("store cue recall"));
+        yield return SkippableWait(recall_message_display_length);
+        textDisplayer.ClearText();
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
         textDisplayer.DisplayText("display recall text", recall_text);

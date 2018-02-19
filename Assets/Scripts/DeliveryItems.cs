@@ -102,7 +102,7 @@ public class DeliveryItems : MonoBehaviour
             }
         }
         if (randomItem == null)
-            throw new UnityException("I couldn't find an item for: " + storeName);
+            throw new UnityException("Possible language mismatch. I couldn't find an item for: " + storeName);
 
         //delete it from remaining items
         string[] remainingItemsMinusRandomItem = new string[remainingItems.Length - 1];
