@@ -4,18 +4,10 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-public class SyncboxInput : MonoBehaviour
+public class Syncbox : MonoBehaviour
 {
 
-	//DYNLIB FUNCTIONS
-	//[DllImport ("liblabjackusb")]
-	//private static extern float LJUSB_GetLibraryVersion( );
-
-
-	[DllImport ("ASimplePlugin")]
-	private static extern int PrintANumber();
-	[DllImport ("ASimplePlugin")]
-	private static extern float AddTwoFloats(float f1,float f2);
+    //Function from Corey's Syncbox plugin (called "ASimplePlugin")
 	[DllImport ("ASimplePlugin")]
 	private static extern IntPtr OpenUSB();
 	[DllImport ("ASimplePlugin")]
@@ -26,8 +18,6 @@ public class SyncboxInput : MonoBehaviour
 	private static extern IntPtr TurnLEDOff();
 	[DllImport ("ASimplePlugin")]
 	private static extern float SyncPulse();
-	[DllImport ("ASimplePlugin")]
-	private static extern IntPtr StimPulse(float durationSeconds, float freqHz, bool doRelay);
 
     private const float PULSE_START_DELAY = 1f;
     private const float TIME_BETWEEN_PULSES_MIN = 0.8f;
@@ -41,26 +31,27 @@ public class SyncboxInput : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        //open usb, log the result string returned
 		Debug.Log(Marshal.PtrToStringAuto (OpenUSB()));
 
+        //start a thread which will send the pulses
         syncpulseThread = new Thread(Pulse);
         syncpulseThread.Start();
-	}
-
-	void SetSyncPulse()
-    {
-		Debug.Log (SyncPulse ());
 	}
 
 	void Pulse ()
     {
         System.Random random = new System.Random();
 
+        //delay before starting pulses
         Thread.Sleep((int)(PULSE_START_DELAY*SECONDS_TO_MILLISECONDS));
 		while (true)
         {
+            //pulse
             SyncPulse();
+            //log the pulse
             scriptedEventReporter.ReportScriptedEvent("Sync pulse begin", new System.Collections.Generic.Dictionary<string, object>());
+            //wait a random time between min and max
             float timeBetweenPulses = (float)(TIME_BETWEEN_PULSES_MIN + (random.NextDouble() * (TIME_BETWEEN_PULSES_MAX - TIME_BETWEEN_PULSES_MIN)));
             Thread.Sleep((int)(timeBetweenPulses * SECONDS_TO_MILLISECONDS));
 		}
@@ -68,7 +59,9 @@ public class SyncboxInput : MonoBehaviour
 
 	void OnApplicationQuit()
     {
+        //close usb, log the result string returned
 		Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
+        //stop the pulsing thread
         syncpulseThread.Abort();
 	}
 

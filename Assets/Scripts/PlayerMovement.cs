@@ -16,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
 	void Update ()
 	{
         float turnAmount = Input.GetAxis("Horizontal");
-        Debug.Log(turnAmount);
         if (Mathf.Abs(turnAmount) < turnThreshhold)
             turnAmount = 0;
         turnAmount = turnAmount * turnSpeed * Time.deltaTime;
