@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-public class Syncbox : MonoBehaviour
+public class SyncBox : MonoBehaviour
 {
 
     //Function from Corey's Syncbox plugin (called "ASimplePlugin")
@@ -31,6 +31,9 @@ public class Syncbox : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        foreach (string name in System.IO.Ports.SerialPort.GetPortNames())
+            Debug.Log(name);
+
         FreiburgPulse();
 
         //open usb, log the result string returned
