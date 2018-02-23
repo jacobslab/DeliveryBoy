@@ -46,9 +46,11 @@ public class Syncbox : MonoBehaviour
         try
         {
             System.IO.Ports.SerialPort syncPort = new System.IO.Ports.SerialPort("/dev/ttyUSB0");    
+            syncPort.Open();
             syncPort.Write(new byte[] { 0 }, 0, 1);
+            syncPort.Close();
         }
-        catch (InvalidOperationException e)
+        catch (System.IO.IOException e)
         {
             Debug.LogWarning(e);
         }
