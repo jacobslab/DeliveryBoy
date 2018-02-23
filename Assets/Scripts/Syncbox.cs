@@ -28,41 +28,68 @@ public class Syncbox : MonoBehaviour
 
     public ScriptedEventReporter scriptedEventReporter;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
+        FreiburgPulse();
+
         //open usb, log the result string returned
-		Debug.Log(Marshal.PtrToStringAuto (OpenUSB()));
+        Debug.Log(Marshal.PtrToStringAuto(OpenUSB()));
 
         //start a thread which will send the pulses
-        syncpulseThread = new Thread(Pulse);
+        syncpulseThread = new Thread(DoPulses);
         syncpulseThread.Start();
-	}
+    }
 
-	void Pulse ()
+    private void FreiburgPulse()
+    {
+        try
+        {
+            System.IO.Ports.SerialPort syncPort = new System.IO.Ports.SerialPort("/dev/ttyUSB0");    
+            syncPort.Write(new byte[] { 0 }, 0, 1);
+        }
+        catch (InvalidOperationException e)
+        {
+            Debug.LogWarning(e);
+        }
+    }
+
+    private void PennPulse()
+    {
+        SyncPulse();
+    }
+
+    private void DoPulses ()
     {
         System.Random random = new System.Random();
 
         //delay before starting pulses
         Thread.Sleep((int)(PULSE_START_DELAY*SECONDS_TO_MILLISECONDS));
+
 		while (true)
         {
             //pulse
-            SyncPulse();
+            PennPulse();
+            //FreiburgPulse();
             //log the pulse
-            scriptedEventReporter.ReportScriptedEvent("Sync pulse begin", new System.Collections.Generic.Dictionary<string, object>());
+            LogPulse();
+
             //wait a random time between min and max
             float timeBetweenPulses = (float)(TIME_BETWEEN_PULSES_MIN + (random.NextDouble() * (TIME_BETWEEN_PULSES_MAX - TIME_BETWEEN_PULSES_MIN)));
             Thread.Sleep((int)(timeBetweenPulses * SECONDS_TO_MILLISECONDS));
 		}
 	}
 
-	void OnApplicationQuit()
+    private void LogPulse()
+    {
+        scriptedEventReporter.ReportScriptedEvent("Sync pulse begin", new System.Collections.Generic.Dictionary<string, object>());
+    }
+
+    private void OnApplicationQuit()
     {
         //close usb, log the result string returned
 		Debug.Log(Marshal.PtrToStringAuto (CloseUSB()));
         //stop the pulsing thread
         syncpulseThread.Abort();
 	}
-
 }
