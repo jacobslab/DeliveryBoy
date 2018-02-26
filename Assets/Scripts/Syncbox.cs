@@ -3,9 +3,8 @@ using System.Collections;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using MonoLibUsb;
 
-public class SyncBox : MonoBehaviour
+public class Syncbox : MonoBehaviour
 {
 
     //Function from Corey's Syncbox plugin (called "ASimplePlugin")
@@ -25,12 +24,6 @@ public class SyncBox : MonoBehaviour
     private const float TIME_BETWEEN_PULSES_MAX = 1.2f;
     private const int SECONDS_TO_MILLISECONDS = 1000;
 
-    private const short FREIBURG_SYNCBOX_VENDOR_ID  = 0x0403;
-    private const short FREIBURG_SYNCBOX_PRODUCT_ID = 0x6001;
-    private const int FREIBURG_SYNCBOX_TIMEOUT_MS = 500;
-    private const int FREIBURG_SYNCBOX_PIN_COUNT = 8;
-
-
     private Thread syncpulseThread;
 
     public ScriptedEventReporter scriptedEventReporter;
@@ -38,53 +31,12 @@ public class SyncBox : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        FreiburgPulse();
-
         //open usb, log the result string returned
         Debug.Log(Marshal.PtrToStringAuto(OpenUSB()));
 
         //start a thread which will send the pulses
         syncpulseThread = new Thread(DoPulses);
         syncpulseThread.Start();
-    }
-
-    private void FreiburgPulse()
-    {
-        MonoLibUsb.MonoUsbSessionHandle sessionHandle = new MonoUsbSessionHandle();
-        MonoLibUsb.Profile.MonoUsbProfileList profileList = null;
-
-        if (sessionHandle.IsInvalid)
-            throw new ExternalException("Failed to initialize context.");
-
-        MonoUsbApi.SetDebug(sessionHandle, 0);
-
-        profileList = new MonoLibUsb.Profile.MonoUsbProfileList();
-
-        // The list is initially empty.
-        // Each time refresh is called the list contents are updated. 
-        int profileListRefreshResult;
-        profileListRefreshResult = profileList.Refresh(sessionHandle);
-        if (profileListRefreshResult < 0) throw new ExternalException("Failed to retrieve device list.");
-        Debug.Log(profileListRefreshResult.ToString() + " device(s) found.");
-
-        // Iterate through the profile list.
-        // If we find the device, write 00000000 to its endpoint 2.
-        foreach (MonoLibUsb.Profile.MonoUsbProfile profile in profileList)
-        {
-            if (profile.DeviceDescriptor.ProductID == FREIBURG_SYNCBOX_PRODUCT_ID && profile.DeviceDescriptor.VendorID == FREIBURG_SYNCBOX_VENDOR_ID)
-            {
-                int actual_length;
-                MonoLibUsb.MonoUsbDeviceHandle deviceHandle = null;
-                deviceHandle = profile.OpenDeviceHandle();
-                if (deviceHandle == null)
-                    throw new ExternalException("The ftd USB device was found but couldn't be opened");
-                MonoUsbApi.BulkTransfer(deviceHandle, 2, byte.MinValue, FREIBURG_SYNCBOX_PIN_COUNT, out actual_length, FREIBURG_SYNCBOX_TIMEOUT_MS);
-                Debug.Log(actual_length.ToString() + " bits written.");
-            }
-        }
-        
-        profileList.Close();
-        sessionHandle.Close();
     }
 
     private void PennPulse()
