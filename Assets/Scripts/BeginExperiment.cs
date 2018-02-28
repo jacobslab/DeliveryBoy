@@ -8,6 +8,7 @@ public class BeginExperiment : MonoBehaviour
     public UnityEngine.GameObject greyedOutButton;
     public UnityEngine.GameObject beginExperimentButton;
     public UnityEngine.GameObject finishedButton;
+    public UnityEngine.GameObject languageMismatchButton;
     public UnityEngine.UI.InputField participantCodeInput;
     public UnityEngine.UI.Toggle useRamulatorToggle;
     public UnityEngine.UI.Text beginButtonText;
@@ -37,6 +38,43 @@ public class BeginExperiment : MonoBehaviour
             beginExperimentButton.SetActive(false);
             finishedButton.SetActive(true);
         }
+        else
+        {
+            finishedButton.SetActive(false);
+        }
+        if (LanguageMismatch())
+        {
+            beginExperimentButton.SetActive(false);
+            languageMismatchButton.SetActive(true);
+        }
+        else
+        {
+            languageMismatchButton.SetActive(false);
+        }
+    }
+
+    private string GetLanguageFilePath()
+    {
+        string dataPath = UnityEPL.GetParticipantFolder();
+        System.IO.Directory.CreateDirectory(dataPath);
+        string languageFilePath = System.IO.Path.Combine(dataPath, "language");
+        if (!System.IO.File.Exists(languageFilePath))
+            System.IO.File.Create(languageFilePath).Close();
+        return languageFilePath;
+    }
+
+    private bool LanguageMismatch()
+    {
+        if (UnityEPL.GetParticipants()[0].Equals("unspecified_participant"))
+            return false;
+        if (System.IO.File.ReadAllText(GetLanguageFilePath()).Equals(""))
+            return false;
+        return !LanguageSource.current_language.ToString().Equals(System.IO.File.ReadAllText(GetLanguageFilePath()));
+    }
+
+    private void LockLanguage()
+    {
+        System.IO.File.WriteAllText(GetLanguageFilePath(), LanguageSource.current_language.ToString());
     }
 
     public void DoBeginExperiment()
@@ -44,6 +82,7 @@ public class BeginExperiment : MonoBehaviour
         if (!IsValidParticipantName(participantCodeInput.text))
             throw new UnityException("You are trying to start the experiment with an invalid participant name!");
 
+        LockLanguage();
         DeliveryExperiment.ConfigureExperiment(useRamulatorToggle.isOn, NextSessionNumber(), participantCodeInput.text);
         SceneManager.LoadScene(scene_name);
     }
