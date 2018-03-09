@@ -12,14 +12,14 @@ public class PlayerMovement : MonoBehaviour
 	public GameObject rotateMe;
 	public float maxRotation = 30f;
 
-    private bool frozen;
+    private int freeze_level = 0;
 	void Update ()
 	{
         float turnAmount = Input.GetAxis("Horizontal");
         if (Mathf.Abs(turnAmount) < turnThreshhold)
             turnAmount = 0;
         turnAmount = turnAmount * turnSpeed * Time.deltaTime;
-        if (!frozen)
+        if (!IsFrozen())
         {
             this.gameObject.transform.Rotate(new Vector3(0, turnAmount, 0));
 
@@ -34,13 +34,23 @@ public class PlayerMovement : MonoBehaviour
         }
 	}
 
+    public bool IsFrozen()
+    {
+        return freeze_level > 0;
+    }
+
+    public bool IsDoubleFrozen()
+    {
+        return freeze_level > 1;
+    }
+
     public void Freeze()
     {
-        frozen = true;
+        freeze_level++;
     }
 
     public void Unfreeze()
     {
-        frozen = false;
+        freeze_level--;
     }
 }

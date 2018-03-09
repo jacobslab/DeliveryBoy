@@ -27,7 +27,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private const float recall_text_display_length = 1f;
     private const float free_recall_length = 30f;
     private const float store_final_recall_length = 90f;
-    private const float final_recall_length = 300f;
+    private const float final_recall_length = 240f;
     private const float time_between_different_recall_phases = 2f;
     private const float cued_recall_time_per_store = 5f;
     private const float cued_recall_isi = 1f;
@@ -45,6 +45,7 @@ public class DeliveryExperiment : CoroutineExperiment
     public UnityEngine.UI.Text pointerText;
     public StarSystem starSystem;
     public DeliveryItems deliveryItems;
+    public Pauser pauser;
 
     public float pointerRotationSpeed = 10f;
 
@@ -82,11 +83,7 @@ public class DeliveryExperiment : CoroutineExperiment
         }
 
         //write versions to logfile
-        Dictionary<string, object> versionsData = new Dictionary<string, object>();
-        versionsData.Add("UnityEPL version", Application.version);
-        versionsData.Add("Experiment version", dboy_version);
-        versionsData.Add("Logfile version", "1");
-        scriptedEventReporter.ReportScriptedEvent("versions", versionsData);
+        LogVersions();
 
         if (useRamulator)
             yield return ramulatorInterface.BeginNewSession(sessionNumber);
@@ -158,8 +155,18 @@ public class DeliveryExperiment : CoroutineExperiment
         textDisplayer.DisplayText("end text", LanguageSource.GetLanguageString("end message") + starSystem.CumulativeRating().ToString("+#.##;-#.##") );
     }
 
+    private void LogVersions()
+    {
+        Dictionary<string, object> versionsData = new Dictionary<string, object>();
+        versionsData.Add("UnityEPL version", Application.version);
+        versionsData.Add("Experiment version", dboy_version);
+        versionsData.Add("Logfile version", "1");
+        scriptedEventReporter.ReportScriptedEvent("versions", versionsData);
+    }
+
     private void BlackScreen()
     {
+        pauser.ForbidPausing();
         memoryWordCanvas.SetActive(true);
         regularCamera.enabled = false;
         blackScreenCamera.enabled = true;
@@ -168,6 +175,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
     private void WorldScreen()
     {
+        pauser.AllowPausing();
         regularCamera.enabled = true;
         blackScreenCamera.enabled = false;
         starSystem.gameObject.SetActive(true);
@@ -379,7 +387,8 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return null;
         while (!Input.GetButtonDown("x (continue)"))
         {
-            pointer.transform.eulerAngles = pointer.transform.eulerAngles + new Vector3(0, Input.GetAxis("Horizontal") * Time.deltaTime * pointerRotationSpeed, 0);
+            if (!playerMovement.IsDoubleFrozen())
+                pointer.transform.eulerAngles = pointer.transform.eulerAngles + new Vector3(0, Input.GetAxis("Horizontal") * Time.deltaTime * pointerRotationSpeed, 0);
             yield return null;
         }
 
