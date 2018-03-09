@@ -62,11 +62,16 @@ public class DeliveryExperiment : CoroutineExperiment
         sessionNumber = newSessionNumber;
     }
 
+	void Update()
+	{
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
+		// need to do this because macos thinks it knows better than you do
+	}
+
 	void Start ()
     {
-        Cursor.visible = false;
-
-        StartCoroutine(ExperimentCoroutine());
+		StartCoroutine(ExperimentCoroutine());
 	}
 	
 	private IEnumerator ExperimentCoroutine()
