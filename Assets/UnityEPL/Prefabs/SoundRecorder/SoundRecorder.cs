@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SoundRecorder : MonoBehaviour
 {
+    public GameObject pleaseSpeakNow;
+
     private AudioClip recording;
     private int startSample;
 
@@ -22,12 +24,16 @@ public class SoundRecorder : MonoBehaviour
     //using the system's default device
     public void StartRecording()
     {
+        pleaseSpeakNow.SetActive(true);
+
         startSample = Microphone.GetPosition("");
         //Debug.Log("Recording offset due to microphone latency: " + offset.ToString());
     }
 
     public void StopRecording(int recordingLength, string outputFilePath)
     {
+        pleaseSpeakNow.SetActive(false);
+
         int outputLength = 44100 * recordingLength;
         AudioClip croppedClip = AudioClip.Create("cropped recording", outputLength, 1, 44100, false);
 
