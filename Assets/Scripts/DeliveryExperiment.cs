@@ -378,6 +378,7 @@ public class DeliveryExperiment : CoroutineExperiment
         pointer.SetActive(true);
         ColorPointer(new Color(0.5f, 0.5f, 1f));
         pointer.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+        scriptedEventReporter.ReportScriptedEvent("pointing begins", new Dictionary<string, object>() { {"start direction", pointer.transform.eulerAngles.y} });
         pointerMessage.SetActive(true);
         pointerText.text = LanguageSource.GetLanguageString("next package prompt") +
                            LanguageSource.GetLanguageString(nextStore.GetStoreName()) + ". " +
