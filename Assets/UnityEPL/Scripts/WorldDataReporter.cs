@@ -37,12 +37,12 @@ public class WorldDataReporter : DataReporter
             transformDict.Add("positionX", transform.position.x);
             transformDict.Add("positionY", transform.position.y);
             transformDict.Add("positionZ", transform.position.z);
-            transformDict.Add("rotationX", transform.position.x);
-            transformDict.Add("rotationY", transform.position.y);
-            transformDict.Add("rotationZ", transform.position.z);
-            transformDict.Add("scaleX", transform.position.x);
-            transformDict.Add("scaleY", transform.position.y);
-            transformDict.Add("scaleZ", transform.position.z);
+            transformDict.Add("rotationX", transform.rotation.eulerAngles.x);
+            transformDict.Add("rotationY", transform.rotation.eulerAngles.y);
+            transformDict.Add("rotationZ", transform.rotation.eulerAngles.z);
+            transformDict.Add("scaleX", transform.localScale.x);
+            transformDict.Add("scaleY", transform.localScale.y);
+            transformDict.Add("scaleZ", transform.localScale.z);
             eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", RealWorldFrameDisplayTime(), transformDict));
         }
     }
