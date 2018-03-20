@@ -8,6 +8,9 @@ public class SoundRecorder : MonoBehaviour
 
     private AudioClip recording;
     private int startSample;
+    private float startTime;
+    private bool isRecording = false;
+    private string nextOutputPath;
 
     private const int SECONDS_IN_MEMORY = 600;
 
@@ -22,17 +25,31 @@ public class SoundRecorder : MonoBehaviour
     }
 
     //using the system's default device
-    public void StartRecording()
+    public void StartRecording(string outputFilePath)
     {
-        pleaseSpeakNow.SetActive(true);
+        if (isRecording)
+        {
+            throw new UnityException("Already recording.  Please StopRecording first.");
+        }
 
+        nextOutputPath = outputFilePath;
+        pleaseSpeakNow.SetActive(true);
         startSample = Microphone.GetPosition("");
-        //Debug.Log("Recording offset due to microphone latency: " + offset.ToString());
+        startTime = Time.unscaledTime;
+        isRecording = true;
     }
 
-    public void StopRecording(int recordingLength, string outputFilePath)
+    public void StopRecording()
     {
+        if (!isRecording)
+        {
+            throw new UnityException("Not recording.  Please StartRecording first.");
+        }
+
+        isRecording = false;
         pleaseSpeakNow.SetActive(false);
+
+        int recordingLength = Mathf.CeilToInt(Time.unscaledTime - startTime);
 
         int outputLength = 44100 * recordingLength;
         AudioClip croppedClip = AudioClip.Create("cropped recording", outputLength, 1, 44100, false);
@@ -57,7 +74,7 @@ public class SoundRecorder : MonoBehaviour
         }
 
         croppedClip.SetData(saveData, 0);
-        SavWav.Save(outputFilePath, croppedClip);
+        SavWav.Save(nextOutputPath, croppedClip);
     }
 
     public AudioClip AudioClipFromDatapath(string datapath)
@@ -70,4 +87,10 @@ public class SoundRecorder : MonoBehaviour
         }
         return audioFile.GetAudioClip();
     }
+
+	void OnApplicationQuit()
+	{
+        if (recording)
+            StopRecording();
+	}
 }

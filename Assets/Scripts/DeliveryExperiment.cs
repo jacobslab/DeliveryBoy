@@ -19,7 +19,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
     private const string dboy_version = "v4.0";
     private const string recall_text = "*******";
-    private const int deliveries_per_trial = 13;
+    private const int deliveries_per_trial = 2;
     private const float min_familiarization_isi = 0.4f;
     private const float max_familiarization_isi = 0.6f;
     private const float familiarization_presentation_length = 1.5f;
@@ -196,13 +196,12 @@ public class DeliveryExperiment : CoroutineExperiment
         yield return SkippableWait(recall_text_display_length);
         textDisplayer.ClearText();
 
-        soundRecorder.StartRecording();
-        yield return SkippableWait(free_recall_length);
-
         string output_directory = UnityEPL.GetDataPath();
         string wavFilePath = System.IO.Path.Combine(output_directory, trial_number.ToString()) + ".wav";
+        soundRecorder.StartRecording(wavFilePath);
+        yield return SkippableWait(free_recall_length);
 
-        soundRecorder.StopRecording(Mathf.CeilToInt(free_recall_length), wavFilePath);
+        soundRecorder.StopRecording();
         textDisplayer.ClearText();
         lowBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
@@ -222,15 +221,16 @@ public class DeliveryExperiment : CoroutineExperiment
         foreach (StoreComponent cueStore in this_trial_presented_stores)
         {
             cueStore.familiarization_object.SetActive(true);
-            soundRecorder.StartRecording();
-            yield return SkippableWait(cued_recall_time_per_store);
-            cueStore.familiarization_object.SetActive(false);
-
             string output_file_name = trial_number.ToString() + "-" + cueStore.GetStoreName();
             wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
             string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
-            soundRecorder.StopRecording(Mathf.CeilToInt(cued_recall_time_per_store), wavFilePath);
             AppendWordToLst(lstFilepath, cueStore.GetLastPoppedItemName());
+            soundRecorder.StartRecording(wavFilePath);
+            yield return SkippableWait(cued_recall_time_per_store);
+            cueStore.familiarization_object.SetActive(false);
+
+            soundRecorder.StopRecording();
+
 
             lowBeep.Play();
             scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", highBeep.clip.length.ToString() } });
@@ -255,15 +255,18 @@ public class DeliveryExperiment : CoroutineExperiment
         textDisplayer.DisplayText("display recall text", recall_text);
         yield return SkippableWait(recall_text_display_length);
         textDisplayer.ClearText();
-        soundRecorder.StartRecording();
-        yield return SkippableWait(store_final_recall_length);
+
         string output_directory = UnityEPL.GetDataPath();
         string output_file_name = "store recall";
         string wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
         string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
-        soundRecorder.StopRecording(Mathf.CeilToInt(store_final_recall_length), wavFilePath);
         foreach (StoreComponent store in environment.stores)
             AppendWordToLst(lstFilepath, store.GetStoreName());
+
+        soundRecorder.StartRecording(wavFilePath);
+        yield return SkippableWait(store_final_recall_length);
+
+        soundRecorder.StopRecording();
         textDisplayer.ClearText();
         lowBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
@@ -279,14 +282,18 @@ public class DeliveryExperiment : CoroutineExperiment
         textDisplayer.DisplayText("display recall text", recall_text);
         yield return SkippableWait(recall_text_display_length);
         textDisplayer.ClearText();
-        soundRecorder.StartRecording();
-        yield return SkippableWait(final_recall_length);
+
         output_file_name = "final recall";
         wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
         lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
-        soundRecorder.StopRecording(Mathf.CeilToInt(final_recall_length), wavFilePath);
         foreach (string deliveredObject in all_presented_objects)
             AppendWordToLst(lstFilepath, deliveredObject);
+
+        soundRecorder.StartRecording(wavFilePath);
+        yield return SkippableWait(final_recall_length);
+
+        soundRecorder.StopRecording();
+
         textDisplayer.ClearText();
         lowBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
