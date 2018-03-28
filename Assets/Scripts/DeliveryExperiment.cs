@@ -171,6 +171,7 @@ public class DeliveryExperiment : CoroutineExperiment
         regularCamera.enabled = false;
         blackScreenCamera.enabled = true;
         starSystem.gameObject.SetActive(false);
+        playerMovement.Freeze();
     }
 
     private void WorldScreen()
@@ -180,6 +181,7 @@ public class DeliveryExperiment : CoroutineExperiment
         blackScreenCamera.enabled = false;
         starSystem.gameObject.SetActive(true);
         memoryWordCanvas.SetActive(false);
+        playerMovement.Zero();
     }
 
 

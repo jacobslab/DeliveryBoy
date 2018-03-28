@@ -90,7 +90,7 @@ public class SoundRecorder : MonoBehaviour
 
 	void OnApplicationQuit()
 	{
-        if (recording)
+        if (isRecording)
             StopRecording();
 	}
 }

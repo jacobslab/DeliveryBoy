@@ -53,4 +53,9 @@ public class PlayerMovement : MonoBehaviour
     {
         freeze_level--;
     }
+
+    public void Zero()
+    {
+        freeze_level = 0;
+    }
 }
