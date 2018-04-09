@@ -74,12 +74,25 @@ public class DeliveryItems : MonoBehaviour
         System.IO.File.AppendAllLines(outputFilePath, allItems);
     }
 
+    private void WriteStoreNamesFile()
+    {
+        string outputFilePath = System.IO.Path.Combine(UnityEPL.GetParticipantFolder(), "all_stores.txt");
+        List<string> allStores = new List<string>();
+        foreach (StoreAudio storeAudio in storeNamesToItems)
+        {
+            allStores.Add(LanguageSource.GetLanguageString(storeAudio.storeName));
+        }
+        allStores.Sort();
+        System.IO.File.AppendAllLines(outputFilePath, allStores);
+    }
+
     void Awake()
     {
         random = new System.Random(UnityEPL.GetParticipants()[0].GetHashCode());
 
         WriteRemainingItemsFiles();
         WriteAlphabetizedItemsFile();
+        WriteStoreNamesFile();
 
         foreach (StoreAudio storeAudio in storeNamesToItems)
         {
