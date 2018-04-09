@@ -30,6 +30,10 @@ public class DataPoint
                 newDataDict.Add(experiment_key, UnityEPL.GetExperimentName());
         }
 
+        string session_key = "session number";
+        if (!newDataDict.ContainsKey(session_key))
+            newDataDict.Add(session_key, UnityEPL.GetSessionNumber());
+
         type = newType;
         dataDict = newDataDict;
         time = newTime;
