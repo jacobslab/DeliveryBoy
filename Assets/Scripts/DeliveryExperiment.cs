@@ -19,7 +19,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
     private const string dboy_version = "v4.0";
     private const string recall_text = "*******";
-    private const int deliveries_per_trial = 3;
+    private const int deliveries_per_trial = 13;
     private const float min_familiarization_isi = 0.4f;
     private const float max_familiarization_isi = 0.6f;
     private const float familiarization_presentation_length = 1.5f;
