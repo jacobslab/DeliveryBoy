@@ -234,8 +234,16 @@ public class DeliveryExperiment : CoroutineExperiment
             wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
             string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
             AppendWordToLst(lstFilepath, cueStore.GetLastPoppedItemName());
-            recordingData.Add("store", cueStore.GetStoreName());
-            recordingData.Add("item", cueStore.GetLastPoppedItemName());
+            if (recordingData.ContainsKey("store"))
+            {
+                recordingData["store"] = cueStore.GetStoreName();
+                recordingData["item"] = cueStore.GetLastPoppedItemName();
+            }
+            else
+            {
+                recordingData.Add("store", cueStore.GetStoreName());
+                recordingData.Add("item", cueStore.GetLastPoppedItemName());
+            }
             scriptedEventReporter.ReportScriptedEvent("cued recall recording start", recordingData);
             soundRecorder.StartRecording(wavFilePath);
             yield return SkippableWait(cued_recall_time_per_store);

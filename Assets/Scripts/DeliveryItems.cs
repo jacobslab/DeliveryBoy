@@ -6,7 +6,7 @@ using UnityEngine;
 public class DeliveryItems : MonoBehaviour
 {
     [System.Serializable]
-    public struct StoreAudio 
+    public struct StoreAudio
     {
         public string storeName;
         public AudioClip[] englishAudio;
@@ -50,11 +50,36 @@ public class DeliveryItems : MonoBehaviour
         }
     }
 
+    private void WriteAlphabetizedItemsFile()
+    {
+        string outputFilePath = System.IO.Path.Combine(UnityEPL.GetParticipantFolder(), "all_items.txt");
+        List<string> allItems = new List<string>();
+        foreach (StoreAudio storeAudio in storeNamesToItems)
+        {
+            AudioClip[] languageAudio;
+            if (LanguageSource.current_language.Equals(LanguageSource.LANGUAGE.ENGLISH))
+            {
+                languageAudio = storeAudio.englishAudio;
+            }
+            else
+            {
+                languageAudio = storeAudio.germanAudio;
+            }
+            foreach (AudioClip clip in languageAudio)
+            {
+                allItems.Add(clip.name);
+            }
+        }
+        allItems.Sort();
+        System.IO.File.AppendAllLines(outputFilePath, allItems);
+    }
+
     void Awake()
     {
         random = new System.Random(UnityEPL.GetParticipants()[0].GetHashCode());
 
         WriteRemainingItemsFiles();
+        WriteAlphabetizedItemsFile();
 
         foreach (StoreAudio storeAudio in storeNamesToItems)
         {
