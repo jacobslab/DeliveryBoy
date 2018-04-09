@@ -49,9 +49,9 @@ public class SoundRecorder : MonoBehaviour
         isRecording = false;
         pleaseSpeakNow.SetActive(false);
 
-        int recordingLength = Mathf.CeilToInt(Time.unscaledTime - startTime);
+        float recordingLength = Time.unscaledTime - startTime;
 
-        int outputLength = 44100 * recordingLength;
+        int outputLength = Mathf.RoundToInt(44100 * recordingLength);
         AudioClip croppedClip = AudioClip.Create("cropped recording", outputLength, 1, 44100, false);
 
         float[] saveData = new float[outputLength];
