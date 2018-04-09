@@ -18,12 +18,16 @@ public class DataPoint
         {
             for (int i = 0; i < participants.Length; i++)
             {
-                newDataDict.Add("participant " + (i + 1).ToString(), participants[i]);
+                string participant_key = "participant " + (i + 1).ToString();
+                if (!newDataDict.ContainsKey(participant_key))
+                    newDataDict.Add(participant_key, participants[i]);
             }
         }
         if (UnityEPL.GetExperimentName() != null)
         {
-            newDataDict.Add("experiment", UnityEPL.GetExperimentName());
+            string experiment_key = "experiment";
+            if (!newDataDict.ContainsKey(experiment_key))
+                newDataDict.Add(experiment_key, UnityEPL.GetExperimentName());
         }
 
         type = newType;

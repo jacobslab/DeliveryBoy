@@ -119,6 +119,9 @@ public class DeliveryExperiment : CoroutineExperiment
         int trial_number = 0;
         for (trial_number = 0; trial_number < 12; trial_number++)
         {
+            Dictionary<string, object> trialData = new Dictionary<string, object>();
+            trialData.Add("trial number", trial_number);
+            scriptedEventReporter.ReportScriptedEvent("begin new trial", trialData);
             WorldScreen();
             if (useRamulator)
                 ramulatorInterface.BeginNewTrial(trial_number);
@@ -200,9 +203,13 @@ public class DeliveryExperiment : CoroutineExperiment
 
         string output_directory = UnityEPL.GetDataPath();
         string wavFilePath = System.IO.Path.Combine(output_directory, trial_number.ToString()) + ".wav";
+        Dictionary<string, object> recordingData = new Dictionary<string, object>();
+        recordingData.Add("trial number", trial_number);
+        scriptedEventReporter.ReportScriptedEvent("object recall recording start", recordingData);
         soundRecorder.StartRecording(wavFilePath);
         yield return SkippableWait(free_recall_length);
 
+        scriptedEventReporter.ReportScriptedEvent("object recall recording stop", recordingData);
         soundRecorder.StopRecording();
         textDisplayer.ClearText();
         lowBeep.Play();
@@ -227,10 +234,13 @@ public class DeliveryExperiment : CoroutineExperiment
             wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
             string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
             AppendWordToLst(lstFilepath, cueStore.GetLastPoppedItemName());
+            recordingData.Add("store", cueStore.GetStoreName());
+            recordingData.Add("item", cueStore.GetLastPoppedItemName());
+            scriptedEventReporter.ReportScriptedEvent("cued recall recording start", recordingData);
             soundRecorder.StartRecording(wavFilePath);
             yield return SkippableWait(cued_recall_time_per_store);
             cueStore.familiarization_object.SetActive(false);
-
+            scriptedEventReporter.ReportScriptedEvent("cued recall recording stop", recordingData);
             soundRecorder.StopRecording();
 
 
@@ -265,9 +275,11 @@ public class DeliveryExperiment : CoroutineExperiment
         foreach (StoreComponent store in environment.stores)
             AppendWordToLst(lstFilepath, store.GetStoreName());
 
+        scriptedEventReporter.ReportScriptedEvent("final store recall recording start", new Dictionary<string, object>());
         soundRecorder.StartRecording(wavFilePath);
         yield return SkippableWait(store_final_recall_length);
 
+        scriptedEventReporter.ReportScriptedEvent("final store recall recording stop", new Dictionary<string, object>());
         soundRecorder.StopRecording();
         textDisplayer.ClearText();
         lowBeep.Play();
@@ -291,9 +303,10 @@ public class DeliveryExperiment : CoroutineExperiment
         foreach (string deliveredObject in all_presented_objects)
             AppendWordToLst(lstFilepath, deliveredObject);
 
+        scriptedEventReporter.ReportScriptedEvent("final object recall recording start", new Dictionary<string, object>());
         soundRecorder.StartRecording(wavFilePath);
         yield return SkippableWait(final_recall_length);
-
+        scriptedEventReporter.ReportScriptedEvent("final object recall recording stop", new Dictionary<string, object>());
         soundRecorder.StopRecording();
 
         textDisplayer.ClearText();
@@ -355,7 +368,8 @@ public class DeliveryExperiment : CoroutineExperiment
                 audioPlayback.clip = deliveredItem;
                 audioPlayback.Play();
                 scriptedEventReporter.ReportScriptedEvent("object presentation begins",
-                                                          new Dictionary<string, object>() { {"item name", deliveredItemName},
+                                                          new Dictionary<string, object>() { {"trial number", trialNumber},
+                                                                                             {"item name", deliveredItemName},
                                                                                              {"store name", nextStore.GetStoreName()},
                                                                                              {"serial position", i+1},
                                                                                              {"player position", playerMovement.transform.position.ToString()},
@@ -429,6 +443,7 @@ public class DeliveryExperiment : CoroutineExperiment
         {
             yield return null;
         }
+        scriptedEventReporter.ReportScriptedEvent("pointer message cleared", new Dictionary<string, object>());
         pointerParticleSystem.Stop();
         pointer.SetActive(false);
         pointerMessage.SetActive(false);
@@ -502,6 +517,14 @@ public class DeliveryExperiment : CoroutineExperiment
                 break;
             yield return null;
         }
+    }
+
+    public string GetStoreNameFromGameObjectName(string gameObjectName)
+    {
+        foreach (StoreComponent store in environments[0].stores)
+            if (store.gameObject.name.Equals(gameObjectName))
+                return store.GetStoreName();
+        throw new UnityException("That store game object doesn't exist in the stores list.");
     }
 
 }

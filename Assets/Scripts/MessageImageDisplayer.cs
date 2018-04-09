@@ -14,6 +14,8 @@ public class MessageImageDisplayer : MonoBehaviour
     public GameObject please_find_the_blah_reminder;
     public UnityEngine.UI.Text please_find_the_blah_reminder_text;
 
+    public ScriptedEventReporter scriptedEventReporter;
+
     public IEnumerator DisplayLanguageMessage(GameObject[] language_messages)
     {
         yield return DisplayMessage(language_messages[(int)LanguageSource.current_language]);
@@ -21,10 +23,14 @@ public class MessageImageDisplayer : MonoBehaviour
 
     private IEnumerator DisplayMessage (GameObject message)
     {
+        Dictionary<string, object> messageData = new Dictionary<string, object>();
+        messageData.Add("message name", message.name);
+        scriptedEventReporter.ReportScriptedEvent("instruction message displayed", messageData);
         message.SetActive(true);
         yield return null;
         while (!Input.GetButtonDown("x (continue)"))
             yield return null;
+        scriptedEventReporter.ReportScriptedEvent("instruction message cleared", messageData);
         message.SetActive(false);
     }
 
