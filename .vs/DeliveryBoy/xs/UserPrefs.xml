@@ -1,15 +1,17 @@
 ﻿<Properties StartupConfiguration="{7FBB8DF3-B9C5-5566-7B5C-C756DBCDED9D}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/UnityEPL/Prefabs/SoundRecorder/SoundRecorder.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/FreiburgSyncbox.cs">
     <Files>
-      <File FileName="Assets/Scripts/DeliveryExperiment.cs" Line="244" Column="66" />
+      <File FileName="Assets/Scripts/DeliveryExperiment.cs" Line="22" Column="48" />
       <File FileName="Assets/Scripts/MessageImageDisplayer.cs" Line="27" Column="33" />
       <File FileName="Assets/UnityEPL/Scripts/ScriptedEventReporter.cs" Line="9" Column="6" />
       <File FileName="Assets/UnityEPL/Scripts/WriteToDiskHandler.cs" Line="1" Column="1" />
       <File FileName="Assets/UnityEPL/Scripts/DataPoint.cs" Line="38" Column="32" />
       <File FileName="Assets/UnityEPL/Scripts/UnityEPL.cs" Line="164" Column="72" />
-      <File FileName="Assets/Scripts/DeliveryItems.cs" Line="67" Column="14" />
-      <File FileName="Assets/UnityEPL/Prefabs/SoundRecorder/SoundRecorder.cs" Line="93" Column="16" />
+      <File FileName="Assets/Scripts/DeliveryItems.cs" Line="95" Column="31" />
+      <File FileName="Assets/UnityEPL/Prefabs/SoundRecorder/SoundRecorder.cs" Line="96" Column="2" />
+      <File FileName="Assets/Scripts/Syncbox.cs" Line="20" Column="1" />
+      <File FileName="Assets/Scripts/FreiburgSyncbox.cs" Line="89" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
