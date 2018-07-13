@@ -17,21 +17,21 @@ public class DeliveryExperiment : CoroutineExperiment
     private static int sessionNumber = -1;
     private static bool useRamulator;
 
-    private const string dboy_version = "v4.0";
-    private const string recall_text = "*******";
-    private const int deliveries_per_trial = 13;
-    private const float min_familiarization_isi = 0.4f;
-    private const float max_familiarization_isi = 0.6f;
-    private const float familiarization_presentation_length = 1.5f;
-    private const float recall_message_display_length = 6f;
-    private const float recall_text_display_length = 1f;
-    private const float free_recall_length = 30f;
-    private const float store_final_recall_length = 90f;
-    private const float final_recall_length = 240f;
-    private const float time_between_different_recall_phases = 2f;
-    private const float cued_recall_time_per_store = 5f;
-    private const float cued_recall_isi = 1f;
-    private const float arrow_correction_time = 3f;
+    private const string DBOY_VERSION = "v4.0";
+    private const string RECALL_TEXT = "*******";
+    private const int DELIVERIES_PER_TRIAL = 13;
+    private const float MIN_FAMILIARIZATION_ISI = 0.4f;
+    private const float MAX_FAMILIARIZATION_ISI = 0.6f;
+    private const float FAMILIARIZATION_PRESENTATION_LENGTH = 1.5f;
+    private const float RECALL_MESSAGE_DISPLAY_LENGTH = 6f;
+    private const float RECALL_TEXT_DISPLAY_LENGTH = 1f;
+    private const float FREE_RECALL_LENGTH = 30f;
+    private const float STORE_FINAL_RECALL_LENGTH = 90f;
+    private const float FINAL_RECALL_LENGTH = 240f;
+    private const float TIME_BETWEEN_DIFFERENT_RECALL_PHASES = 2f;
+    private const float CUED_RECALL_TIME_PER_STORE = 5f;
+    private const float CUED_RECALL_ISI = 1f;
+    private const float ARROW_CORRECTION_TIME = 3f;
 
     public Camera regularCamera;
     public Camera blackScreenCamera;
@@ -162,7 +162,7 @@ public class DeliveryExperiment : CoroutineExperiment
     {
         Dictionary<string, object> versionsData = new Dictionary<string, object>();
         versionsData.Add("UnityEPL version", Application.version);
-        versionsData.Add("Experiment version", dboy_version);
+        versionsData.Add("Experiment version", DBOY_VERSION);
         versionsData.Add("Logfile version", "1");
         scriptedEventReporter.ReportScriptedEvent("versions", versionsData);
     }
@@ -193,12 +193,12 @@ public class DeliveryExperiment : CoroutineExperiment
         SetRamulatorState("RETRIEVAL", true, new Dictionary<string, object>());
 
         textDisplayer.DisplayText("display day objects recall prompt", LanguageSource.GetLanguageString("day objects recall"));
-        yield return SkippableWait(recall_message_display_length);
+        yield return SkippableWait(RECALL_MESSAGE_DISPLAY_LENGTH);
         textDisplayer.ClearText();
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
-        textDisplayer.DisplayText("display recall text", recall_text);
-        yield return SkippableWait(recall_text_display_length);
+        textDisplayer.DisplayText("display recall text", RECALL_TEXT);
+        yield return SkippableWait(RECALL_TEXT_DISPLAY_LENGTH);
         textDisplayer.ClearText();
 
         string output_directory = UnityEPL.GetDataPath();
@@ -207,7 +207,7 @@ public class DeliveryExperiment : CoroutineExperiment
         recordingData.Add("trial number", trial_number);
         scriptedEventReporter.ReportScriptedEvent("object recall recording start", recordingData);
         soundRecorder.StartRecording(wavFilePath);
-        yield return SkippableWait(free_recall_length);
+        yield return SkippableWait(FREE_RECALL_LENGTH);
 
         scriptedEventReporter.ReportScriptedEvent("object recall recording stop", recordingData);
         soundRecorder.StopRecording();
@@ -220,12 +220,12 @@ public class DeliveryExperiment : CoroutineExperiment
         this_trial_presented_stores.Shuffle(new System.Random());
 
         textDisplayer.DisplayText("display day cued recall prompt", LanguageSource.GetLanguageString("store cue recall"));
-        yield return SkippableWait(recall_message_display_length);
+        yield return SkippableWait(RECALL_MESSAGE_DISPLAY_LENGTH);
         textDisplayer.ClearText();
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
-        textDisplayer.DisplayText("display recall text", recall_text);
-        yield return SkippableWait(recall_text_display_length);
+        textDisplayer.DisplayText("display recall text", RECALL_TEXT);
+        yield return SkippableWait(RECALL_TEXT_DISPLAY_LENGTH);
         textDisplayer.ClearText();
         foreach (StoreComponent cueStore in this_trial_presented_stores)
         {
@@ -241,7 +241,7 @@ public class DeliveryExperiment : CoroutineExperiment
             cuedRecordingData.Add("store position", cueStore.transform.position.ToString());
             scriptedEventReporter.ReportScriptedEvent("cued recall recording start", cuedRecordingData);
             soundRecorder.StartRecording(wavFilePath);
-            yield return SkippableWait(cued_recall_time_per_store);
+            yield return SkippableWait(CUED_RECALL_TIME_PER_STORE);
             cueStore.familiarization_object.SetActive(false);
             scriptedEventReporter.ReportScriptedEvent("cued recall recording stop", cuedRecordingData);
             soundRecorder.StopRecording();
@@ -249,8 +249,8 @@ public class DeliveryExperiment : CoroutineExperiment
 
             lowBeep.Play();
             scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", highBeep.clip.length.ToString() } });
-            textDisplayer.DisplayText("display recall text", recall_text);
-            yield return SkippableWait(recall_text_display_length);
+            textDisplayer.DisplayText("display recall text", RECALL_TEXT);
+            yield return SkippableWait(RECALL_TEXT_DISPLAY_LENGTH);
             textDisplayer.ClearText();
         }
 
@@ -267,8 +267,8 @@ public class DeliveryExperiment : CoroutineExperiment
 
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
-        textDisplayer.DisplayText("display recall text", recall_text);
-        yield return SkippableWait(recall_text_display_length);
+        textDisplayer.DisplayText("display recall text", RECALL_TEXT);
+        yield return SkippableWait(RECALL_TEXT_DISPLAY_LENGTH);
         textDisplayer.ClearText();
 
         string output_directory = UnityEPL.GetDataPath();
@@ -280,7 +280,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
         scriptedEventReporter.ReportScriptedEvent("final store recall recording start", new Dictionary<string, object>());
         soundRecorder.StartRecording(wavFilePath);
-        yield return SkippableWait(store_final_recall_length);
+        yield return SkippableWait(STORE_FINAL_RECALL_LENGTH);
 
         scriptedEventReporter.ReportScriptedEvent("final store recall recording stop", new Dictionary<string, object>());
         soundRecorder.StopRecording();
@@ -290,14 +290,14 @@ public class DeliveryExperiment : CoroutineExperiment
 
         ClearTitle();
 
-        yield return SkippableWait(time_between_different_recall_phases);
+        yield return SkippableWait(TIME_BETWEEN_DIFFERENT_RECALL_PHASES);
 
         DisplayTitle(LanguageSource.GetLanguageString("all objects recall"));
 
         highBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "high beep" }, { "sound duration", highBeep.clip.length.ToString() } });
-        textDisplayer.DisplayText("display recall text", recall_text);
-        yield return SkippableWait(recall_text_display_length);
+        textDisplayer.DisplayText("display recall text", RECALL_TEXT);
+        yield return SkippableWait(RECALL_TEXT_DISPLAY_LENGTH);
         textDisplayer.ClearText();
 
         output_file_name = "final recall";
@@ -308,7 +308,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
         scriptedEventReporter.ReportScriptedEvent("final object recall recording start", new Dictionary<string, object>());
         soundRecorder.StartRecording(wavFilePath);
-        yield return SkippableWait(final_recall_length);
+        yield return SkippableWait(FINAL_RECALL_LENGTH);
         scriptedEventReporter.ReportScriptedEvent("final object recall recording stop", new Dictionary<string, object>());
         soundRecorder.StopRecording();
 
@@ -323,7 +323,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private IEnumerator DoFamiliarization()
     {
         yield return messageImageDisplayer.DisplayLanguageMessage(messageImageDisplayer.store_images_presentation_messages);
-        yield return familiarizer.DoFamiliarization(min_familiarization_isi, max_familiarization_isi, familiarization_presentation_length);
+        yield return familiarizer.DoFamiliarization(MIN_FAMILIARIZATION_ISI, MAX_FAMILIARIZATION_ISI, FAMILIARIZATION_PRESENTATION_LENGTH);
     }
 
     private IEnumerator DoDelivery(Environment environment, int trialNumber)
@@ -333,7 +333,7 @@ public class DeliveryExperiment : CoroutineExperiment
 
         this_trial_presented_stores = new List<StoreComponent>();
         List<StoreComponent> unvisitedStores = new List<StoreComponent>(environment.stores);
-        for (int i = 0; i < deliveries_per_trial; i++)
+        for (int i = 0; i < DELIVERIES_PER_TRIAL; i++)
         {
             StoreComponent nextStore = null;
             int random_store_index = -1;
@@ -363,7 +363,7 @@ public class DeliveryExperiment : CoroutineExperiment
             }
 
             ///AUDIO PRESENTATION OF OBJECT///
-            if (i != deliveries_per_trial - 1)
+            if (i != DELIVERIES_PER_TRIAL - 1)
             {
                 playerMovement.Freeze();
                 AudioClip deliveredItem = nextStore.PopItem();
@@ -472,7 +472,7 @@ public class DeliveryExperiment : CoroutineExperiment
         float rotationSpeed = 1f;
         float startTime = Time.time;
         Vector3 lookDirection = pointToStore.transform.position - pointer.transform.position;
-        while (Time.time < startTime + arrow_correction_time)
+        while (Time.time < startTime + ARROW_CORRECTION_TIME)
         {
             pointer.transform.rotation = Quaternion.Slerp(pointer.transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * rotationSpeed);
             yield return null;
