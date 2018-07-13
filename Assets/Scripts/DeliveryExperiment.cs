@@ -192,6 +192,16 @@ public class DeliveryExperiment : CoroutineExperiment
     {
         SetRamulatorState("RETRIEVAL", true, new Dictionary<string, object>());
 
+        yield return DoFreeRecal(trial_number);
+
+        yield return DoCuedRecall(trial_number);
+
+        SetRamulatorState("RETRIEVAL", false, new Dictionary<string, object>());
+    }
+
+
+    private IEnumerator DoFreeRecal(int trial_number)
+    {
         textDisplayer.DisplayText("display day objects recall prompt", LanguageSource.GetLanguageString("day objects recall"));
         yield return SkippableWait(RECALL_MESSAGE_DISPLAY_LENGTH);
         textDisplayer.ClearText();
@@ -214,9 +224,10 @@ public class DeliveryExperiment : CoroutineExperiment
         textDisplayer.ClearText();
         lowBeep.Play();
         scriptedEventReporter.ReportScriptedEvent("Sound played", new Dictionary<string, object>() { { "sound name", "low beep" }, { "sound duration", lowBeep.clip.length.ToString() } });
+    }
 
-
-
+    private IEnumerator DoCuedRecall(int trial_number)
+    {
         this_trial_presented_stores.Shuffle(new System.Random());
 
         textDisplayer.DisplayText("display day cued recall prompt", LanguageSource.GetLanguageString("store cue recall"));
@@ -231,7 +242,8 @@ public class DeliveryExperiment : CoroutineExperiment
         {
             cueStore.familiarization_object.SetActive(true);
             string output_file_name = trial_number.ToString() + "-" + cueStore.GetStoreName();
-            wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
+            string output_directory = UnityEPL.GetDataPath();
+            string wavFilePath = System.IO.Path.Combine(output_directory, output_file_name) + ".wav";
             string lstFilepath = System.IO.Path.Combine(output_directory, output_file_name) + ".lst";
             AppendWordToLst(lstFilepath, cueStore.GetLastPoppedItemName());
             Dictionary<string, object> cuedRecordingData = new Dictionary<string, object>();
@@ -253,10 +265,6 @@ public class DeliveryExperiment : CoroutineExperiment
             yield return SkippableWait(RECALL_TEXT_DISPLAY_LENGTH);
             textDisplayer.ClearText();
         }
-
-        SetRamulatorState("RETRIEVAL", false, new Dictionary<string, object>());
-
-
     }
 
     private IEnumerator DoFinalRecall(Environment environment)
