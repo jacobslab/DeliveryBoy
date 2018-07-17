@@ -73,6 +73,3 @@ Steps to reverse the order of cued and free recall:
     First, update your dboy to the latest version from GitHub if you haven't yet.
     In the "DeliveryExperiment" script, locate the "subcoroutine" called DoRecall().
     Reverse the order of the calls to DoFreeRecall and DoCuedRecall.
-
-
-Hope this helps someone to begin familiarizing themselves with the DBoy code.
