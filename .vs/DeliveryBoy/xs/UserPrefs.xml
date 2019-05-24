@@ -1,17 +1,8 @@
-﻿<Properties StartupConfiguration="{7FBB8DF3-B9C5-5566-7B5C-C756DBCDED9D}|">
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
+﻿<Properties StartupConfiguration="{EC1A0C98-7CE3-4D05-E945-34667E25AE0D}|">
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DeliveryExperiment.cs">
     <Files>
-      <File FileName="Assets/Scripts/DeliveryExperiment.cs" Line="82" Column="1" />
-      <File FileName="Assets/Scripts/MessageImageDisplayer.cs" Line="27" Column="33" />
-      <File FileName="Assets/UnityEPL/Scripts/ScriptedEventReporter.cs" Line="9" Column="6" />
-      <File FileName="Assets/UnityEPL/Scripts/WriteToDiskHandler.cs" Line="1" Column="1" />
-      <File FileName="Assets/UnityEPL/Scripts/DataPoint.cs" Line="38" Column="32" />
-      <File FileName="Assets/UnityEPL/Scripts/UnityEPL.cs" Line="164" Column="72" />
-      <File FileName="Assets/Scripts/DeliveryItems.cs" Line="95" Column="31" />
-      <File FileName="Assets/UnityEPL/Prefabs/SoundRecorder/SoundRecorder.cs" Line="96" Column="2" />
-      <File FileName="Assets/Scripts/Syncbox.cs" Line="20" Column="1" />
-      <File FileName="Assets/Scripts/FreiburgSyncbox.cs" Line="89" Column="25" />
+      <File FileName="Assets/Scripts/DeliveryExperiment.cs" Line="415" Column="192" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

@@ -17,7 +17,7 @@ public class DeliveryExperiment : CoroutineExperiment
     private static int sessionNumber = -1;
     private static bool useRamulator;
 
-    private const string DBOY_VERSION = "v4.0";
+    private const string DBOY_VERSION = "v4.1";
     private const string RECALL_TEXT = "*******";
     private const int DELIVERIES_PER_TRIAL = 13;
     private const float MIN_FAMILIARIZATION_ISI = 0.4f;
@@ -412,7 +412,7 @@ public class DeliveryExperiment : CoroutineExperiment
         pointer.SetActive(true);
         ColorPointer(new Color(0.5f, 0.5f, 1f));
         pointer.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
-        scriptedEventReporter.ReportScriptedEvent("pointing begins", new Dictionary<string, object>() { {"start direction", pointer.transform.eulerAngles.y} });
+        scriptedEventReporter.ReportScriptedEvent("pointing begins", new Dictionary<string, object>() { {"start direction", pointer.transform.eulerAngles.y},{"store",nextStore.GetStoreName() } });
         pointerMessage.SetActive(true);
         pointerText.text = LanguageSource.GetLanguageString("next package prompt") +
                            LanguageSource.GetLanguageString(nextStore.GetStoreName()) + ". " +
